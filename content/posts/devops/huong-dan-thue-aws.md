@@ -1,7 +1,11 @@
 ---
 title: "Hướng dẫn thuê Aws"
-date: 2021-08-13T20:36:06+07:00
+date: 2021-07-07 08:23:27
 draft: false
+categories: [devops]
+categories_weight: 10
+tags: [tutorial, backend, aws, web server, nginx]
+tags_weight: 10
 ---
 
 ## 1. Login EC2 With .pem file

@@ -2,6 +2,7 @@ baseURL = '/'
 languageCode = 'vi-vn'
 theme = "cactus"
 title = 'Thỉnh thoảng đôi lời'
+copyright = 'ducnguyen96'
 
 [[menu.main]]
 name = "Home"
@@ -10,16 +11,22 @@ weight = 1
 
 [[menu.main]]
 name = "Writings"
-url = "/post"
+url = "/posts"
 weight = 2
 
 [[menu.main]]
 name = "Tags"
 url = "/tags"
+weight = 4
+
+[[menu.main]]
+name = "Categories"
+url = "/categories"
 weight = 3
 
 [params]
 logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
+colortheme = "dark" # dark, light, white, or classic
 [[params.social]]
   name = "github"
   link = "https://github.com/ducnguyen96"
@@ -27,3 +34,7 @@ logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
 [[params.social]]
   name = "email"
   link = "levinguyen.dl@gmail.com"
+
+[[params.social]]
+  name = "youtube"
+  link = "https://www.youtube.com/channel/UCCrvmlNIXLgZOMAMn9VKBeA"
