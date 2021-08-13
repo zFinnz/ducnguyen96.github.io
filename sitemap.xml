@@ -3,15 +3,26 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ducnguyen96.github.io/posts/huong-dan-thue-aws/</loc>
+    <lastmod>2021-08-13T20:36:06+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ducnguyen96.github.io/posts/</loc>
+    <lastmod>2021-08-13T20:36:06+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ducnguyen96.github.io/</loc>
+    <lastmod>2021-08-13T20:36:06+07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ducnguyen96.github.io/categories/</loc>
   </url>
   
   <url>
     <loc>https://ducnguyen96.github.io/tags/</loc>
-  </url>
-  
-  <url>
-    <loc>https://ducnguyen96.github.io/</loc>
   </url>
   
 </urlset>
