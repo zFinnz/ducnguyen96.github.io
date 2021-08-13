@@ -1,4 +1,4 @@
-baseURL = 'https://ducnguyen96.github.io/'
+baseURL = '/'
 languageCode = 'vi-vn'
 theme = "cactus"
 title = 'Thỉnh thoảng đôi lời'
