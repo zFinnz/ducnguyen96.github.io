@@ -1,335 +1,251 @@
-<!DOCTYPE html>
-<html lang="vi-vn">
+<!doctype html><html lang=vi-vn>
 <head>
-  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title> Hướng dẫn thuê Aws | Thỉnh thoảng đôi lời</title>
-  <link rel = 'canonical' href = '/posts/huong-dan-thue-aws/'>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="all,follow">
-  <meta name="googlebot" content="index,follow,snippet,archive">
-  <meta property="og:title" content="Hướng dẫn thuê Aws" />
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Hướng dẫn thuê Aws | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/huong-dan-thue-aws/>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Hướng dẫn thuê Aws">
 <meta property="og:description" content="1. Login EC2 With .pem file chmod 400 myfile.pem ssh -i &#34;myfile.pem&#34; my_user@instance_public_dbn 2. Web server là gì ? Web server là một phần mềm máy tính hoạt động trên 1 phần cứng và chấp nhật các requests thông qua giao thức HTTP để phân phối các trang webs, biến thể an toàn hơn của HTTP là HTTPS.
-Để publish 1 website thì bạn cần hoặc 1 web server tĩnh (chỉ bao gồm 1 máy tính và 1 HTTP server, gọi là tĩnh vì server gửi những files được hosted trên server đến browers) hoặc động (có thêm 1 số phần mềm như ứng dụng server và 1 database, gọi là động vì ứng dụng server sẽ cập nhật hosted files trước khi gửi đến browser thông qua HTTP server)." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="/posts/huong-dan-thue-aws/" />
-<meta property="article:published_time" content="2021-08-13T20:36:06+07:00" />
-<meta property="article:modified_time" content="2021-08-13T20:36:06+07:00" />
-
-  <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Hướng dẫn thuê Aws"/>
-<meta name="twitter:description" content="1. Login EC2 With .pem file chmod 400 myfile.pem ssh -i &#34;myfile.pem&#34; my_user@instance_public_dbn 2. Web server là gì ? Web server là một phần mềm máy tính hoạt động trên 1 phần cứng và chấp nhật các requests thông qua giao thức HTTP để phân phối các trang webs, biến thể an toàn hơn của HTTP là HTTPS.
-Để publish 1 website thì bạn cần hoặc 1 web server tĩnh (chỉ bao gồm 1 máy tính và 1 HTTP server, gọi là tĩnh vì server gửi những files được hosted trên server đến browers) hoặc động (có thêm 1 số phần mềm như ứng dụng server và 1 database, gọi là động vì ứng dụng server sẽ cập nhật hosted files trước khi gửi đến browser thông qua HTTP server)."/>
-
-  
-  
-  
-  <link rel="stylesheet" href="/css/styles.94f653e9e151e28067a7c5dbbc4600cbd5a3c721e79faaf971e523c40f3b249b8e4f20bb57810dfffa8d559ca5c140fd56eb4cd9c0853113ad08e66afdb08bdd.css" integrity="sha512-lPZT6eFR4oBnp8XbvEYAy9WjxyHnn6r5ceUjxA87JJuOTyC7V4EN//qNVZylwUD9VutM2cCFMROtCOZq/bCL3Q=="> 
-
-  
-  
-  
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  
-
-  
-<link rel="icon" type="image/png" href="/images/favicon.ico" />
-
-  
-  
+Để publish 1 website thì bạn cần hoặc 1 web server tĩnh (chỉ bao gồm 1 máy tính và 1 HTTP server, gọi là tĩnh vì server gửi những files được hosted trên server đến browers) hoặc động (có thêm 1 số phần mềm như ứng dụng server và 1 database, gọi là động vì ứng dụng server sẽ cập nhật hosted files trước khi gửi đến browser thông qua HTTP server).">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/huong-dan-thue-aws/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-08-13T20:36:06+07:00">
+<meta property="article:modified_time" content="2021-08-13T20:36:06+07:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Hướng dẫn thuê Aws">
+<meta name=twitter:description content="1. Login EC2 With .pem file chmod 400 myfile.pem ssh -i &#34;myfile.pem&#34; my_user@instance_public_dbn 2. Web server là gì ? Web server là một phần mềm máy tính hoạt động trên 1 phần cứng và chấp nhật các requests thông qua giao thức HTTP để phân phối các trang webs, biến thể an toàn hơn của HTTP là HTTPS.
+Để publish 1 website thì bạn cần hoặc 1 web server tĩnh (chỉ bao gồm 1 máy tính và 1 HTTP server, gọi là tĩnh vì server gửi những files được hosted trên server đến browers) hoặc động (có thêm 1 số phần mềm như ứng dụng server và 1 database, gọi là động vì ứng dụng server sẽ cập nhật hosted files trước khi gửi đến browser thông qua HTTP server).">
+<link rel=stylesheet href=/css/styles.94f653e9e151e28067a7c5dbbc4600cbd5a3c721e79faaf971e523c40f3b249b8e4f20bb57810dfffa8d559ca5c140fd56eb4cd9c0853113ad08e66afdb08bdd.css integrity="sha512-lPZT6eFR4oBnp8XbvEYAy9WjxyHnn6r5ceUjxA87JJuOTyC7V4EN//qNVZylwUD9VutM2cCFMROtCOZq/bCL3Q=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
 </head>
-
 <body class="max-width mx-auto px3 ltr">
-  <div class="content index py4">
-
-  <div id="header-post">
-  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-         
-        <li><a href="/">Home</a></li>
-         
-        <li><a href="/post">Writings</a></li>
-         
-        <li><a href="/tags">Tags</a></li>
-        
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        
-        <li>
-          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
-            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
-          </a>
-        </li>
-        <li>
-          <a class="icon" href="#" aria-label="Share">
-            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
-          </a>
-        </li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      
-      <ul>
-  
-  
-    
-  
-  
-  <li>
-    <a class="icon" href="http://www.facebook.com/sharer.php?u=%2fposts%2fhuong-dan-thue-aws%2f" aria-label="Facebook">
-      <i class="fab fa-facebook " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://twitter.com/share?url=%2fposts%2fhuong-dan-thue-aws%2f&text=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Twitter">
-      <i class="fab fa-twitter " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Linkedin">
-      <i class="fab fa-linkedin " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fhuong-dan-thue-aws%2f&is_video=false&description=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Pinterest">
-      <i class="fab fa-pinterest " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="mailto:?subject=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&body=Check out this article: %2fposts%2fhuong-dan-thue-aws%2f" aria-label="Email">
-      <i class="fas fa-envelope " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://getpocket.com/save?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Pocket">
-      <i class="fab fa-get-pocket " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://reddit.com/submit?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="reddit">
-      <i class="fab fa-reddit " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=%2fposts%2fhuong-dan-thue-aws%2f&name=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&description=1.%20Login%20EC2%20With%20.pem%20file%20chmod%20400%20myfile.pem%20ssh%20-i%20%26%2334%3bmyfile.pem%26%2334%3b%20my_user%40instance_public_dbn%202.%20Web%20server%20l%c3%a0%20g%c3%ac%20%3f%20Web%20server%20l%c3%a0%20m%e1%bb%99t%20ph%e1%ba%a7n%20m%e1%bb%81m%20m%c3%a1y%20t%c3%adnh%20ho%e1%ba%a1t%20%c4%91%e1%bb%99ng%20tr%c3%aan%201%20ph%e1%ba%a7n%20c%e1%bb%a9ng%20v%c3%a0%20ch%e1%ba%a5p%20nh%e1%ba%adt%20c%c3%a1c%20requests%20th%c3%b4ng%20qua%20giao%20th%e1%bb%a9c%20HTTP%20%c4%91%e1%bb%83%20ph%c3%a2n%20ph%e1%bb%91i%20c%c3%a1c%20trang%20webs%2c%20bi%e1%ba%bfn%20th%e1%bb%83%20an%20to%c3%a0n%20h%c6%a1n%20c%e1%bb%a7a%20HTTP%20l%c3%a0%20HTTPS.%0a%c4%90%e1%bb%83%20publish%201%20website%20th%c3%ac%20b%e1%ba%a1n%20c%e1%ba%a7n%20ho%e1%ba%b7c%201%20web%20server%20t%c4%a9nh%20%28ch%e1%bb%89%20bao%20g%e1%bb%93m%201%20m%c3%a1y%20t%c3%adnh%20v%c3%a0%201%20HTTP%20server%2c%20g%e1%bb%8di%20l%c3%a0%20t%c4%a9nh%20v%c3%ac%20server%20g%e1%bb%adi%20nh%e1%bb%afng%20files%20%c4%91%c6%b0%e1%bb%a3c%20hosted%20tr%c3%aan%20server%20%c4%91%e1%ba%bfn%20browers%29%20ho%e1%ba%b7c%20%c4%91%e1%bb%99ng%20%28c%c3%b3%20th%c3%aam%201%20s%e1%bb%91%20ph%e1%ba%a7n%20m%e1%bb%81m%20nh%c6%b0%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20v%c3%a0%201%20database%2c%20g%e1%bb%8di%20l%c3%a0%20%c4%91%e1%bb%99ng%20v%c3%ac%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20s%e1%ba%bd%20c%e1%ba%adp%20nh%e1%ba%adt%20hosted%20files%20tr%c6%b0%e1%bb%9bc%20khi%20g%e1%bb%adi%20%c4%91%e1%ba%bfn%20browser%20th%c3%b4ng%20qua%20HTTP%20server%29." aria-label="Tumblr">
-      <i class="fab fa-tumblr " aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=%2fposts%2fhuong-dan-thue-aws%2f&t=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Hacker News">
-      <i class="fab fa-hacker-news " aria-hidden="true"></i>
-    </a>
-  </li>
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/post>Writings</a></li>
+<li><a href=/tags>Tags</a></li>
 </ul>
-
-    </div>
-    <div id="toc">
-      <nav id="TableOfContents">
-  <ul>
-    <li><a href="#1-login-ec2-with-pem-file">1. Login EC2 With .pem file</a></li>
-    <li><a href="#2-web-server-là-gì-">2. Web server là gì ?</a></li>
-    <li><a href="#3những-web-servers-phổ-biến-nhất">3.Những web servers phổ biến nhất</a></li>
-  </ul>
-</nav>
-    </div>
-  </span>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fhuong-dan-thue-aws%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fhuong-dan-thue-aws%2f&text=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fhuong-dan-thue-aws%2f&is_video=false&description=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&body=Check out this article: %2fposts%2fhuong-dan-thue-aws%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fhuong-dan-thue-aws%2f&name=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&description=1.%20Login%20EC2%20With%20.pem%20file%20chmod%20400%20myfile.pem%20ssh%20-i%20%26%2334%3bmyfile.pem%26%2334%3b%20my_user%40instance_public_dbn%202.%20Web%20server%20l%c3%a0%20g%c3%ac%20%3f%20Web%20server%20l%c3%a0%20m%e1%bb%99t%20ph%e1%ba%a7n%20m%e1%bb%81m%20m%c3%a1y%20t%c3%adnh%20ho%e1%ba%a1t%20%c4%91%e1%bb%99ng%20tr%c3%aan%201%20ph%e1%ba%a7n%20c%e1%bb%a9ng%20v%c3%a0%20ch%e1%ba%a5p%20nh%e1%ba%adt%20c%c3%a1c%20requests%20th%c3%b4ng%20qua%20giao%20th%e1%bb%a9c%20HTTP%20%c4%91%e1%bb%83%20ph%c3%a2n%20ph%e1%bb%91i%20c%c3%a1c%20trang%20webs%2c%20bi%e1%ba%bfn%20th%e1%bb%83%20an%20to%c3%a0n%20h%c6%a1n%20c%e1%bb%a7a%20HTTP%20l%c3%a0%20HTTPS.%0a%c4%90%e1%bb%83%20publish%201%20website%20th%c3%ac%20b%e1%ba%a1n%20c%e1%ba%a7n%20ho%e1%ba%b7c%201%20web%20server%20t%c4%a9nh%20%28ch%e1%bb%89%20bao%20g%e1%bb%93m%201%20m%c3%a1y%20t%c3%adnh%20v%c3%a0%201%20HTTP%20server%2c%20g%e1%bb%8di%20l%c3%a0%20t%c4%a9nh%20v%c3%ac%20server%20g%e1%bb%adi%20nh%e1%bb%afng%20files%20%c4%91%c6%b0%e1%bb%a3c%20hosted%20tr%c3%aan%20server%20%c4%91%e1%ba%bfn%20browers%29%20ho%e1%ba%b7c%20%c4%91%e1%bb%99ng%20%28c%c3%b3%20th%c3%aam%201%20s%e1%bb%91%20ph%e1%ba%a7n%20m%e1%bb%81m%20nh%c6%b0%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20v%c3%a0%201%20database%2c%20g%e1%bb%8di%20l%c3%a0%20%c4%91%e1%bb%99ng%20v%c3%ac%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20s%e1%ba%bd%20c%e1%ba%adp%20nh%e1%ba%adt%20hosted%20files%20tr%c6%b0%e1%bb%9bc%20khi%20g%e1%bb%adi%20%c4%91%e1%ba%bfn%20browser%20th%c3%b4ng%20qua%20HTTP%20server%29." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fhuong-dan-thue-aws%2f&t=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
 </div>
-
-
-  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-    <header>
-      <h1 class="posttitle" itemprop="name headline">
-        Hướng dẫn thuê Aws
-      </h1>
-      <div class="meta">
-        
-        <div class="postdate">
-          
-          <time datetime="2021-08-13 20:36:06 &#43;0700 &#43;0700" itemprop="datePublished">2021-08-13</time>
-          
-        </div>
-        
-        
-        
-        
-      </div>
-    </header>
-
-  
-    <div class="content" itemprop="articleBody">
-      <h2 id="1-login-ec2-with-pem-file">1. Login EC2 With .pem file</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"> chmod <span style="color:#ae81ff">400</span> myfile.pem
- ssh -i <span style="color:#e6db74">&#34;myfile.pem&#34;</span> my_user@instance_public_dbn
-</code></pre></div><h2 id="2-web-server-là-gì-">2. Web server là gì ?</h2>
-<p>Web server là một phần mềm máy tính hoạt động trên 1 phần cứng và chấp nhật các requests thông qua <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">giao thức HTTP</a> để phân phối các trang webs, biến thể an toàn hơn của HTTP là <a href="https://en.wikipedia.org/wiki/HTTPS">HTTPS</a>.</p>
-<p><img src="https://roadmap.fun/public/images/web-server-send-http.png" alt="Web Server">
-Để publish 1 website thì bạn cần hoặc 1 web server tĩnh (chỉ bao gồm 1 máy tính và 1 HTTP server, gọi là tĩnh vì server gửi những files được hosted trên server đến browers) hoặc động (có thêm 1 số phần mềm như <a href="https://www.nginx.com/resources/glossary/application-server-vs-web-server/">ứng dụng server</a> và 1 database, gọi là động vì ứng dụng server sẽ cập nhật hosted files trước khi gửi đến browser thông qua HTTP server).</p>
-<h2 id="3những-web-servers-phổ-biến-nhất">3.Những web servers phổ biến nhất</h2>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#1-login-ec2-with-pem-file>1. Login EC2 With .pem file</a></li>
+<li><a href=#2-web-server-là-gì->2. Web server là gì ?</a></li>
+<li><a href=#3những-web-servers-phổ-biến-nhất>3.Những web servers phổ biến nhất</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Hướng dẫn thuê Aws
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-08-13 20:36:06 +0700 +0700" itemprop=datePublished>2021-08-13</time>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<h2 id=1-login-ec2-with-pem-file>1. Login EC2 With .pem file</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh> chmod <span style=color:#ae81ff>400</span> myfile.pem
+ ssh -i <span style=color:#e6db74>&#34;myfile.pem&#34;</span> my_user@instance_public_dbn
+</code></pre></div><h2 id=2-web-server-là-gì->2. Web server là gì ?</h2>
+<p>Web server là một phần mềm máy tính hoạt động trên 1 phần cứng và chấp nhật các requests thông qua <a href=https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol>giao thức HTTP</a> để phân phối các trang webs, biến thể an toàn hơn của HTTP là <a href=https://en.wikipedia.org/wiki/HTTPS>HTTPS</a>.</p>
+<p><img src=https://roadmap.fun/public/images/web-server-send-http.png alt="Web Server">
+Để publish 1 website thì bạn cần hoặc 1 web server tĩnh (chỉ bao gồm 1 máy tính và 1 HTTP server, gọi là tĩnh vì server gửi những files được hosted trên server đến browers) hoặc động (có thêm 1 số phần mềm như <a href=https://www.nginx.com/resources/glossary/application-server-vs-web-server/>ứng dụng server</a> và 1 database, gọi là động vì ứng dụng server sẽ cập nhật hosted files trước khi gửi đến browser thông qua HTTP server).</p>
+<h2 id=3những-web-servers-phổ-biến-nhất>3.Những web servers phổ biến nhất</h2>
 <ol>
-<li><a href="https://httpd.apache.org/">Apache HTTP Server</a>: Được phát trển bởi <a href="https://en.wikipedia.org/wiki/The_Apache_Software_Foundation">Apache Software Foundation</a>, free và <a href="https://en.wikipedia.org/wiki/Open_source">mã nguồn mở</a> có thể hoạt động trên cả Windows MacOS Unix Linux Solaris và các OS khác.</li>
-<li><a href="https://www.iis.net/">Microsoft Internet Information Services (IIS)</a>: Phát triển bởi Microsoft cho các nền tảng của Microsoft, không open-sourced nhưng được sử dụng rộng rãi.</li>
-<li><a href="https://www.nginx.com/">Nginx</a>: Open-sourced, phổ biến vì nó sử dụng ít tài nguyên cũng như khả năng scale mạnh, có thể xử lý nhiều sessions đồng thời nhờ vào <a href="https://en.wikipedia.org/wiki/Event-driven_architecture">kiến trúc hướng sự kiện (event-driven architecture)</a>, ngoài ra thì Nginx còn được sử dụng như 1 <a href="https://en.wikipedia.org/wiki/Proxy_server">proxy server</a>, <a href="https://en.wikipedia.org/wiki/Load_balancing_(computing)">load balancer</a>.</li>
-<li><a href="https://www.lighttpd.net/">Lighttpd</a>: free và chạy trên FREEBSD OS, nhanh và bảo mật, tốn ít tài nguyên CPU.</li>
-<li><a href="https://docs.oracle.com/cd/E19146-01/819-2629/gbrne/index.html">Sun Java System Web Server</a>.</li>
+<li><a href=https://httpd.apache.org/>Apache HTTP Server</a>: Được phát trển bởi <a href=https://en.wikipedia.org/wiki/The_Apache_Software_Foundation>Apache Software Foundation</a>, free và <a href=https://en.wikipedia.org/wiki/Open_source>mã nguồn mở</a> có thể hoạt động trên cả Windows MacOS Unix Linux Solaris và các OS khác.</li>
+<li><a href=https://www.iis.net/>Microsoft Internet Information Services (IIS)</a>: Phát triển bởi Microsoft cho các nền tảng của Microsoft, không open-sourced nhưng được sử dụng rộng rãi.</li>
+<li><a href=https://www.nginx.com/>Nginx</a>: Open-sourced, phổ biến vì nó sử dụng ít tài nguyên cũng như khả năng scale mạnh, có thể xử lý nhiều sessions đồng thời nhờ vào <a href=https://en.wikipedia.org/wiki/Event-driven_architecture>kiến trúc hướng sự kiện (event-driven architecture)</a>, ngoài ra thì Nginx còn được sử dụng như 1 <a href=https://en.wikipedia.org/wiki/Proxy_server>proxy server</a>, <a href=https://en.wikipedia.org/wiki/Load_balancing_(computing)>load balancer</a>.</li>
+<li><a href=https://www.lighttpd.net/>Lighttpd</a>: free và chạy trên FREEBSD OS, nhanh và bảo mật, tốn ít tài nguyên CPU.</li>
+<li><a href=https://docs.oracle.com/cd/E19146-01/819-2629/gbrne/index.html>Sun Java System Web Server</a>.</li>
 </ol>
-
-    </div>
-  </article>
-
-  
-  
-
-
-
-
-
-  <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-         
-          <li><a href="/">Home</a></li>
-         
-          <li><a href="/post">Writings</a></li>
-         
-          <li><a href="/tags">Tags</a></li>
-        
-      </ul>
-    </div>
-
-    <div id="toc-footer" style="display: none">
-      <nav id="TableOfContents">
-  <ul>
-    <li><a href="#1-login-ec2-with-pem-file">1. Login EC2 With .pem file</a></li>
-    <li><a href="#2-web-server-là-gì-">2. Web server là gì ?</a></li>
-    <li><a href="#3những-web-servers-phổ-biến-nhất">3.Những web servers phổ biến nhất</a></li>
-  </ul>
-</nav>
-    </div>
-
-    <div id="share-footer" style="display: none">
-      
-      <ul>
-  
-  
-    
-  
-  
-  <li>
-    <a class="icon" href="http://www.facebook.com/sharer.php?u=%2fposts%2fhuong-dan-thue-aws%2f" aria-label="Facebook">
-      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://twitter.com/share?url=%2fposts%2fhuong-dan-thue-aws%2f&text=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Twitter">
-      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Linkedin">
-      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fhuong-dan-thue-aws%2f&is_video=false&description=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Pinterest">
-      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="mailto:?subject=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&body=Check out this article: %2fposts%2fhuong-dan-thue-aws%2f" aria-label="Email">
-      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://getpocket.com/save?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Pocket">
-      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://reddit.com/submit?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="reddit">
-      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=%2fposts%2fhuong-dan-thue-aws%2f&name=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&description=1.%20Login%20EC2%20With%20.pem%20file%20chmod%20400%20myfile.pem%20ssh%20-i%20%26%2334%3bmyfile.pem%26%2334%3b%20my_user%40instance_public_dbn%202.%20Web%20server%20l%c3%a0%20g%c3%ac%20%3f%20Web%20server%20l%c3%a0%20m%e1%bb%99t%20ph%e1%ba%a7n%20m%e1%bb%81m%20m%c3%a1y%20t%c3%adnh%20ho%e1%ba%a1t%20%c4%91%e1%bb%99ng%20tr%c3%aan%201%20ph%e1%ba%a7n%20c%e1%bb%a9ng%20v%c3%a0%20ch%e1%ba%a5p%20nh%e1%ba%adt%20c%c3%a1c%20requests%20th%c3%b4ng%20qua%20giao%20th%e1%bb%a9c%20HTTP%20%c4%91%e1%bb%83%20ph%c3%a2n%20ph%e1%bb%91i%20c%c3%a1c%20trang%20webs%2c%20bi%e1%ba%bfn%20th%e1%bb%83%20an%20to%c3%a0n%20h%c6%a1n%20c%e1%bb%a7a%20HTTP%20l%c3%a0%20HTTPS.%0a%c4%90%e1%bb%83%20publish%201%20website%20th%c3%ac%20b%e1%ba%a1n%20c%e1%ba%a7n%20ho%e1%ba%b7c%201%20web%20server%20t%c4%a9nh%20%28ch%e1%bb%89%20bao%20g%e1%bb%93m%201%20m%c3%a1y%20t%c3%adnh%20v%c3%a0%201%20HTTP%20server%2c%20g%e1%bb%8di%20l%c3%a0%20t%c4%a9nh%20v%c3%ac%20server%20g%e1%bb%adi%20nh%e1%bb%afng%20files%20%c4%91%c6%b0%e1%bb%a3c%20hosted%20tr%c3%aan%20server%20%c4%91%e1%ba%bfn%20browers%29%20ho%e1%ba%b7c%20%c4%91%e1%bb%99ng%20%28c%c3%b3%20th%c3%aam%201%20s%e1%bb%91%20ph%e1%ba%a7n%20m%e1%bb%81m%20nh%c6%b0%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20v%c3%a0%201%20database%2c%20g%e1%bb%8di%20l%c3%a0%20%c4%91%e1%bb%99ng%20v%c3%ac%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20s%e1%ba%bd%20c%e1%ba%adp%20nh%e1%ba%adt%20hosted%20files%20tr%c6%b0%e1%bb%9bc%20khi%20g%e1%bb%adi%20%c4%91%e1%ba%bfn%20browser%20th%c3%b4ng%20qua%20HTTP%20server%29." aria-label="Tumblr">
-      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-  <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=%2fposts%2fhuong-dan-thue-aws%2f&t=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Hacker News">
-      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
-    </a>
-  </li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-      
-        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
-          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
-          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
-          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
-          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
-
-  </div>
 </div>
-
-
-  <footer id="footer">
-  <div class="footer-left">
-    Copyright  &copy; 2021  Thỉnh thoảng đôi lời 
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-         
-        <li><a href="/">Home</a></li>
-         
-        <li><a href="/post">Writings</a></li>
-         
-        <li><a href="/tags">Tags</a></li>
-        
-      </ul>
-    </nav>
-  </div>
+</article>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/post>Writings</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#1-login-ec2-with-pem-file>1. Login EC2 With .pem file</a></li>
+<li><a href=#2-web-server-là-gì->2. Web server là gì ?</a></li>
+<li><a href=#3những-web-servers-phổ-biến-nhất>3.Những web servers phổ biến nhất</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fhuong-dan-thue-aws%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fhuong-dan-thue-aws%2f&text=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fhuong-dan-thue-aws%2f&is_video=false&description=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&body=Check out this article: %2fposts%2fhuong-dan-thue-aws%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fhuong-dan-thue-aws%2f&title=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fhuong-dan-thue-aws%2f&name=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws&description=1.%20Login%20EC2%20With%20.pem%20file%20chmod%20400%20myfile.pem%20ssh%20-i%20%26%2334%3bmyfile.pem%26%2334%3b%20my_user%40instance_public_dbn%202.%20Web%20server%20l%c3%a0%20g%c3%ac%20%3f%20Web%20server%20l%c3%a0%20m%e1%bb%99t%20ph%e1%ba%a7n%20m%e1%bb%81m%20m%c3%a1y%20t%c3%adnh%20ho%e1%ba%a1t%20%c4%91%e1%bb%99ng%20tr%c3%aan%201%20ph%e1%ba%a7n%20c%e1%bb%a9ng%20v%c3%a0%20ch%e1%ba%a5p%20nh%e1%ba%adt%20c%c3%a1c%20requests%20th%c3%b4ng%20qua%20giao%20th%e1%bb%a9c%20HTTP%20%c4%91%e1%bb%83%20ph%c3%a2n%20ph%e1%bb%91i%20c%c3%a1c%20trang%20webs%2c%20bi%e1%ba%bfn%20th%e1%bb%83%20an%20to%c3%a0n%20h%c6%a1n%20c%e1%bb%a7a%20HTTP%20l%c3%a0%20HTTPS.%0a%c4%90%e1%bb%83%20publish%201%20website%20th%c3%ac%20b%e1%ba%a1n%20c%e1%ba%a7n%20ho%e1%ba%b7c%201%20web%20server%20t%c4%a9nh%20%28ch%e1%bb%89%20bao%20g%e1%bb%93m%201%20m%c3%a1y%20t%c3%adnh%20v%c3%a0%201%20HTTP%20server%2c%20g%e1%bb%8di%20l%c3%a0%20t%c4%a9nh%20v%c3%ac%20server%20g%e1%bb%adi%20nh%e1%bb%afng%20files%20%c4%91%c6%b0%e1%bb%a3c%20hosted%20tr%c3%aan%20server%20%c4%91%e1%ba%bfn%20browers%29%20ho%e1%ba%b7c%20%c4%91%e1%bb%99ng%20%28c%c3%b3%20th%c3%aam%201%20s%e1%bb%91%20ph%e1%ba%a7n%20m%e1%bb%81m%20nh%c6%b0%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20v%c3%a0%201%20database%2c%20g%e1%bb%8di%20l%c3%a0%20%c4%91%e1%bb%99ng%20v%c3%ac%20%e1%bb%a9ng%20d%e1%bb%a5ng%20server%20s%e1%ba%bd%20c%e1%ba%adp%20nh%e1%ba%adt%20hosted%20files%20tr%c6%b0%e1%bb%9bc%20khi%20g%e1%bb%adi%20%c4%91%e1%ba%bfn%20browser%20th%c3%b4ng%20qua%20HTTP%20server%29." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fhuong-dan-thue-aws%2f&t=H%c6%b0%e1%bb%9bng%20d%e1%ba%abn%20thu%c3%aa%20Aws" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 Thỉnh thoảng đôi lời
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/post>Writings</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
 </footer>
-
-
-  </div>
+</div>
 </body>
-
-<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
 <script src=/lib/jquery/jquery.min.js></script>
 <script src=/js/main.js></script>
 <script src=/js/code-copy.js></script>
-
-
-
 </html>
