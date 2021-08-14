@@ -3,6 +3,7 @@ languageCode = 'vi-vn'
 theme = "cactus"
 title = 'Thỉnh thoảng đôi lời'
 copyright = 'ducnguyen96'
+paginate = 12
 
 [[menu.main]]
 name = "Home"
@@ -27,6 +28,16 @@ weight = 3
 [params]
 logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
 colortheme = "dark" # dark, light, white, or classic
+enableEmoji = true
+rss = true
+showAllPostsArchive = false
+showAllPostsOnHomePage = true
+description = "Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:"
+
+[params.comments]
+  enabled = true
+[params.disqusShortname]
+  disqusShortname = 'ducnguyen96'
 
 [[params.social]]
   name = "github"

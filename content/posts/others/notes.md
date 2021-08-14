@@ -2,7 +2,9 @@
 title: "Những vấn đề mình mắc phải trong quá trình học tập và làm việc"
 date: 2021-06-09 08:23:27
 draft: false
-tags: [notes, questions]
+categories: [others]
+categories_weight: 9
+tags: [notes, questions, others]
 tags_weight: 1
 ---
 ## 1. Gắn alias cho 1 địa chỉ IP
