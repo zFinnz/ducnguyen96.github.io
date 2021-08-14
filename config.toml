@@ -27,6 +27,7 @@ weight = 3
 [params]
 logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
 colortheme = "dark" # dark, light, white, or classic
+
 [[params.social]]
   name = "github"
   link = "https://github.com/ducnguyen96"
