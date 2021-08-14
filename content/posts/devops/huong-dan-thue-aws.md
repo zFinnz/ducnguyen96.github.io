@@ -1,7 +1,7 @@
 ---
 title: "Hướng dẫn thuê Aws"
 date: 2021-07-07 08:23:27
-draft: false
+draft: true
 categories: [devops]
 categories_weight: 10
 tags: [tutorial, backend, aws, web server, nginx]

@@ -5,6 +5,8 @@ title = 'Thỉnh thoảng đôi lời'
 copyright = 'ducnguyen96'
 disqusShortname = 'ducnguyen96'
 paginate = 12
+staticDir = ['static']
+enableemoji = true
 
 [[menu.main]]
 name = "Home"
@@ -29,7 +31,6 @@ weight = 3
 [params]
 logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
 colortheme = "dark" # dark, light, white, or classic
-enableEmoji = true
 rss = true
 showAllPostsArchive = false
 showAllPostsOnHomePage = true
