@@ -52,3 +52,35 @@ svn checkout https://github.com/nestjs/nest/tree/trunk/sample/28-sse
 Đối với branch khác thì ta thay thế `trunk` bằng `branches/branch-name`.
 
 Tham khảo thêm ở [đây](https://stackoverflow.com/questions/7106012/download-a-single-folder-or-directory-from-a-github-repo).
+
+## 5. Config pagination hugo
+Mình cũng chỉ mới dùng được thằng gohugo này 2 ngày hôm nay và thực sự là chưa hiểu được hoàn toàn kiến trúc của thằng này. Và thực sự thì docs của hugo cho thằng pagination này chưa được rõ ràng lắm.
+Vì vậy mà mình đốt 2 tiếng đồng hồ mới config được thằng pagination này 😑.
+
+Mình đang dùng theme cactus nên các bạn chú ý xem có thể có khác biệt đấy nhé ℹ️.
+
+Đầu tiên thì các bài posts của hugo được xuất hiện ở route home ('/') và các routes khác. Ỏ route home thì dùng file `layouts/index.html` để tạo ra list các bài viết, còn ở các routes khác thì tạo ra bằng file `layouts/_default/list.html`.
+
+Các bạn vào 2 file đấy xem thì sẽ thấy được logic để hugo có thể gen ra cái thằng pagination.
+
+Đối với màn home thì pagination được in ra khi `showAllPostsOnHomePage = true` cactus đang mặc định để thằng này là false và có thể config bằng `.Site.Params.ShowAllPostsOnHomePage`. Vậy trong `config.toml` ta cần set param này là true.
+
+```sh
+# config.toml
+[params]
+showAllPostsOnHomePage = true
+```
+
+Đối với các routes khác thì pagination được in ra khi `Site.Params.showAllPostsArchive false`. Vậy trong `config.toml` ta cần set param này là false
+
+```sh
+# config.toml
+[params]
+showAllPostsArchive = false
+```
+
+Một điều chú ý nữa là đối với mỗi page thì hugo mặc định có 10 posts, các bạn có thể thay đổi con số này qua thông số `paginate`.
+```sh
+# config.toml
+paginate = 12
+```
