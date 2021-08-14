@@ -3,6 +3,7 @@ languageCode = 'vi-vn'
 theme = "cactus"
 title = 'Thỉnh thoảng đôi lời'
 copyright = 'ducnguyen96'
+disqusShortname = 'ducnguyen96'
 paginate = 12
 
 [[menu.main]]
@@ -36,8 +37,6 @@ description = "Là nơi chia sẻ lại những kiến thức, kinh nghiệm mì
 
 [params.comments]
   enabled = true
-[params.disqusShortname]
-  disqusShortname = 'ducnguyen96'
 
 [[params.social]]
   name = "github"

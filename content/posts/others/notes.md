@@ -84,3 +84,35 @@ Một điều chú ý nữa là đối với mỗi page thì hugo mặc định 
 # config.toml
 paginate = 12
 ```
+## 6. Add comments to hugo site
+
+Ở đây mình sẽ hướng dẫn sử dụng disqus nhé.
+Cũng tương tự như ở [#5 trên](#5-config-pagination-hugo) ta sẽ enable comments mà không cần vào doc của hugo bằng cách search `comments`. Chúng ta thấy file `layouts/partials/comments.html` chứa phần code để in ra comments cho site, pages của chúng ta. 
+
+```sh
+{{ if (not (isset .Site.Params "comments")) }}
+  {{ .Scratch.Set "enable_comments" false }}
+{{ else if (isset .Params "comments") }}
+  {{ .Scratch.Set "enable_comments" .Params.comments }}
+```
+
+Nhận thấy để enable comments thì chúng ta cần set params comments có thuộc tính enable = true. Chúng ta sẽ update file config như sau.
+
+```sh
+# config.toml
+[params.comments]
+  enabled = true
+```
+
+Ở phần javascript thì có nội dung như sau
+```javascript
+var disqus_shortname = '{{ if .Site.DisqusShortname }}{{ .Site.DisqusShortname }}{{ else }}{{ .Site.Title }}{{ end }}';
+```
+
+Vậy chúng ta config như sau
+```sh
+# config.toml
+disqusShortname = 'ducnguyen96'
+```
+
+Vậy là đã có comments cho tất cả các pages của site nhé 💃.
