@@ -123,6 +123,7 @@
 <li><a href=#2-giao-tiếp-giữa-2-aws-instances>2. Giao tiếp giữa 2 AWS instances</a></li>
 <li><a href=#3-lưu-biến-vào-shell-của-bạn>3. Lưu biến vào shell của bạn</a></li>
 <li><a href=#4-download-1-thư-mục-trên-github-với-subversion>4. Download 1 thư mục trên github với subversion</a></li>
+<li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
 </ul>
 </nav>
 </div>
@@ -180,6 +181,24 @@ Những vấn đề mình mắc phải trong quá trình học tập và làm vi
 </code></pre></div><p>Ở đường link trên thì <code>trunk</code> thay thế cho <code>master</code> là tên của branch
 Đối với branch khác thì ta thay thế <code>trunk</code> bằng <code>branches/branch-name</code>.</p>
 <p>Tham khảo thêm ở <a href=https://stackoverflow.com/questions/7106012/download-a-single-folder-or-directory-from-a-github-repo>đây</a>.</p>
+<h2 id=5-config-pagination-hugo>5. Config pagination hugo</h2>
+<p>Mình cũng chỉ mới dùng được thằng gohugo này 2 ngày hôm nay và thực sự là chưa hiểu được hoàn toàn kiến trúc của thằng này. Và thực sự thì docs của hugo cho thằng pagination này chưa được rõ ràng lắm.
+Vì vậy mà mình đốt 2 tiếng đồng hồ mới config được thằng pagination này 😑.</p>
+<p>Mình đang dùng theme cactus nên các bạn chú ý xem có thể có khác biệt đấy nhé ℹ️.</p>
+<p>Đầu tiên thì các bài posts của hugo được xuất hiện ở route home ('/') và các routes khác. Ỏ route home thì dùng file <code>layouts/index.html</code> để tạo ra list các bài viết, còn ở các routes khác thì tạo ra bằng file <code>layouts/_default/list.html</code>.</p>
+<p>Các bạn vào 2 file đấy xem thì sẽ thấy được logic để hugo có thể gen ra cái thằng pagination.</p>
+<p>Đối với màn home thì pagination được in ra khi <code>showAllPostsOnHomePage = true</code> cactus đang mặc định để thằng này là false và có thể config bằng <code>.Site.Params.ShowAllPostsOnHomePage</code>. Vậy trong <code>config.toml</code> ta cần set param này là true.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># config.toml</span>
+<span style=color:#f92672>[</span>params<span style=color:#f92672>]</span>
+showAllPostsOnHomePage <span style=color:#f92672>=</span> true
+</code></pre></div><p>Đối với các routes khác thì pagination được in ra khi <code>Site.Params.showAllPostsArchive false</code>. Vậy trong <code>config.toml</code> ta cần set param này là false</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># config.toml</span>
+<span style=color:#f92672>[</span>params<span style=color:#f92672>]</span>
+showAllPostsArchive <span style=color:#f92672>=</span> false
+</code></pre></div><p>Một điều chú ý nữa là đối với mỗi page thì hugo mặc định có 10 posts, các bạn có thể thay đổi con số này qua thông số <code>paginate</code>.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># config.toml</span>
+paginate <span style=color:#f92672>=</span> <span style=color:#ae81ff>12</span>
+</code></pre></div>
 </div>
 </article>
 <div class=blog-post-comments>
@@ -206,6 +225,7 @@ Những vấn đề mình mắc phải trong quá trình học tập và làm vi
 <li><a href=#2-giao-tiếp-giữa-2-aws-instances>2. Giao tiếp giữa 2 AWS instances</a></li>
 <li><a href=#3-lưu-biến-vào-shell-của-bạn>3. Lưu biến vào shell của bạn</a></li>
 <li><a href=#4-download-1-thư-mục-trên-github-với-subversion>4. Download 1 thư mục trên github với subversion</a></li>
+<li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
 </ul>
 </nav>
 </div>
