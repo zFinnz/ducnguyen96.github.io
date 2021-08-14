@@ -7,7 +7,8 @@
 <meta charset=utf-8>
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title> Những vấn đề mình mắc phải trong quá trình học tập và làm việc | Thỉnh thoảng đôi lời</title>
-<link rel=canonical href=/posts/notes/>
+<link rel=canonical href=/posts/others/notes/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=robots content="all,follow">
 <meta name=googlebot content="index,follow,snippet,archive">
@@ -15,7 +16,7 @@
 <meta property="og:description" content="1. Gắn alias cho 1 địa chỉ IP Có 1 vấn đề khi mình thuê nhiều server trên AWS là mình phải nhớ nhiều địa chỉ IP để SSH. Cách giải quyết là mình sẽ gắn tên cho từng địa chỉ bằng cách map name với ip trong file /etc/hosts.
 2. Giao tiếp giữa 2 AWS instances Phiên bản roadmap.fun hiện tại mình đang sử dụng 2 instances riêng biệt để xử lý front-end và back-end riêng, 1 instance cho nginx cùng webapp và 1 instance cho nodejs và postgres.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="/posts/notes/"><meta property="article:section" content="posts">
+<meta property="og:url" content="/posts/others/notes/"><meta property="article:section" content="posts">
 <meta property="article:published_time" content="2021-06-09T08:23:27+00:00">
 <meta property="article:modified_time" content="2021-06-09T08:23:27+00:00">
 <meta name=twitter:card content="summary">
@@ -69,47 +70,47 @@
 <div id=share style=display:none>
 <ul>
 <li>
-<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fnotes%2f" aria-label=Facebook>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fothers%2fnotes%2f" aria-label=Facebook>
 <i class="fab fa-facebook" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://twitter.com/share?url=%2fposts%2fnotes%2f&text=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Twitter>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fothers%2fnotes%2f&text=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Twitter>
 <i class="fab fa-twitter" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Linkedin>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fothers%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Linkedin>
 <i class="fab fa-linkedin" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fnotes%2f&is_video=false&description=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pinterest>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fothers%2fnotes%2f&is_video=false&description=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pinterest>
 <i class="fab fa-pinterest" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="mailto:?subject=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&body=Check out this article: %2fposts%2fnotes%2f" aria-label=Email>
+<a class=icon href="mailto:?subject=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&body=Check out this article: %2fposts%2fothers%2fnotes%2f" aria-label=Email>
 <i class="fas fa-envelope" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://getpocket.com/save?url=%2fposts%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pocket>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fothers%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pocket>
 <i class="fab fa-get-pocket" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://reddit.com/submit?url=%2fposts%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=reddit>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fothers%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=reddit>
 <i class="fab fa-reddit" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fnotes%2f&name=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&description=1.%20G%e1%ba%afn%20alias%20cho%201%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20C%c3%b3%201%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20khi%20m%c3%acnh%20thu%c3%aa%20nhi%e1%bb%81u%20server%20tr%c3%aan%20AWS%20l%c3%a0%20m%c3%acnh%20ph%e1%ba%a3i%20nh%e1%bb%9b%20nhi%e1%bb%81u%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20%c4%91%e1%bb%83%20SSH.%20C%c3%a1ch%20gi%e1%ba%a3i%20quy%e1%ba%bft%20l%c3%a0%20m%c3%acnh%20s%e1%ba%bd%20g%e1%ba%afn%20t%c3%aan%20cho%20t%e1%bb%abng%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20b%e1%ba%b1ng%20c%c3%a1ch%20map%20name%20v%e1%bb%9bi%20ip%20trong%20file%20%2fetc%2fhosts.%0a2.%20Giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%202%20AWS%20instances%20Phi%c3%aan%20b%e1%ba%a3n%20roadmap.fun%20hi%e1%bb%87n%20t%e1%ba%a1i%20m%c3%acnh%20%c4%91ang%20s%e1%bb%ad%20d%e1%bb%a5ng%202%20instances%20ri%c3%aang%20bi%e1%bb%87t%20%c4%91%e1%bb%83%20x%e1%bb%ad%20l%c3%bd%20front-end%20v%c3%a0%20back-end%20ri%c3%aang%2c%201%20instance%20cho%20nginx%20c%c3%b9ng%20webapp%20v%c3%a0%201%20instance%20cho%20nodejs%20v%c3%a0%20postgres." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fothers%2fnotes%2f&name=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&description=1.%20G%e1%ba%afn%20alias%20cho%201%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20C%c3%b3%201%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20khi%20m%c3%acnh%20thu%c3%aa%20nhi%e1%bb%81u%20server%20tr%c3%aan%20AWS%20l%c3%a0%20m%c3%acnh%20ph%e1%ba%a3i%20nh%e1%bb%9b%20nhi%e1%bb%81u%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20%c4%91%e1%bb%83%20SSH.%20C%c3%a1ch%20gi%e1%ba%a3i%20quy%e1%ba%bft%20l%c3%a0%20m%c3%acnh%20s%e1%ba%bd%20g%e1%ba%afn%20t%c3%aan%20cho%20t%e1%bb%abng%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20b%e1%ba%b1ng%20c%c3%a1ch%20map%20name%20v%e1%bb%9bi%20ip%20trong%20file%20%2fetc%2fhosts.%0a2.%20Giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%202%20AWS%20instances%20Phi%c3%aan%20b%e1%ba%a3n%20roadmap.fun%20hi%e1%bb%87n%20t%e1%ba%a1i%20m%c3%acnh%20%c4%91ang%20s%e1%bb%ad%20d%e1%bb%a5ng%202%20instances%20ri%c3%aang%20bi%e1%bb%87t%20%c4%91%e1%bb%83%20x%e1%bb%ad%20l%c3%bd%20front-end%20v%c3%a0%20back-end%20ri%c3%aang%2c%201%20instance%20cho%20nginx%20c%c3%b9ng%20webapp%20v%c3%a0%201%20instance%20cho%20nodejs%20v%c3%a0%20postgres." aria-label=Tumblr>
 <i class="fab fa-tumblr" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fnotes%2f&t=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label="Hacker News">
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fothers%2fnotes%2f&t=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label="Hacker News">
 <i class="fab fa-hacker-news" aria-hidden=true></i>
 </a>
 </li>
@@ -136,11 +137,17 @@ Những vấn đề mình mắc phải trong quá trình học tập và làm vi
 <div class=postdate>
 <time datetime="2021-06-09 08:23:27 +0000 UTC" itemprop=datePublished>2021-06-09</time>
 </div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/others>others</a>
+</div>
 <div class=article-tag>
 <i class="fas fa-tag"></i>
 <a class=tag-link href=/tags/notes rel=tag>notes</a>
 ,
 <a class=tag-link href=/tags/questions rel=tag>questions</a>
+,
+<a class=tag-link href=/tags/others rel=tag>others</a>
 </div>
 </div>
 </header>
@@ -175,6 +182,13 @@ Những vấn đề mình mắc phải trong quá trình học tập và làm vi
 <p>Tham khảo thêm ở <a href=https://stackoverflow.com/questions/7106012/download-a-single-folder-or-directory-from-a-github-repo>đây</a>.</p>
 </div>
 </article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='Thỉnh thoảng đôi lời',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
 <div id=footer-post-container>
 <div id=footer-post>
 <div id=nav-footer style=display:none>
@@ -198,47 +212,47 @@ Những vấn đề mình mắc phải trong quá trình học tập và làm vi
 <div id=share-footer style=display:none>
 <ul>
 <li>
-<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fnotes%2f" aria-label=Facebook>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fothers%2fnotes%2f" aria-label=Facebook>
 <i class="fab fa-facebook fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://twitter.com/share?url=%2fposts%2fnotes%2f&text=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Twitter>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fothers%2fnotes%2f&text=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Twitter>
 <i class="fab fa-twitter fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Linkedin>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fothers%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Linkedin>
 <i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fnotes%2f&is_video=false&description=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pinterest>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fothers%2fnotes%2f&is_video=false&description=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pinterest>
 <i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="mailto:?subject=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&body=Check out this article: %2fposts%2fnotes%2f" aria-label=Email>
+<a class=icon href="mailto:?subject=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&body=Check out this article: %2fposts%2fothers%2fnotes%2f" aria-label=Email>
 <i class="fas fa-envelope fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://getpocket.com/save?url=%2fposts%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pocket>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fothers%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=Pocket>
 <i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://reddit.com/submit?url=%2fposts%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=reddit>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fothers%2fnotes%2f&title=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label=reddit>
 <i class="fab fa-reddit fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fnotes%2f&name=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&description=1.%20G%e1%ba%afn%20alias%20cho%201%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20C%c3%b3%201%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20khi%20m%c3%acnh%20thu%c3%aa%20nhi%e1%bb%81u%20server%20tr%c3%aan%20AWS%20l%c3%a0%20m%c3%acnh%20ph%e1%ba%a3i%20nh%e1%bb%9b%20nhi%e1%bb%81u%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20%c4%91%e1%bb%83%20SSH.%20C%c3%a1ch%20gi%e1%ba%a3i%20quy%e1%ba%bft%20l%c3%a0%20m%c3%acnh%20s%e1%ba%bd%20g%e1%ba%afn%20t%c3%aan%20cho%20t%e1%bb%abng%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20b%e1%ba%b1ng%20c%c3%a1ch%20map%20name%20v%e1%bb%9bi%20ip%20trong%20file%20%2fetc%2fhosts.%0a2.%20Giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%202%20AWS%20instances%20Phi%c3%aan%20b%e1%ba%a3n%20roadmap.fun%20hi%e1%bb%87n%20t%e1%ba%a1i%20m%c3%acnh%20%c4%91ang%20s%e1%bb%ad%20d%e1%bb%a5ng%202%20instances%20ri%c3%aang%20bi%e1%bb%87t%20%c4%91%e1%bb%83%20x%e1%bb%ad%20l%c3%bd%20front-end%20v%c3%a0%20back-end%20ri%c3%aang%2c%201%20instance%20cho%20nginx%20c%c3%b9ng%20webapp%20v%c3%a0%201%20instance%20cho%20nodejs%20v%c3%a0%20postgres." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fothers%2fnotes%2f&name=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c&description=1.%20G%e1%ba%afn%20alias%20cho%201%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20C%c3%b3%201%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20khi%20m%c3%acnh%20thu%c3%aa%20nhi%e1%bb%81u%20server%20tr%c3%aan%20AWS%20l%c3%a0%20m%c3%acnh%20ph%e1%ba%a3i%20nh%e1%bb%9b%20nhi%e1%bb%81u%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20IP%20%c4%91%e1%bb%83%20SSH.%20C%c3%a1ch%20gi%e1%ba%a3i%20quy%e1%ba%bft%20l%c3%a0%20m%c3%acnh%20s%e1%ba%bd%20g%e1%ba%afn%20t%c3%aan%20cho%20t%e1%bb%abng%20%c4%91%e1%bb%8ba%20ch%e1%bb%89%20b%e1%ba%b1ng%20c%c3%a1ch%20map%20name%20v%e1%bb%9bi%20ip%20trong%20file%20%2fetc%2fhosts.%0a2.%20Giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%202%20AWS%20instances%20Phi%c3%aan%20b%e1%ba%a3n%20roadmap.fun%20hi%e1%bb%87n%20t%e1%ba%a1i%20m%c3%acnh%20%c4%91ang%20s%e1%bb%ad%20d%e1%bb%a5ng%202%20instances%20ri%c3%aang%20bi%e1%bb%87t%20%c4%91%e1%bb%83%20x%e1%bb%ad%20l%c3%bd%20front-end%20v%c3%a0%20back-end%20ri%c3%aang%2c%201%20instance%20cho%20nginx%20c%c3%b9ng%20webapp%20v%c3%a0%201%20instance%20cho%20nodejs%20v%c3%a0%20postgres." aria-label=Tumblr>
 <i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fnotes%2f&t=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label="Hacker News">
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fothers%2fnotes%2f&t=Nh%e1%bb%afng%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20m%c3%acnh%20m%e1%ba%afc%20ph%e1%ba%a3i%20trong%20qu%c3%a1%20tr%c3%acnh%20h%e1%bb%8dc%20t%e1%ba%adp%20v%c3%a0%20l%c3%a0m%20vi%e1%bb%87c" aria-label="Hacker News">
 <i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
 </a>
 </li>
