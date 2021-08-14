@@ -124,6 +124,7 @@
 <li><a href=#3-lưu-biến-vào-shell-của-bạn>3. Lưu biến vào shell của bạn</a></li>
 <li><a href=#4-download-1-thư-mục-trên-github-với-subversion>4. Download 1 thư mục trên github với subversion</a></li>
 <li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
+<li><a href=#6-add-comments-to-hugo-site>6. Add comments to hugo site</a></li>
 </ul>
 </nav>
 </div>
@@ -198,12 +199,28 @@ showAllPostsArchive <span style=color:#f92672>=</span> false
 </code></pre></div><p>Một điều chú ý nữa là đối với mỗi page thì hugo mặc định có 10 posts, các bạn có thể thay đổi con số này qua thông số <code>paginate</code>.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># config.toml</span>
 paginate <span style=color:#f92672>=</span> <span style=color:#ae81ff>12</span>
-</code></pre></div>
+</code></pre></div><h2 id=6-add-comments-to-hugo-site>6. Add comments to hugo site</h2>
+<p>Ở đây mình sẽ hướng dẫn sử dụng disqus nhé.
+Cũng tương tự như ở <a href=#5-config-pagination-hugo>#5 trên</a> ta sẽ enable comments mà không cần vào doc của hugo bằng cách search <code>comments</code>. Chúng ta thấy file <code>layouts/partials/comments.html</code> chứa phần code để in ra comments cho site, pages của chúng ta.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#f92672>{{</span> <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>not <span style=color:#f92672>(</span>isset .Site.Params <span style=color:#e6db74>&#34;comments&#34;</span><span style=color:#f92672>))</span> <span style=color:#f92672>}}</span>
+  <span style=color:#f92672>{{</span> .Scratch.Set <span style=color:#e6db74>&#34;enable_comments&#34;</span> false <span style=color:#f92672>}}</span>
+<span style=color:#f92672>{{</span> <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>isset .Params <span style=color:#e6db74>&#34;comments&#34;</span><span style=color:#f92672>)</span> <span style=color:#f92672>}}</span>
+  <span style=color:#f92672>{{</span> .Scratch.Set <span style=color:#e6db74>&#34;enable_comments&#34;</span> .Params.comments <span style=color:#f92672>}}</span>
+</code></pre></div><p>Nhận thấy để enable comments thì chúng ta cần set params comments có thuộc tính enable = true. Chúng ta sẽ update file config như sau.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># config.toml</span>
+<span style=color:#f92672>[</span>params.comments<span style=color:#f92672>]</span>
+  enabled <span style=color:#f92672>=</span> true
+</code></pre></div><p>Ở phần javascript thì có nội dung như sau</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>disqus_shortname</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;{{ if .Site.DisqusShortname }}{{ .Site.DisqusShortname }}{{ else }}{{ .Site.Title }}{{ end }}&#39;</span>;
+</code></pre></div><p>Vậy chúng ta config như sau</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># config.toml</span>
+disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;ducnguyen96&#39;</span>
+</code></pre></div><p>Vậy là đã có comments cho tất cả các pages của site nhé 💃.</p>
 </div>
 </article>
 <div class=blog-post-comments>
 <div id=disqus_thread>
-<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='Thỉnh thoảng đôi lời',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
 <noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
 <a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
 </div>
@@ -226,6 +243,7 @@ paginate <span style=color:#f92672>=</span> <span style=color:#ae81ff>12</span>
 <li><a href=#3-lưu-biến-vào-shell-của-bạn>3. Lưu biến vào shell của bạn</a></li>
 <li><a href=#4-download-1-thư-mục-trên-github-với-subversion>4. Download 1 thư mục trên github với subversion</a></li>
 <li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
+<li><a href=#6-add-comments-to-hugo-site>6. Add comments to hugo site</a></li>
 </ul>
 </nav>
 </div>
