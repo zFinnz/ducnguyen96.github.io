@@ -1,7 +1,7 @@
 ---
 title: "Cài đặt docker, nginx, cloudflare, tmate và deploy một web app hoàn toàn free trên raspberry pi"
 date: 2021-07-14 08:23:27
-draft: true
+draft: false
 categories: [devops, backend]
 categories_weight: 8
 tags: [tutorial, backend, devops, cloudflare, tmate, raspberry pi]
