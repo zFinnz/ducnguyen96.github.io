@@ -1,0 +1,351 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Cài đặt docker, nginx, cloudflare, tmate và deploy một web app hoàn toàn free trên raspberry pi | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/devops/cai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Cài đặt docker, nginx, cloudflare, tmate và deploy một web app hoàn toàn free trên raspberry pi">
+<meta property="og:description" content="1. Cài đặt image cho Pi Cài đặt Raspbian bằng raspberry pi imager Lưu ý: Raspberry Pi chạy chip ARM và Raspbian ở kiến trúc arm/v7 32bit nên các cài đặt ở phía dưới đều phải dùng cho kiến trúc này.
+2. Cài tmate để ssh Chúng ta dùng tmate bản static build arm/v7 32bit để có đầy đủ tính năng mới nhất như chạy foreground (-F).
+wget https://github.com/tmate-io/tmate/releases/download/2.4.0/dbg-symbols-tmate-2.4.0-static-linux-arm32v7.tar.xz Đăng ký API key để có static IP và session name giống nhau cho mỗi lần đăng nhập vào con Pi.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/devops/cai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-07-14T08:23:27+00:00">
+<meta property="article:modified_time" content="2021-07-14T08:23:27+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Cài đặt docker, nginx, cloudflare, tmate và deploy một web app hoàn toàn free trên raspberry pi">
+<meta name=twitter:description content="1. Cài đặt image cho Pi Cài đặt Raspbian bằng raspberry pi imager Lưu ý: Raspberry Pi chạy chip ARM và Raspbian ở kiến trúc arm/v7 32bit nên các cài đặt ở phía dưới đều phải dùng cho kiến trúc này.
+2. Cài tmate để ssh Chúng ta dùng tmate bản static build arm/v7 32bit để có đầy đủ tính năng mới nhất như chạy foreground (-F).
+wget https://github.com/tmate-io/tmate/releases/download/2.4.0/dbg-symbols-tmate-2.4.0-static-linux-arm32v7.tar.xz Đăng ký API key để có static IP và session name giống nhau cho mỗi lần đăng nhập vào con Pi.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/others/mang-may-tinh/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&text=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&title=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&is_video=false&description=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi&body=Check out this article: %2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&title=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&title=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&name=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi&description=1.%20C%c3%a0i%20%c4%91%e1%ba%b7t%20image%20cho%20Pi%20C%c3%a0i%20%c4%91%e1%ba%b7t%20Raspbian%20b%e1%ba%b1ng%20raspberry%20pi%20imager%20L%c6%b0u%20%c3%bd%3a%20Raspberry%20Pi%20ch%e1%ba%a1y%20chip%20ARM%20v%c3%a0%20Raspbian%20%e1%bb%9f%20ki%e1%ba%bfn%20tr%c3%bac%20arm%2fv7%2032bit%20n%c3%aan%20c%c3%a1c%20c%c3%a0i%20%c4%91%e1%ba%b7t%20%e1%bb%9f%20ph%c3%ada%20d%c6%b0%e1%bb%9bi%20%c4%91%e1%bb%81u%20ph%e1%ba%a3i%20d%c3%b9ng%20cho%20ki%e1%ba%bfn%20tr%c3%bac%20n%c3%a0y.%0a2.%20C%c3%a0i%20tmate%20%c4%91%e1%bb%83%20ssh%20Ch%c3%bang%20ta%20d%c3%b9ng%20tmate%20b%e1%ba%a3n%20static%20build%20arm%2fv7%2032bit%20%c4%91%e1%bb%83%20c%c3%b3%20%c4%91%e1%ba%a7y%20%c4%91%e1%bb%a7%20t%c3%adnh%20n%c4%83ng%20m%e1%bb%9bi%20nh%e1%ba%a5t%20nh%c6%b0%20ch%e1%ba%a1y%20foreground%20%28-F%29.%0awget%20https%3a%2f%2fgithub.com%2ftmate-io%2ftmate%2freleases%2fdownload%2f2.4.0%2fdbg-symbols-tmate-2.4.0-static-linux-arm32v7.tar.xz%20%c4%90%c4%83ng%20k%c3%bd%20API%20key%20%c4%91%e1%bb%83%20c%c3%b3%20static%20IP%20v%c3%a0%20session%20name%20gi%e1%bb%91ng%20nhau%20cho%20m%e1%bb%97i%20l%e1%ba%a7n%20%c4%91%c4%83ng%20nh%e1%ba%adp%20v%c3%a0o%20con%20Pi." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&t=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#1-cài-đặt-image-cho-pi>1. Cài đặt image cho Pi</a></li>
+<li><a href=#2-cài-tmate-để-ssh>2. Cài tmate để ssh</a></li>
+<li><a href=#3-cài-đặt-nginx-cho-pi>3. Cài đặt nginx cho Pi</a></li>
+<li><a href=#4-cài-đặt-docker-với-convenience-script>4. Cài đặt docker với convenience script</a></li>
+<li><a href=#5-build-image-cho-pi>5. Build image cho Pi</a></li>
+<li><a href=#6-docker-run-trên-pi>6. Docker run trên pi</a></li>
+<li><a href=#7-self-host-với-cloudflare>7. Self host với cloudflare</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Cài đặt docker, nginx, cloudflare, tmate và deploy một web app hoàn toàn free trên raspberry pi
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-07-14 08:23:27 +0000 UTC" itemprop=datePublished>2021-07-14</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/devops>devops</a>
+,
+<a class=category-link href=/categories/backend>backend</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/tutorial rel=tag>tutorial</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+,
+<a class=tag-link href=/tags/cloudflare rel=tag>cloudflare</a>
+,
+<a class=tag-link href=/tags/tmate rel=tag>tmate</a>
+,
+<a class=tag-link href=/tags/raspberry-pi rel=tag>raspberry pi</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<h2 id=1-cài-đặt-image-cho-pi>1. Cài đặt image cho Pi</h2>
+<p>Cài đặt <a href=https://en.wikipedia.org/wiki/Raspberry_Pi_OS>Raspbian</a> bằng <a href=https://www.raspberrypi.org/software/>raspberry pi imager</a>
+<strong>Lưu ý</strong>: Raspberry Pi chạy chip ARM và Raspbian ở kiến trúc arm/v7 32bit nên các cài đặt ở phía dưới đều phải dùng cho kiến trúc này.</p>
+<h2 id=2-cài-tmate-để-ssh>2. Cài tmate để ssh</h2>
+<p>Chúng ta dùng tmate bản <a href=https://github.com/tmate-io/tmate/releases/tag/2.4.0>static build</a> arm/v7 32bit để có đầy đủ tính năng mới nhất như chạy foreground (-F).</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>wget https://github.com/tmate-io/tmate/releases/download/2.4.0/dbg-symbols-tmate-2.4.0-static-linux-arm32v7.tar.xz
+</code></pre></div><p>Đăng ký API key để có static IP và session name giống nhau cho mỗi lần đăng nhập vào con Pi.
+Link đăng ký ở <a href=https://tmate.io/#named_sessions>đây</a> nhé.
+Tạo 1 <a href=https://github.com/tmate-io/tmate/issues/198>systemd service</a> để tự động chạy tmate mỗi lần reboot Pi theo</p>
+<h2 id=3-cài-đặt-nginx-cho-pi>3. Cài đặt nginx cho Pi</h2>
+<p>Cài đặt nginx với apt</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo apt install nginx
+</code></pre></div><h2 id=4-cài-đặt-docker-với-convenience-script>4. Cài đặt docker với convenience script</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+</code></pre></div><h2 id=5-build-image-cho-pi>5. Build image cho Pi</h2>
+<p>Tạo builder</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker buildx create --platform linux/arm/v7 --name armbuilder
+</code></pre></div><p>Sử dụng builder</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker buildx use armbuilder
+</code></pre></div><p>Bootstrap builder</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker buildx inspect --bootstrap
+</code></pre></div><p>Sau khi đã có builder mới chúng ta sẽ bắt đầu build image
+Vì đa số chúng ta không sử dụng kiến trúc arm/v7 nên ta sẽ cần phải cài đặt thêm 1 cross-platform emulator cho docker để có thể build được image cho arm/v7. Xem chi tiết ở <a href=https://github.com/tonistiigi/binfmt#installing-emulators>đây</a></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker run --privileged --rm tonistiigi/binfmt --install all
+</code></pre></div><p>Build image đầu tiên cho pi</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker buildx build --platform linux/arm/v7 -t ducnguyen96/drinkwater-api:0.0.13 --push .
+</code></pre></div><p><strong>Lưu ý</strong>: Với các bạn đang sử dụng bcrypt cho ứng dụng của mình thì các bạn nên chuyển sang bcryptjs vì bcrypt không hoạt động được trên arm/v7 nhé.</p>
+<h2 id=6-docker-run-trên-pi>6. Docker run trên pi</h2>
+<p>Có rất nhiều image được built based từ alpine - 1 phiên bản linux tinh gọn dùng và chúng ta sẽ sử dụng chúng rất nhiều. Docker có tính năng security để cài đặt chặt chẽ các tính toán trên container, để có thể chạy tính năng này trên image Alpine thì nó yêu cầu libseccomp mà có vẻ như Alpine còn thiếu, vậy chúng ta sẽ tắt tính năng này đi.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>--security-opt<span style=color:#f92672>=</span>seccomp<span style=color:#f92672>=</span>unconfined
+</code></pre></div><p>Tham khảo tại <a href=https://www.gitmemory.com/issue/Koenkk/zigbee2mqtt/7662/852985841>đây</a>
+Khởi chạy container đầu tiên nào :3</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker run -it -d --name drinkwate-web --security-opt<span style=color:#f92672>=</span>seccomp<span style=color:#f92672>=</span>unconfined 
+-p 4000:4000 ducnguyen96/drinkwater-web:0.0.13
+</code></pre></div><h2 id=7-self-host-với-cloudflare>7. Self host với cloudflare</h2>
+<p>Cài đặt cloudflare cho pi ở <a href=https://docs.pi-hole.net/guides/dns/cloudflared/#armhf-architecture-32-bit-raspberry-pi>đây</a>
+Lưu ý: Thư mục gốc của cloudflare nằm ở /etc/cloudflared</p>
+<ol>
+<li>Login</li>
+</ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>cloudflared tunnel login
+</code></pre></div><p>Nếu pi chỉ chạy terminal thì copy link vào browser nhé</p>
+<ol start=2>
+<li>Create a tunnel</li>
+</ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>cloudflared tunnel create &lt;NAME&gt;
+</code></pre></div><ol start=3>
+<li>Config tunnel</li>
+</ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>tunnel: 6ff42ae2-765d-4adf-8112-31c55c1551ef
+credentials-file: /root/.cloudflared/6ff42ae2-765d-4adf-8112-31c55c1551ef.js
+
+
+ingress: 
+ - hostname: gitlab.widgetcorp.tech
+ service: http://localhost:80
+ - hostname: gitlab-ssh.widgetcorp.tech
+ service: ssh://localhost:22
+ - service: http_status:404
+</code></pre></div><ol start=4>
+<li>Route to tunnel theo mẫu sau
+<img src=/images/dns-record.png alt=dns-record></li>
+<li>Run cloudflare as a service</li>
+</ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo cloudflared service install
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo systemctl start cloudflared
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo systemctl enable cloudflared
+</code></pre></div><p>Vậy là chúng ta đã có thể host 1 web app hoàn toàn free :3 !</p>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#1-cài-đặt-image-cho-pi>1. Cài đặt image cho Pi</a></li>
+<li><a href=#2-cài-tmate-để-ssh>2. Cài tmate để ssh</a></li>
+<li><a href=#3-cài-đặt-nginx-cho-pi>3. Cài đặt nginx cho Pi</a></li>
+<li><a href=#4-cài-đặt-docker-với-convenience-script>4. Cài đặt docker với convenience script</a></li>
+<li><a href=#5-build-image-cho-pi>5. Build image cho Pi</a></li>
+<li><a href=#6-docker-run-trên-pi>6. Docker run trên pi</a></li>
+<li><a href=#7-self-host-với-cloudflare>7. Self host với cloudflare</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&text=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&title=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&is_video=false&description=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi&body=Check out this article: %2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&title=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&title=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&name=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi&description=1.%20C%c3%a0i%20%c4%91%e1%ba%b7t%20image%20cho%20Pi%20C%c3%a0i%20%c4%91%e1%ba%b7t%20Raspbian%20b%e1%ba%b1ng%20raspberry%20pi%20imager%20L%c6%b0u%20%c3%bd%3a%20Raspberry%20Pi%20ch%e1%ba%a1y%20chip%20ARM%20v%c3%a0%20Raspbian%20%e1%bb%9f%20ki%e1%ba%bfn%20tr%c3%bac%20arm%2fv7%2032bit%20n%c3%aan%20c%c3%a1c%20c%c3%a0i%20%c4%91%e1%ba%b7t%20%e1%bb%9f%20ph%c3%ada%20d%c6%b0%e1%bb%9bi%20%c4%91%e1%bb%81u%20ph%e1%ba%a3i%20d%c3%b9ng%20cho%20ki%e1%ba%bfn%20tr%c3%bac%20n%c3%a0y.%0a2.%20C%c3%a0i%20tmate%20%c4%91%e1%bb%83%20ssh%20Ch%c3%bang%20ta%20d%c3%b9ng%20tmate%20b%e1%ba%a3n%20static%20build%20arm%2fv7%2032bit%20%c4%91%e1%bb%83%20c%c3%b3%20%c4%91%e1%ba%a7y%20%c4%91%e1%bb%a7%20t%c3%adnh%20n%c4%83ng%20m%e1%bb%9bi%20nh%e1%ba%a5t%20nh%c6%b0%20ch%e1%ba%a1y%20foreground%20%28-F%29.%0awget%20https%3a%2f%2fgithub.com%2ftmate-io%2ftmate%2freleases%2fdownload%2f2.4.0%2fdbg-symbols-tmate-2.4.0-static-linux-arm32v7.tar.xz%20%c4%90%c4%83ng%20k%c3%bd%20API%20key%20%c4%91%e1%bb%83%20c%c3%b3%20static%20IP%20v%c3%a0%20session%20name%20gi%e1%bb%91ng%20nhau%20cho%20m%e1%bb%97i%20l%e1%ba%a7n%20%c4%91%c4%83ng%20nh%e1%ba%adp%20v%c3%a0o%20con%20Pi." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdevops%2fcai-dat-docker-nginx-cloudflare-tmate-va-deploy-mot-web-app-hoan-toan-free-tren-raspberry-pi%2f&t=C%c3%a0i%20%c4%91%e1%ba%b7t%20docker%2c%20nginx%2c%20cloudflare%2c%20tmate%20v%c3%a0%20deploy%20m%e1%bb%99t%20web%20app%20ho%c3%a0n%20to%c3%a0n%20free%20tr%c3%aan%20raspberry%20pi" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
