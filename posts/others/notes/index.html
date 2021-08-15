@@ -125,6 +125,7 @@
 <li><a href=#4-download-1-thư-mục-trên-github-với-subversion>4. Download 1 thư mục trên github với subversion</a></li>
 <li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
 <li><a href=#6-add-comments-to-hugo-site>6. Add comments to hugo site</a></li>
+<li><a href=#7-nginx-multiple-server>7. Nginx multiple server</a></li>
 </ul>
 </nav>
 </div>
@@ -216,6 +217,33 @@ Cũng tương tự như ở <a href=#5-config-pagination-hugo>#5 trên</a> ta s�
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#75715e># config.toml</span>
 disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;ducnguyen96&#39;</span>
 </code></pre></div><p>Vậy là đã có comments cho tất cả các pages của site nhé 💃.</p>
+<h2 id=7-nginx-multiple-server>7. Nginx multiple server</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-nginx data-lang=nginx><span style=color:#66d9ef>http</span> {
+  <span style=color:#f92672>server</span> {
+    <span style=color:#f92672>server_name</span> <span style=color:#e6db74>localhost</span>;
+
+    <span style=color:#f92672>location</span> <span style=color:#e6db74>/</span> {
+      <span style=color:#f92672>proxy_pass</span> <span style=color:#e6db74>http://localhost:8081/</span>;
+    }
+  }
+
+  <span style=color:#f92672>server</span> {
+    <span style=color:#f92672>server_name</span> <span style=color:#ae81ff>127</span><span style=color:#e6db74>.0.0.1</span>;
+
+    <span style=color:#f92672>location</span> <span style=color:#e6db74>/</span> {
+      <span style=color:#f92672>proxy_pass</span> <span style=color:#e6db74>http://localhost:8082/</span>;
+    }
+  }
+
+  <span style=color:#f92672>server</span> {
+    <span style=color:#f92672>server_name</span> <span style=color:#e6db74>admin.localhost</span>;
+
+    <span style=color:#f92672>location</span> <span style=color:#e6db74>/</span> {
+      <span style=color:#f92672>proxy_pass</span> <span style=color:#e6db74>http://localhost:8083/</span>;
+    }
+  }
+}
+</code></pre></div>
 </div>
 </article>
 <div class=blog-post-comments>
@@ -244,6 +272,7 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <li><a href=#4-download-1-thư-mục-trên-github-với-subversion>4. Download 1 thư mục trên github với subversion</a></li>
 <li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
 <li><a href=#6-add-comments-to-hugo-site>6. Add comments to hugo site</a></li>
+<li><a href=#7-nginx-multiple-server>7. Nginx multiple server</a></li>
 </ul>
 </nav>
 </div>
