@@ -116,3 +116,33 @@ disqusShortname = 'ducnguyen96'
 ```
 
 Vậy là đã có comments cho tất cả các pages của site nhé 💃.
+
+## 7. Nginx multiple server
+
+```nginx
+http {
+  server {
+    server_name localhost;
+
+    location / {
+      proxy_pass http://localhost:8081/;
+    }
+  }
+
+  server {
+    server_name 127.0.0.1;
+
+    location / {
+      proxy_pass http://localhost:8082/;
+    }
+  }
+
+  server {
+    server_name admin.localhost;
+
+    location / {
+      proxy_pass http://localhost:8083/;
+    }
+  }
+}
+```
