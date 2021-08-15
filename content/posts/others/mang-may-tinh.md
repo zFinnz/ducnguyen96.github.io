@@ -8,7 +8,7 @@ tags: [others, networking, computer network]
 tags_weight: 10
 ---
 # Phần 1 - The TCP/IP Five-Layer Network Model
-![7 layers](https://roadmap.fun/public/images/five-layers.png)
+![7 layers](/images/layers-responsibility.png)
 The protocols at each layer carry the ones above them in order to get data from one place to the next.
 
 ## 1. Physical Layer
@@ -47,7 +47,7 @@ The protocols at each layer carry the ones above them in order to get data from 
 - Các thiết bị kết nối đến 1 hub nào đó sẽ giao tiếp với nhau cùng lúc. Tùy thuộc vào các hệ thống kết nối của các thiết bị mà chúng sẽ quyết định xem data được truyền đến có phải dành cho chúng hay không. Điều nãy dẫn đến có rất nhiều noise trên network và gây ra 1 vấn đề được gọi là collision domain.
 
 ## 3. Collision Domain
-![Collision Domain](/collision-domain.png)
+![Collision Domain](/images/collision-domain.png)
 Many or all devices on a network shared a single collision domain. All data in collision domain is snet to all the nodes connected to it.
 
 Collision Domain là 1 network segment (phân đoạn) nơi cùng lúc chỉ 1 thiết bị có thể giao tiếp. Nếu nhiều hệ thống cố truyền dữ liệu cùng lúc thì các xung điện được gửi trong sợi cáp sẽ gây trở ngại cho nhau. Việc này dẫn đến việc các hệ thống kết nối với hub phải chờ 1 thời gian trước khi chúng cố tái gửi dữ liệu. Chính vì vậy mà mạng lưới rất chậm nên gần như ngày này chúng ta không còn sử dụng hub nữa và được thay thế bằng switch.
@@ -69,7 +69,7 @@ Collision Domain là 1 network segment (phân đoạn) nơi cùng lúc chỉ 1 t
 
 # Phần 3 - The Data Link Layer
 
-![5-layers](/layers-responsibility.png)
+![5-layers](/images/layers-responsibility.png)
 By dumping responsibility on the Data Link Layer, the Network, Transport, Application layers can all operate the same no matter how the device they're running on is connected.
 
 ## 1. Ethernet and MAC address
@@ -86,7 +86,7 @@ By dumping responsibility on the Data Link Layer, the Network, Transport, Applic
 - Data packet là 1 thuật ngữa bao trùm đại diện cho bất kỳ 1 bộ dữ liệu nhị phân nào được truyền trong network. Data packet không được gắn với 1 layer cụ thể nào.
 - Data packet ở Ethernet level đưuọc biết như các Ethernet frame.
 - Ethernet Frame là 1 bộ sưu tập thông tin cấu trúc cao được trình bày trong 1 trình tự cụ thể. Như vậy, các network interfaces ở physical layer có thể chuyển 1 dãy bits thành dữ liệu có ý nghĩa và ngược lại.
-  ![ethernet-frame](/ethernet-frame.png)
+  ![ethernet-frame](/images/ethernet-frame.png)
   Các segment trong Ethernet Frame là không thể thiếu và hầu như là có kích thước cố định.
 - 7 bytes đầu tiên được sử dụng để đồng bộ internal clocks để điểu chỉnh tốc độ truyền tải dữ liệu.
 - 1 bytes tiếp theo (SFD - Start Frame Delimiter) gửi tín hiệu rằng preamable đã kết thúc và frame bắt đầu ngay sau đó.
@@ -100,7 +100,7 @@ Trong mạng LAN thì các nodes đều chỉ giao tiếp với nhau trong 1 m�
 
 ## 2. IP Addresses
 
-![ip-addresses](/ip-address.png)
+![ip-addresses](/images/ip-address.png)
 IP là các giãy số dài 32 bit được tạo hành từ 4 octet. Mỗi octet có thể đại diện cho mọi số trong khoảng từ 0 đến 255.
 
 ℹ️ **Chú ý**: Các địa chỉ IP thuộc về networks chứ không thuộc về các thiết bị kết nối với network. Laptop của bạn sẽ luôn có 1 địa chỉ MAC duy nhất từ khi sản xuất nhưng sẽ có IP khác nhau lúc bạn đi cafe, làm việc ở nhà, công ty,... Mạng LAN ở cafe, home, công ty sẽ cung cấp 1 địa chỉ IP tới laptop của bạn bằng 1 công nghệ gọi là DHCP (Dynamic Host Configuration Protocol)
@@ -109,13 +109,13 @@ IP là các giãy số dài 32 bit được tạo hành từ 4 octet. Mỗi octe
 - Trong hầu hết các trường hợp thì IP tĩnh được dùng cho servers và các thiết bị mang, IP động được dùng cho clients. Nhưng trong 1 số trường hợp thì có thể không đúng.
 
 ## 3. IP Datagrams and Encapsulation
-![data-gram](/datagram.png)
+![data-gram](/images/datagram.png)
 Giống như data packets ở Ethernet layer có 1 cái tên riêng - Ethernet Frame thì các packets ở Network layer cũng vậy - IP datagram - là 1 dãy các trường có cấu trúc cao được định nghĩa 1 cách chặt chẽ.
-![data-encapsulated](/datagram-encapsulated.png)
+![data-encapsulated](/images/datagram-encapsulated.png)
 Contents của IP datagram được đóng gói thành payload của 1 Ethernet Frame. Và IP datagram cũng có payload được gửi xuống từ Transport layer.
 
 ## 4. IP Address Classes
-![ip-addresses](/ip-addresses.png)
+![ip-addresses](/images/ip-addresses.png)
 Class A có 3 bits cho IP address. Mỗi octet có giá trị từ 0 đến 255 nên sẽ có tổng cộng 256*256*256=16777216 địa chỉ IP cho mỗi host class A
 
 - Địa chỉ IP có thể chia làm 2 phần là address ID và host ID.
@@ -124,7 +124,7 @@ Class A có 3 bits cho IP address. Mỗi octet có giá trị từ 0 đến 255 
 
 ## 5. ARP - Address Resolution Protocol
 ARP là một giao thức được sử dụng để tìm ra địa chỉ phần cứng của 1 node với 1 địa chỉ IP cụ thể. Khi mà IP datagram được hình thành 1 cách hoàn toàn thì nó cần được đóng gói trong 1 Ethernet Frame. Nghĩa là thiết bị truyền tín hiệu cần 1 địa chỉ MAC để có thể hoàn thành header trong Ethernet Frame.
-![send-abroad](/sending-arp-broadcast.png)
+![send-abroad](/images/sending-arp-broadcast.png)
 Khi muốn gửi ethernet frame đến 1 địa chỉ IP nào đó mà chưa có địa chỉ MAC thì thiết bị gửi sẽ truyền đi 1 ARP message broadcast đến toàn bộ các node trên network.
-![arp-response](/arp-response.png)
+![arp-response](/images/arp-response.png)
 Các node khi nhận được arp message sẽ phản hồi và gửi địa chỉ MAC đến thiết bị gửi. Sau đó ARP sẽ cập nhật MAC address vào ARP table entries. Các entries này sẽ hết hạn trong 1 khoảng thời gian ngắn.

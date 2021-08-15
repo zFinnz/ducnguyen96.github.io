@@ -19,7 +19,7 @@ tags_weight: 10
 
 Web server là một phần mềm máy tính hoạt động trên 1 phần cứng và chấp nhật các requests thông qua [giao thức HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) để phân phối các trang webs, biến thể an toàn hơn của HTTP là [HTTPS](https://en.wikipedia.org/wiki/HTTPS).
 
-![Web Server](https://roadmap.fun/public/images/web-server-send-http.png)
+![Web Server](/images/web-server-send-http.png)
 Để publish 1 website thì bạn cần hoặc 1 web server tĩnh (chỉ bao gồm 1 máy tính và 1 HTTP server, gọi là tĩnh vì server gửi những files được hosted trên server đến browers) hoặc động (có thêm 1 số phần mềm như [ứng dụng server](https://www.nginx.com/resources/glossary/application-server-vs-web-server/) và 1 database, gọi là động vì ứng dụng server sẽ cập nhật hosted files trước khi gửi đến browser thông qua HTTP server).
 
 ## 3.Những web servers phổ biến nhất

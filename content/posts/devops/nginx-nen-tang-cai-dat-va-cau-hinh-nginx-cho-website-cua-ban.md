@@ -9,7 +9,7 @@ tags_weight: 9
 ---
 
 ## 1. NGINX vs Apache
-![Nginx vs Apache](https://roadmap.fun/public/images/nginx.png)
+![Nginx vs Apache](/images/nginx.png)
 Phần xử lý dynamic content không được nhúng hẳn vào nginx mà cần 1 process riêng để xử lý (chẳng hạn FPM), vì thế mà không giống như Apache thì phần server side sẽ không cần phải chạy khi có 1 request bất kỳ đến hệ thống. Nginx sẽ xử lý các static content mà không cần tới server side.
 
 1. Apache được cấu hình prefork: sinh ra 1 vài processes, mỗi process có thể xử lý duy nhất 1 request dừ request đấy dành cho script hay file ảnh.
@@ -58,7 +58,7 @@ Configure
 ```sh
 ./configure
 ```
-![Missing PCRE](https://roadmap.fun/public/images/configure-nginx-error.png)
+![Missing PCRE](/images/configure-nginx-error.png)
 Missing PCRE and how to install
 
 Install missing libs and SSL lib
@@ -131,7 +131,7 @@ Mỗi virtual host là 1 server context hay server block chịu trách nhiệm l
 
 ## 8. Location Blocks
 Là context được sử dụng nhiều nhất trong nginx. Nó được dùng để chứa những config nhất định đối với từng url.
-![Location Blocks](https://roadmap.fun/public/images/nginx--location_block.png)
+![Location Blocks](/images/nginx--location_block.png)
 Có 4 loại match để nginx match 1 url và ưu tiên như sau:
 1. Exact Match =uri
 2. Preferential Prefix Match ^~url
@@ -140,31 +140,31 @@ Có 4 loại match để nginx match 1 url và ưu tiên như sau:
 
 ## 9. Variables
 Chú ý: Không nên sử dụng conditional trong location context.
-![Variables](https://roadmap.fun/public/images/nginx--variables.png)
+![Variables](/images/nginx--variables.png)
 Ở đây chúng ta có 2 loại biến: 1 là $mon được khai báo bằng tay, 2 là $date_local là biến được built in nginx.
 
 ## 10. Rewrites and Redirects.
-![Rewrite](https://roadmap.fun/public/images/nginx--redirects__rewrites.png)
+![Rewrite](/images/nginx--redirects__rewrites.png)
 1. Redirects đơn giản là bảo với client nên đi đến url này thay vì url kia và url trên thanh url của browser sẽ thay đổi.
 2. Rewrites thì sẽ thay đổi url ngay bên trong nginx, kết quả là nginx sẽ trả về cho clients repsonse của 1 location block khác dù url trên thanh url của browser vẫn không thay đổi.
 3. Lợi ích khi dùng rewrites là ta có thể capture url (line 14) và thay đổi url như mong muốn.
 
 ## 11. Try Files & Named Locations
-![Try files](https://roadmap.fun/public/images/nginx--try__files.png)
-Giải thích line 15: thử serve uri trước (root/$uri): không tồn tại thư mục --> root/cat.png: không tồn tại --> root/greet: không tồn tại thư mục --> re-evaluate @friendly_404 (với @ để name 1 location);
+![Try files](/images/nginx--try__files.png)
+Giải thích line 15: thử serve uri trước (root/images/$uri): không tồn tại thư mục --> root/cat.png: không tồn tại --> root/greet: không tồn tại thư mục --> re-evaluate @friendly_404 (với @ để name 1 location);
 
 ## 12. Logging
 Nginx hỗ trợ 2 loại log:
 1. error log (log mọi thứ mà xảy ra không như mong muốn )
 2. access log (log tất cả requests đến server)
-![Logging](https://roadmap.fun/public/images/nginx--logging.png)
+![Logging](/images/nginx--logging.png)
 
 ## 13. Thừa kế và các loại directives
-![inherite](https://roadmap.fun/public/images/nginx--directive__types.png)
+![inherite](/images/nginx--directive__types.png)
 Có 3 loại directives và các tính chất như hình trên
 
 ## 14. PHP processing
-![php](https://roadmap.fun/public/images/nginx--php__processing.png)
+![php](/images/nginx--php__processing.png)
 1. line 1: define user cho process.
 2. line 16: try to serve index.php first nếu không tồn tại --> index.html.
    
@@ -173,7 +173,7 @@ master process: chính là nginx.
 
 worker process: là process lắng nghe client và response đến client.
 
-![worker process](https://roadmap.fun/public/images/nginx--worker__process.png)
+![worker process](/images/nginx--worker__process.png)
 line 3: định nghĩa số processes mà nginx dùng (auto chính là bằng số cpu mà hệ thống có, nếu số này lớn hơn số cpu thì mỗi process của nginx sẽ hoạt động không hết công suất).
 
 line 6: số connections đồng thời mà hệ thống có thể xử lý.
@@ -183,22 +183,22 @@ ulimit -n
 ```
 
 ## 16. Buffer and timeouts
-![buffer](https://roadmap.fun/public/images/nginx--buffer__timeouts.png)
+![buffer](/images/nginx--buffer__timeouts.png)
 
 ## 17. Adding dynamic modules
-![dynamic](https://roadmap.fun/public/images/nginx--add__module--1.png)
+![dynamic](/images/nginx--add__module--1.png)
 Để thêm module thì chúng ta phải build lại nginx
 
 ## 18. Headers & Expires
-![Headers](https://roadmap.fun/public/images/nginx--headers.png)
+![Headers](/images/nginx--headers.png)
 Expires Headers thông báo với browsers nó có thể cache response này trong bao lâu.
 
 ## 19. Compressed Repsonses with gzip
-![gzip](https://roadmap.fun/public/images/nginx--compressed__responsed__gzip.png)
+![gzip](/images/nginx--compressed__responsed__gzip.png)
 Có nhiều cấp độ nén nhưng kể từ cấp độ 3 trở lên thì mức độ nén không thay đổi nhiều mà tốn nhiều tài nguyên hơn nên thường set 3-4 là hợp lý
 
 ## 20. FastCGI Cache
-![FastCGI](https://roadmap.fun/public/images/nginx--fastcgi__cache.png)
+![FastCGI](/images/nginx--fastcgi__cache.png)
 Cache lại response từ back-end.
 
 ## 21. HTTP2
@@ -219,18 +219,18 @@ Tự reg ssl bằng openssl.
 sudo mkdir /etc/nginx/ssl
 sudo openssl req -x509 -days 10 -nodes -newkey rsa:2048 -keyout /etc/nginx/ssl/self.key -out /etc/nginx/ssl/self.crt
 ```
-![http2](https://roadmap.fun/public/images/nginx--http2.png)
+![http2](/images/nginx--http2.png)
 
 ## 22. Server Push
 ```sh
 location = /index.html {
   http2_push /style.css;
-  http2_push /thumb.png;
+  http2_push /images/thumb.png;
 }
 ```
 
 ## 23. HTTPS(SSL)
-![ssl](https://roadmap.fun/public/images/nginx--https.png)
+![ssl](/images/nginx--https.png)
 1. [SSL](https://www.ssl.com/faqs/faq-what-is-ssl/) được thay thế gần như hoàn toàn bằng [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0,_2.0,_and_3.0).
 2. [SSl Cipher](https://en.wikipedia.org/wiki/Cipher_suite) là tổ hợp những thuật toán giúp kết nối mạng được an toàn hơn.
 3. [Diffie-Hellman parameters](https://wiki.openssl.org/index.php/Diffie-Hellman_parameters). Để có dhparams thì ta gen nó bằng openssl. Lưu ý: 2048 là rsa:2048 lúc gen ssl.
