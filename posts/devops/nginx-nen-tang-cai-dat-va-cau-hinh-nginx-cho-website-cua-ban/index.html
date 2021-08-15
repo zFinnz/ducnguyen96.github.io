@@ -46,7 +46,7 @@
 <span id=actions>
 <ul>
 <li>
-<a class=icon href=/posts/devops/huong-dan-thue-aws/ aria-label=Previous>
+<a class=icon href=/posts/others/notes/ aria-label=Previous>
 <i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
 </a>
 </li>
@@ -180,7 +180,7 @@ Nginx nền tảng: Cài đặt và cấu hình nginx cho website của bạn
 </header>
 <div class=content itemprop=articleBody>
 <h2 id=1-nginx-vs-apache>1. NGINX vs Apache</h2>
-<p><img src=https://roadmap.fun/public/images/nginx.png alt="Nginx vs Apache">
+<p><img src=/images/nginx.png alt="Nginx vs Apache">
 Phần xử lý dynamic content không được nhúng hẳn vào nginx mà cần 1 process riêng để xử lý (chẳng hạn FPM), vì thế mà không giống như Apache thì phần server side sẽ không cần phải chạy khi có 1 request bất kỳ đến hệ thống. Nginx sẽ xử lý các static content mà không cần tới server side.</p>
 <ol>
 <li>Apache được cấu hình prefork: sinh ra 1 vài processes, mỗi process có thể xử lý duy nhất 1 request dừ request đấy dành cho script hay file ảnh.</li>
@@ -209,7 +209,7 @@ sudo apt-get install nginx
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo apt-get install build-essential
 </code></pre></div><p>Configure</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>./configure
-</code></pre></div><p><img src=https://roadmap.fun/public/images/configure-nginx-error.png alt="Missing PCRE">
+</code></pre></div><p><img src=/images/configure-nginx-error.png alt="Missing PCRE">
 Missing PCRE and how to install</p>
 <p>Install missing libs and SSL lib</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo apt-get install libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev
@@ -259,7 +259,7 @@ WantedBy<span style=color:#f92672>=</span>multi-user.target
 <p>Mỗi virtual host là 1 server context hay server block chịu trách nhiệm lắng nghe trên 1 cổng (port, 80 cho http và 443 cho https).</p>
 <h2 id=8-location-blocks>8. Location Blocks</h2>
 <p>Là context được sử dụng nhiều nhất trong nginx. Nó được dùng để chứa những config nhất định đối với từng url.
-<img src=https://roadmap.fun/public/images/nginx--location_block.png alt="Location Blocks">
+<img src=/images/nginx--location_block.png alt="Location Blocks">
 Có 4 loại match để nginx match 1 url và ưu tiên như sau:</p>
 <ol>
 <li>Exact Match =uri</li>
@@ -269,30 +269,30 @@ Có 4 loại match để nginx match 1 url và ưu tiên như sau:</p>
 </ol>
 <h2 id=9-variables>9. Variables</h2>
 <p>Chú ý: Không nên sử dụng conditional trong location context.
-<img src=https://roadmap.fun/public/images/nginx--variables.png alt=Variables>
+<img src=/images/nginx--variables.png alt=Variables>
 Ở đây chúng ta có 2 loại biến: 1 là $mon được khai báo bằng tay, 2 là $date_local là biến được built in nginx.</p>
 <h2 id=10-rewrites-and-redirects>10. Rewrites and Redirects.</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--redirects__rewrites.png alt=Rewrite></p>
+<p><img src=/images/nginx--redirects__rewrites.png alt=Rewrite></p>
 <ol>
 <li>Redirects đơn giản là bảo với client nên đi đến url này thay vì url kia và url trên thanh url của browser sẽ thay đổi.</li>
 <li>Rewrites thì sẽ thay đổi url ngay bên trong nginx, kết quả là nginx sẽ trả về cho clients repsonse của 1 location block khác dù url trên thanh url của browser vẫn không thay đổi.</li>
 <li>Lợi ích khi dùng rewrites là ta có thể capture url (line 14) và thay đổi url như mong muốn.</li>
 </ol>
 <h2 id=11-try-files--named-locations>11. Try Files & Named Locations</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--try__files.png alt="Try files">
-Giải thích line 15: thử serve uri trước (root/$uri): không tồn tại thư mục &ndash;> root/cat.png: không tồn tại &ndash;> root/greet: không tồn tại thư mục &ndash;> re-evaluate @friendly_404 (với @ để name 1 location);</p>
+<p><img src=/images/nginx--try__files.png alt="Try files">
+Giải thích line 15: thử serve uri trước (root/images/$uri): không tồn tại thư mục &ndash;> root/cat.png: không tồn tại &ndash;> root/greet: không tồn tại thư mục &ndash;> re-evaluate @friendly_404 (với @ để name 1 location);</p>
 <h2 id=12-logging>12. Logging</h2>
 <p>Nginx hỗ trợ 2 loại log:</p>
 <ol>
 <li>error log (log mọi thứ mà xảy ra không như mong muốn )</li>
 <li>access log (log tất cả requests đến server)
-<img src=https://roadmap.fun/public/images/nginx--logging.png alt=Logging></li>
+<img src=/images/nginx--logging.png alt=Logging></li>
 </ol>
 <h2 id=13-thừa-kế-và-các-loại-directives>13. Thừa kế và các loại directives</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--directive__types.png alt=inherite>
+<p><img src=/images/nginx--directive__types.png alt=inherite>
 Có 3 loại directives và các tính chất như hình trên</p>
 <h2 id=14-php-processing>14. PHP processing</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--php__processing.png alt=php></p>
+<p><img src=/images/nginx--php__processing.png alt=php></p>
 <ol>
 <li>line 1: define user cho process.</li>
 <li>line 16: try to serve index.php first nếu không tồn tại &ndash;> index.html.</li>
@@ -300,24 +300,24 @@ Có 3 loại directives và các tính chất như hình trên</p>
 <h2 id=15-worker-processes>15. Worker processes</h2>
 <p>master process: chính là nginx.</p>
 <p>worker process: là process lắng nghe client và response đến client.</p>
-<p><img src=https://roadmap.fun/public/images/nginx--worker__process.png alt="worker process">
+<p><img src=/images/nginx--worker__process.png alt="worker process">
 line 3: định nghĩa số processes mà nginx dùng (auto chính là bằng số cpu mà hệ thống có, nếu số này lớn hơn số cpu thì mỗi process của nginx sẽ hoạt động không hết công suất).</p>
 <p>line 6: số connections đồng thời mà hệ thống có thể xử lý.
 Kiểm tra số connection như sau:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>ulimit -n
 </code></pre></div><h2 id=16-buffer-and-timeouts>16. Buffer and timeouts</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--buffer__timeouts.png alt=buffer></p>
+<p><img src=/images/nginx--buffer__timeouts.png alt=buffer></p>
 <h2 id=17-adding-dynamic-modules>17. Adding dynamic modules</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--add__module--1.png alt=dynamic>
+<p><img src=/images/nginx--add__module--1.png alt=dynamic>
 Để thêm module thì chúng ta phải build lại nginx</p>
 <h2 id=18-headers--expires>18. Headers & Expires</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--headers.png alt=Headers>
+<p><img src=/images/nginx--headers.png alt=Headers>
 Expires Headers thông báo với browsers nó có thể cache response này trong bao lâu.</p>
 <h2 id=19-compressed-repsonses-with-gzip>19. Compressed Repsonses with gzip</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--compressed__responsed__gzip.png alt=gzip>
+<p><img src=/images/nginx--compressed__responsed__gzip.png alt=gzip>
 Có nhiều cấp độ nén nhưng kể từ cấp độ 3 trở lên thì mức độ nén không thay đổi nhiều mà tốn nhiều tài nguyên hơn nên thường set 3-4 là hợp lý</p>
 <h2 id=20-fastcgi-cache>20. FastCGI Cache</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--fastcgi__cache.png alt=FastCGI>
+<p><img src=/images/nginx--fastcgi__cache.png alt=FastCGI>
 Cache lại response từ back-end.</p>
 <h2 id=21-http2>21. HTTP2</h2>
 <p>HTTP2 là Binary Protocol còn HTTP1 là Textual Protocol. HTTP2 giúp nén data cũng như giảm thiểu lỗi trong quá trình truyền tải dữ liệu.</p>
@@ -334,14 +334,14 @@ Cache lại response từ back-end.</p>
 </code></pre></div><p>Tự reg ssl bằng openssl.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo mkdir /etc/nginx/ssl
 sudo openssl req -x509 -days <span style=color:#ae81ff>10</span> -nodes -newkey rsa:2048 -keyout /etc/nginx/ssl/self.key -out /etc/nginx/ssl/self.crt
-</code></pre></div><p><img src=https://roadmap.fun/public/images/nginx--http2.png alt=http2></p>
+</code></pre></div><p><img src=/images/nginx--http2.png alt=http2></p>
 <h2 id=22-server-push>22. Server Push</h2>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>location <span style=color:#f92672>=</span> /index.html <span style=color:#f92672>{</span>
   http2_push /style.css;
-  http2_push /thumb.png;
+  http2_push /images/thumb.png;
 <span style=color:#f92672>}</span>
 </code></pre></div><h2 id=23-httpsssl>23. HTTPS(SSL)</h2>
-<p><img src=https://roadmap.fun/public/images/nginx--https.png alt=ssl></p>
+<p><img src=/images/nginx--https.png alt=ssl></p>
 <ol>
 <li><a href=https://www.ssl.com/faqs/faq-what-is-ssl/>SSL</a> được thay thế gần như hoàn toàn bằng <a href=https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0,_2.0,_and_3.0>TLS</a>.</li>
 <li><a href=https://en.wikipedia.org/wiki/Cipher_suite>SSl Cipher</a> là tổ hợp những thuật toán giúp kết nối mạng được an toàn hơn.</li>
