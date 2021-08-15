@@ -19,14 +19,19 @@ url = "/posts"
 weight = 2
 
 [[menu.main]]
+name = "Projects"
+url = "/projects"
+weight = 3
+
+[[menu.main]]
 name = "Tags"
 url = "/tags"
-weight = 4
+weight = 5
 
 [[menu.main]]
 name = "Categories"
 url = "/categories"
-weight = 3
+weight = 4
 
 [params]
 logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
@@ -35,6 +40,7 @@ rss = true
 showAllPostsArchive = false
 showAllPostsOnHomePage = true
 description = "Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:"
+showProjectsList = true
 
 [params.comments]
   enabled = true

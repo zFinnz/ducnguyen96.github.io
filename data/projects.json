@@ -1,0 +1,9 @@
+{
+  "list": [
+    {
+      "name": "SimpChat",
+      "url": "/projects/simpchat",
+      "desc": "Webapp chat đơn giản với socket.io"
+    }
+  ]
+}
