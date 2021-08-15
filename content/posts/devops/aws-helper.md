@@ -14,7 +14,7 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
 ```
-## 2. Config basics AWs
+## 2. Config basics AWS
 1. Tạo user ở đây. Sau khi create user. Lúc đấy bạn cũng đã cấp luôn Access Key ID và Access Secret Key cho user đấy luôn. Nếu bạn quên Access Key ID click vào Users. Click vào tab Security credentials để lấy lại Access Key Id. Nếu quên hoặc mất secret key thì chỉ còn cách là tạo mới.
 2. Configure AWS với keys ở trên
   ```sh
