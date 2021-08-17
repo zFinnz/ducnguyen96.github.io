@@ -343,7 +343,8 @@ sudo openssl req -x509 -days <span style=color:#ae81ff>10</span> -nodes -newkey 
 <span style=color:#f92672>}</span>
 </code></pre></div><h2 id=23-httpsssl>23. HTTPS(SSL)</h2>
 <p><img src=/images/nginx--https.png alt=ssl></p>
-<ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo openssl req -x509 -days <span style=color:#ae81ff>10</span> -nodes -newkey rsa:2048 -keyout /etc/nginx/ssl/self.key -out /etc/nginx/ssl/self.crt
+</code></pre></div><ol>
 <li><a href=https://www.ssl.com/faqs/faq-what-is-ssl/>SSL</a> được thay thế gần như hoàn toàn bằng <a href=https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0,_2.0,_and_3.0>TLS</a>.</li>
 <li><a href=https://en.wikipedia.org/wiki/Cipher_suite>SSl Cipher</a> là tổ hợp những thuật toán giúp kết nối mạng được an toàn hơn.</li>
 <li><a href=https://wiki.openssl.org/index.php/Diffie-Hellman_parameters>Diffie-Hellman parameters</a>. Để có dhparams thì ta gen nó bằng openssl. Lưu ý: 2048 là rsa:2048 lúc gen ssl.</li>
