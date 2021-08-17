@@ -1,6 +1,6 @@
 let socket;
 const connectToNameSpace = (ns) => {
-  socket = io(`https://api.roadmap.fun/simpchat/${ns}`, {
+  socket = io(`https://ducnguyen96.xyz/simpchat/${ns}`, {
     transports: ["websocket"],
     query: {
       token: `${document.cookie.split("=")[1]}`,

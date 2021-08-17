@@ -9,7 +9,7 @@ const createCookie = (name, value, days) => {
 };
 
 const queryGraphQL = (query, variables, accessToken) => {
-  return fetch("https://api.roadmap.fun/graphql", {
+  return fetch("https://ducnguyen96.xyz/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
