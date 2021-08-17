@@ -1,28 +1,28 @@
 // Switch namespace
-const switchTechButton = document.getElementById('namespace-tech-btn');
-const switchMusicButton = document.getElementById('namespace-music-btn');
+const switchTechButton = document.getElementById("namespace-tech-btn");
+const switchMusicButton = document.getElementById("namespace-music-btn");
 
-switchTechButton.addEventListener('click', () => {
-  switchTechButton.className = 'mt-3 btn btn-primary bg-green';
-  switchMusicButton.className = 'mt-3 btn';
+switchTechButton.addEventListener("click", () => {
+  switchTechButton.className = "mt-3 btn btn-primary bg-green";
+  switchMusicButton.className = "mt-3 btn";
 
-  connectToNameSpace('tech');
+  connectToNameSpace("tech");
 });
 
-switchMusicButton.addEventListener('click', () => {
-  switchMusicButton.className = 'mt-3 btn btn-primary bg-green';
-  switchTechButton.className = 'mt-3 btn';
+switchMusicButton.addEventListener("click", () => {
+  switchMusicButton.className = "mt-3 btn btn-primary bg-green";
+  switchTechButton.className = "mt-3 btn";
 
-  connectToNameSpace('music');
+  connectToNameSpace("music");
 });
 
 // Login modal
-const registerBtn = document.getElementById('formFooter');
-const loginBtn = document.getElementById('login-btn');
-const repeatPwInp = document.getElementById('repeat-password');
-registerBtn.addEventListener('click', () => {
-  repeatPwInp.className = 'login-input';
-  loginBtn.value = 'Register';
+const registerBtn = document.getElementById("formFooter");
+const loginBtn = document.getElementById("login-btn");
+const repeatPwInp = document.getElementById("repeat-password");
+registerBtn.addEventListener("click", () => {
+  repeatPwInp.className = "login-input";
+  loginBtn.value = "Register";
 });
 
 const submitFormLogin = (event) => {
@@ -31,11 +31,11 @@ const submitFormLogin = (event) => {
 };
 
 const appendRoomToList = (data) => {
-  const ui = document.querySelector('ui.contacts');
-  ui.innerHTML = '';
+  const ui = document.querySelector("ui.contacts");
+  ui.innerHTML = "";
   const rooms = data.data.rooms;
   rooms.forEach((room, index) => {
-    const li = document.createElement('li');
+    const li = document.createElement("li");
     li.innerHTML = `
     <div class="d-flex bd-highlight">
       <div class="img_cont">
@@ -50,7 +50,7 @@ const appendRoomToList = (data) => {
       </div>
     </div>
   `;
-    li.addEventListener('click', (event) => {
+    li.addEventListener("click", (event) => {
       messages(event);
     });
     li.id = room.id;
@@ -62,15 +62,15 @@ const appendRoomToList = (data) => {
 };
 
 const updateRoomContent = (data, room) => {
-  room.style.backgroundColor = '#526e8a';
-  const roomCard = document.querySelector('.col-md-8.col-xl-6.chat > div.card');
+  room.style.backgroundColor = "#526e8a";
+  const roomCard = document.querySelector(".col-md-8.col-xl-6.chat > div.card");
 
   // room-head
-  const roomHead = roomCard.querySelector('.card-header.msg_head');
+  const roomHead = roomCard.querySelector(".card-header.msg_head");
 
   // room-body
-  const roomBody = roomCard.querySelector('.card-body.msg_card_body');
-  let roomBodyInnerHtml = '';
+  const roomBody = roomCard.querySelector(".card-body.msg_card_body");
+  let roomBodyInnerHtml = "";
 
   // room-footer
   // const roomFooter = roomCard.querySelector('.card-footer');
@@ -102,5 +102,7 @@ const updateRoomContent = (data, room) => {
 };
 
 window.onload = () => {
-  me();
+  if ("WebSocket" in window) {
+    me();
+  }
 };
