@@ -1,5 +1,6 @@
 let socket;
 const connectToNameSpace = (ns) => {
+  socket.close();
   socket = io(`wss://ducnguyen96.xyz/${ns}`, {
     transports: ["websocket"],
     query: {

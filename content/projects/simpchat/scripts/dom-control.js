@@ -33,6 +33,10 @@ const submitFormLogin = (event) => {
 const appendRoomToList = (data) => {
   const ui = document.querySelector("ui.contacts");
   ui.innerHTML = "";
+
+  const msgBody = document.querySelector(".card-body.msg_card_body");
+  msgBody.innerHTML = "";
+
   const rooms = data.data.rooms;
   rooms.forEach((room, index) => {
     const li = document.createElement("li");
