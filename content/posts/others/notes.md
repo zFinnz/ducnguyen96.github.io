@@ -146,3 +146,30 @@ http {
   }
 }
 ```
+
+## 8. Docker exec postgres create database
+1. Login với tên user của bạn và default database `postgres`
+```docker
+docker exec -it postgres psql -d postgres -U ducnguyen96
+```
+Với postgres 1 là tên docker container, postgres 2 là tên database và ducnguyen96 là tên user.
+
+2. Tạo database
+```psql
+CREATE DATABASE mydb;
+```
+
+## 9. Graphql playground not loading due to Content Security Policy Directive
+```javascript
+app.use(
+    helmet({
+      contentSecurityPolicy:
+        process.env.NODE_ENV === 'production' ? undefined : false,
+    }),
+  );
+```
+
+## 10. 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```javascript
+var socket = io('http://localhost', {transports: ['websocket']});
+```

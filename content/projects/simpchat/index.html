@@ -8,18 +8,36 @@
       integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
       crossorigin="anonymous"
     />
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
       integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
       crossorigin="anonymous"
-    />
+    /> -->
+    <script src="./scripts/socket.io.js"></script>
+    <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="./css/styles.css" />
-    <script src="./scripts/scripts.js"></script>
+    <link rel="stylesheet" href="./css/modal.css" />
   </head>
   <body>
     <div class="container-fluid h-100">
-      <div class="row justify-content-center h-100">
+      <div class="row justify-content-center mb-3">
+        <div class="d-flex flex-column align-items-center m-4">
+          <img
+            src="https://robohash.org/honey?set=set1"
+            class="rounded-circle user_img"
+          />
+          <span class="mt-3 btn" id="namespace-tech-btn">Tech</span>
+        </div>
+        <div class="d-flex flex-column align-items-center m-4">
+          <img
+            src="https://robohash.org/honey?set=set1"
+            class="rounded-circle user_img"
+          />
+          <span class="mt-3 btn" id="namespace-music-btn">Music</span>
+        </div>
+      </div>
+      <div class="row justify-content-center">
         <div class="col-md-4 col-xl-3 chat">
           <div class="card mb-sm-3 mb-md-0 contacts_card">
             <div class="card-header">
@@ -32,218 +50,27 @@
                 />
                 <div class="input-group-prepend">
                   <span class="input-group-text search_btn"
-                    ><i class="fas fa-search"></i
-                  ></span>
+                    ><img
+                      src="./images/search-solid.svg"
+                      alt="search-icon"
+                      srcset=""
+                      style="width: 20px; height: 20px"
+                  /></span>
                 </div>
               </div>
             </div>
             <div class="card-body contacts_body">
-              <ui class="contacts">
-                <li class="active">
-                  <div class="d-flex bd-highlight">
-                    <div class="img_cont">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        class="rounded-circle user_img"
-                      />
-                      <span class="online_icon"></span>
-                    </div>
-                    <div class="user_info">
-                      <span>Khalid</span>
-                      <p>Kalid is online</p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="d-flex bd-highlight">
-                    <div class="img_cont">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        class="rounded-circle user_img"
-                      />
-                      <span class="online_icon offline"></span>
-                    </div>
-                    <div class="user_info">
-                      <span>Taherah Big</span>
-                      <p>Taherah left 7 mins ago</p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="d-flex bd-highlight">
-                    <div class="img_cont">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        class="rounded-circle user_img"
-                      />
-                      <span class="online_icon"></span>
-                    </div>
-                    <div class="user_info">
-                      <span>Sami Rafi</span>
-                      <p>Sami is online</p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="d-flex bd-highlight">
-                    <div class="img_cont">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        class="rounded-circle user_img"
-                      />
-                      <span class="online_icon offline"></span>
-                    </div>
-                    <div class="user_info">
-                      <span>Nargis Hawa</span>
-                      <p>Nargis left 30 mins ago</p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="d-flex bd-highlight">
-                    <div class="img_cont">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        class="rounded-circle user_img"
-                      />
-                      <span class="online_icon offline"></span>
-                    </div>
-                    <div class="user_info">
-                      <span>Rashid Samim</span>
-                      <p>Rashid left 50 mins ago</p>
-                    </div>
-                  </div>
-                </li>
-              </ui>
+              <ui class="contacts"> </ui>
             </div>
             <div class="card-footer"></div>
           </div>
         </div>
         <div class="col-md-8 col-xl-6 chat">
           <div class="card">
-            <div class="card-header msg_head">
-              <div class="d-flex bd-highlight">
-                <div class="img_cont">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img"
-                  />
-                  <span class="online_icon"></span>
-                </div>
-                <div class="user_info">
-                  <span>Chat with Khalid</span>
-                  <p>1767 Messages</p>
-                </div>
-                <div class="video_cam">
-                  <span><i class="fas fa-video"></i></span>
-                  <span><i class="fas fa-phone"></i></span>
-                </div>
-              </div>
-              <span id="action_menu_btn"
-                ><i class="fas fa-ellipsis-v"></i
-              ></span>
-              <div class="action_menu">
-                <ul>
-                  <li><i class="fas fa-user-circle"></i> View profile</li>
-                  <li><i class="fas fa-users"></i> Add to close friends</li>
-                  <li><i class="fas fa-plus"></i> Add to group</li>
-                  <li><i class="fas fa-ban"></i> Block</li>
-                </ul>
-              </div>
-            </div>
-            <div class="card-body msg_card_body">
-              <div class="d-flex justify-content-start mb-4">
-                <div class="img_cont_msg">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-                <div class="msg_cotainer">
-                  Hi, how are you samim?
-                  <span class="msg_time">8:40 AM, Today</span>
-                </div>
-              </div>
-              <div class="d-flex justify-content-end mb-4">
-                <div class="msg_cotainer_send">
-                  Hi Khalid i am good tnx how about you?
-                  <span class="msg_time_send">8:55 AM, Today</span>
-                </div>
-                <div class="img_cont_msg">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-              </div>
-              <div class="d-flex justify-content-start mb-4">
-                <div class="img_cont_msg">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-                <div class="msg_cotainer">
-                  I am good too, thank you for your chat template
-                  <span class="msg_time">9:00 AM, Today</span>
-                </div>
-              </div>
-              <div class="d-flex justify-content-end mb-4">
-                <div class="msg_cotainer_send">
-                  You are welcome
-                  <span class="msg_time_send">9:05 AM, Today</span>
-                </div>
-                <div class="img_cont_msg">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-              </div>
-              <div class="d-flex justify-content-start mb-4">
-                <div class="img_cont_msg">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-                <div class="msg_cotainer">
-                  I am looking for your next templates
-                  <span class="msg_time">9:07 AM, Today</span>
-                </div>
-              </div>
-              <div class="d-flex justify-content-end mb-4">
-                <div class="msg_cotainer_send">
-                  Ok, thank you have a good day
-                  <span class="msg_time_send">9:10 AM, Today</span>
-                </div>
-                <div class="img_cont_msg">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-              </div>
-              <div class="d-flex justify-content-start mb-4">
-                <div class="img_cont_msg">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-                <div class="msg_cotainer">
-                  Bye, see you
-                  <span class="msg_time">9:12 AM, Today</span>
-                </div>
-              </div>
-            </div>
+            <div class="card-header msg_head"></div>
+            <div class="card-body msg_card_body"></div>
             <div class="card-footer">
               <div class="input-group">
-                <div class="input-group-append">
-                  <span class="input-group-text attach_btn"
-                    ><i class="fas fa-paperclip"></i
-                  ></span>
-                </div>
                 <textarea
                   name=""
                   class="form-control type_msg"
@@ -251,8 +78,12 @@
                 ></textarea>
                 <div class="input-group-append">
                   <span class="input-group-text send_btn"
-                    ><i class="fas fa-location-arrow"></i
-                  ></span>
+                    ><img
+                      src="./images/location-arrow-solid.svg"
+                      alt="send-icon"
+                      srcset=""
+                      style="height: 20px; width: 20px"
+                  /></span>
                 </div>
               </div>
             </div>
@@ -260,5 +91,59 @@
         </div>
       </div>
     </div>
+    <div class="wrapper fadeInDown fixed-top d-none" id="login-modal">
+      <div id="formContent">
+        <!-- Tabs Titles -->
+        <!-- Icon -->
+        <div class="fadeIn first m-3">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+            id="icon"
+            alt="User Icon"
+            class="rounded-circle user_img"
+          />
+        </div>
+        <!-- Login Form -->
+        <form onsubmit="return submitFormLogin(event)">
+          <input
+            type="text"
+            id="username"
+            class="fadeIn second login-input"
+            name="login"
+            placeholder="username"
+          />
+          <input
+            type="password"
+            id="password"
+            class="fadeIn third login-input"
+            name="login"
+            placeholder="password"
+          />
+          <input
+            type="password"
+            id="repeat-password"
+            class="fadeIn third d-none login-input"
+            name="login"
+            placeholder="repeat password"
+          />
+          <p id="login-message" class="mt-3 alert-danger"></p>
+          <input
+            id="login-btn"
+            type="submit"
+            class="fadeIn fourth"
+            value="Log In"
+          />
+        </form>
+
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+          <a class="underlineHover" href="#">Register?</a>
+        </div>
+      </div>
+    </div>
+    <script src="./scripts/utils.js"></script>
+    <script src="./scripts/dom-control.js"></script>
+    <script src="./scripts/apis.js"></script>
+    <script type="text/javascript" src="./scripts/scripts.js"></script>
   </body>
 </html>
