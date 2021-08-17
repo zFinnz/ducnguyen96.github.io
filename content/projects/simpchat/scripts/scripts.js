@@ -1,9 +1,7 @@
 let socket;
 const connectToNameSpace = (ns) => {
   socket = io(
-    `https://ducnguyen96.xyz/websocket/:${
-      ns === "tech" ? 3003 : 3002
-    }/${ns}${ns}`,
+    `https://ducnguyen96.xyz/websocket/:${ns === "tech" ? 3003 : 3002}/${ns}`,
     {
       transports: ["websocket"],
       query: {
