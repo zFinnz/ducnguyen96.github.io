@@ -127,6 +127,9 @@
 <li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
 <li><a href=#6-add-comments-to-hugo-site>6. Add comments to hugo site</a></li>
 <li><a href=#7-nginx-multiple-server>7. Nginx multiple server</a></li>
+<li><a href=#8-docker-exec-postgres-create-database>8. Docker exec postgres create database</a></li>
+<li><a href=#9-graphql-playground-not-loading-due-to-content-security-policy-directive>9. Graphql playground not loading due to Content Security Policy Directive</a></li>
+<li><a href=#10-httplocalhost8080-has-been-blocked-by-cors-policy-no-access-control-allow-origin-header-is-present-on-the-requested-resource>10. &lsquo;http://localhost:8080&rsquo; has been blocked by CORS policy: No &lsquo;Access-Control-Allow-Origin&rsquo; header is present on the requested resource.</a></li>
 </ul>
 </nav>
 </div>
@@ -244,6 +247,25 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
     }
   }
 }
+</code></pre></div><h2 id=8-docker-exec-postgres-create-database>8. Docker exec postgres create database</h2>
+<ol>
+<li>Login với tên user của bạn và default database <code>postgres</code></li>
+</ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker>docker exec -it postgres psql -d postgres -U ducnguyen96<span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>Với postgres 1 là tên docker container, postgres 2 là tên database và ducnguyen96 là tên user.</p>
+<ol start=2>
+<li>Tạo database</li>
+</ol>
+<pre><code class=language-psql data-lang=psql>CREATE DATABASE mydb;
+</code></pre><h2 id=9-graphql-playground-not-loading-due-to-content-security-policy-directive>9. Graphql playground not loading due to Content Security Policy Directive</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(
+    <span style=color:#a6e22e>helmet</span>({
+      <span style=color:#a6e22e>contentSecurityPolicy</span><span style=color:#f92672>:</span>
+        <span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>env</span>.<span style=color:#a6e22e>NODE_ENV</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;production&#39;</span> <span style=color:#f92672>?</span> <span style=color:#66d9ef>undefined</span> <span style=color:#f92672>:</span> <span style=color:#66d9ef>false</span>,
+    }),
+  );
+</code></pre></div><h2 id=10-httplocalhost8080-has-been-blocked-by-cors-policy-no-access-control-allow-origin-header-is-present-on-the-requested-resource>10. &lsquo;http://localhost:8080&rsquo; has been blocked by CORS policy: No &lsquo;Access-Control-Allow-Origin&rsquo; header is present on the requested resource.</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>socket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>io</span>(<span style=color:#e6db74>&#39;http://localhost&#39;</span>, {<span style=color:#a6e22e>transports</span><span style=color:#f92672>:</span> [<span style=color:#e6db74>&#39;websocket&#39;</span>]});
 </code></pre></div>
 </div>
 </article>
@@ -275,6 +297,9 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <li><a href=#5-config-pagination-hugo>5. Config pagination hugo</a></li>
 <li><a href=#6-add-comments-to-hugo-site>6. Add comments to hugo site</a></li>
 <li><a href=#7-nginx-multiple-server>7. Nginx multiple server</a></li>
+<li><a href=#8-docker-exec-postgres-create-database>8. Docker exec postgres create database</a></li>
+<li><a href=#9-graphql-playground-not-loading-due-to-content-security-policy-directive>9. Graphql playground not loading due to Content Security Policy Directive</a></li>
+<li><a href=#10-httplocalhost8080-has-been-blocked-by-cors-policy-no-access-control-allow-origin-header-is-present-on-the-requested-resource>10. &lsquo;http://localhost:8080&rsquo; has been blocked by CORS policy: No &lsquo;Access-Control-Allow-Origin&rsquo; header is present on the requested resource.</a></li>
 </ul>
 </nav>
 </div>
