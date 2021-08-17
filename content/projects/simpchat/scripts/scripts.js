@@ -1,6 +1,6 @@
 const connectToNameSpace = (ns) => {
   socket = io(`https://ducnguyen96.xyz:${ns === "tech" ? 3003 : 3002}/${ns}`, {
-    transports: ["websocket"],
+    transports: ["wss", "ws"],
     query: {
       token: `${document.cookie.split("=")[1]}`,
     },
