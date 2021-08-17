@@ -1,19 +1,19 @@
 const createCookie = (name, value, days) => {
-  let expires = '';
+  let expires = "";
   if (days) {
     let date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    expires = '; expires=' + date.toGMTString();
+    expires = "; expires=" + date.toGMTString();
   }
-  document.cookie = name + '=' + value + expires + '; path=/';
+  document.cookie = name + "=" + value + expires + "; path=/";
 };
 
 const queryGraphQL = (query, variables, accessToken) => {
-  return fetch('http://localhost:3001/graphql', {
-    method: 'POST',
+  return fetch("https://api.roadmap.fun/graphql", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      "Content-Type": "application/json",
+      Accept: "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({ query, variables }),
@@ -22,7 +22,7 @@ const queryGraphQL = (query, variables, accessToken) => {
 
 const msgDOM = (dom, data, isLeft) => {
   if (isLeft) {
-    dom.className = 'd-flex justify-content-start mb-4';
+    dom.className = "d-flex justify-content-start mb-4";
     dom.innerHTML = `<div class="img_cont_msg">
         <img
           src="https://robohash.org/honey?set=set1"
@@ -33,15 +33,15 @@ const msgDOM = (dom, data, isLeft) => {
       <div class="msg_cotainer">
         ${data.message.content}
         <span class="msg_time">${new Date(
-          data.message.createdAt,
+          data.message.createdAt
         ).toLocaleTimeString()}</span>
       </div>`;
   } else {
-    dom.className = 'd-flex justify-content-end mb-4';
+    dom.className = "d-flex justify-content-end mb-4";
     dom.innerHTML = `<div class="msg_cotainer_send">
           ${data.message.content}
           <span class="msg_time_send">${new Date(
-            data.message.createdAt,
+            data.message.createdAt
           ).toLocaleTimeString()}</span>
         </div>
         <div class="img_cont_msg">
@@ -70,7 +70,7 @@ const msgInnerHtml = (message, isLeft) => {
   <div class="msg_cotainer">
     ${message.content}
     <span class="msg_time">${new Date(
-      message.createdAt,
+      message.createdAt
     ).toLocaleTimeString()}</span>
   </div>
 </div>`;
@@ -81,7 +81,7 @@ const msgInnerHtml = (message, isLeft) => {
     <div class="msg_cotainer_send">
       ${message.content}
       <span class="msg_time_send">${new Date(
-        message.createdAt,
+        message.createdAt
       ).toLocaleTimeString()}</span>
     </div>
     <div class="img_cont_msg">

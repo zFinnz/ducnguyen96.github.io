@@ -231,6 +231,9 @@ location = /index.html {
 
 ## 23. HTTPS(SSL)
 ![ssl](/images/nginx--https.png)
+```sh
+sudo openssl req -x509 -days 10 -nodes -newkey rsa:2048 -keyout /etc/nginx/ssl/self.key -out /etc/nginx/ssl/self.crt
+```
 1. [SSL](https://www.ssl.com/faqs/faq-what-is-ssl/) được thay thế gần như hoàn toàn bằng [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0,_2.0,_and_3.0).
 2. [SSl Cipher](https://en.wikipedia.org/wiki/Cipher_suite) là tổ hợp những thuật toán giúp kết nối mạng được an toàn hơn.
 3. [Diffie-Hellman parameters](https://wiki.openssl.org/index.php/Diffie-Hellman_parameters). Để có dhparams thì ta gen nó bằng openssl. Lưu ý: 2048 là rsa:2048 lúc gen ssl.
