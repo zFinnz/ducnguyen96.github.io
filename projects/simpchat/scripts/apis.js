@@ -1,10 +1,10 @@
 const loginOrRegister = () => {
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  const repeatPasswordElem = document.getElementById('repeat-password');
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const repeatPasswordElem = document.getElementById("repeat-password");
   const repeatPassword = repeatPasswordElem.value;
 
-  const isLogin = repeatPasswordElem.className.split(' ').includes('d-none');
+  const isLogin = repeatPasswordElem.className.split(" ").includes("d-none");
   if (isLogin) {
     login(username, password);
   } else {
@@ -27,17 +27,17 @@ const login = (username, password) => {
         password,
       },
     },
-    '',
+    ""
   )
     .then((r) => r.json())
     .then((data) => {
       if (data.errors) {
         const message = data.errors[0].message;
 
-        const errorDOM = document.getElementById('login-message');
+        const errorDOM = document.getElementById("login-message");
         errorDOM.innerHTML = message;
       } else {
-        createCookie('accessToken', data.data.login.accessToken, 15);
+        createCookie("accessToken", data.data.login.accessToken, 15);
         location.reload();
       }
     })
@@ -70,20 +70,20 @@ const register = (username, password, repeatPassword) => {
         repeatPassword,
       },
     },
-    '',
+    ""
   )
     .then((r) => r.json())
     .then((data) => {
       if (data.errors) {
         const message = data.errors[0].message;
 
-        const errorDOM = document.getElementById('login-message');
+        const errorDOM = document.getElementById("login-message");
         errorDOM.innerHTML = message;
       } else {
         createCookie(
-          'accessToken',
+          "accessToken",
           data.data.userRegister.token.accessToken,
-          15,
+          15
         );
         location.reload();
       }
@@ -94,7 +94,7 @@ const register = (username, password, repeatPassword) => {
 };
 
 const me = () => {
-  const loginModal = document.getElementById('login-modal');
+  const loginModal = document.getElementById("login-modal");
 
   const query = `query me {
     me {
@@ -107,13 +107,13 @@ const me = () => {
 
   const cookie = document.cookie;
   if (!cookie) {
-    loginModal.className = 'wrapper fadeInDown fixed-top';
+    loginModal.className = "wrapper fadeInDown fixed-top";
     return;
   }
 
-  const splittedCookie = document.cookie.split('=');
-  if (splittedCookie[0] !== 'accessToken') {
-    loginModal.className = 'wrapper fadeInDown fixed-top';
+  const splittedCookie = document.cookie.split("=");
+  if (splittedCookie[0] !== "accessToken") {
+    loginModal.className = "wrapper fadeInDown fixed-top";
     return;
   }
 
@@ -125,7 +125,7 @@ const me = () => {
       if (data.errors) {
         console.log(data.errors);
       } else {
-        loginModal.className = 'wrapper fadeInDown fixed-top d-none';
+        loginModal.className = "wrapper fadeInDown fixed-top d-none";
         switchTechButton.click();
       }
     })
@@ -150,7 +150,7 @@ const rooms = (namespace) => {
     {
       namespace,
     },
-    '',
+    ""
   )
     .then((r) => r.json())
     .then((data) => {
@@ -167,27 +167,29 @@ const rooms = (namespace) => {
 
 const messages = (event) => {
   const path = event.path || (event.composedPath && event.composedPath());
-  const room = path.find((i) => i.id !== '');
-  room.className = 'active';
+  const room = path.find((i) => i.id !== "");
+  room.className = "active";
 
   // Check if current active room
-  const roomName = room.querySelector('.user_info span').innerHTML;
-  if (document.querySelector('.card-header .user_info span')) {
+  const roomName = room.querySelector(".user_info span").innerHTML;
+  if (document.querySelector(".card-header .user_info span")) {
+    const msgBody = document.querySelector(".card-body.msg_card_body");
     if (
       roomName ===
-      document.querySelector('.card-header .user_info span').innerHTML
+        document.querySelector(".card-header .user_info span").innerHTML &&
+      msgBody.innerHTML !== ""
     )
       return;
   }
 
-  const otherRooms = document.querySelectorAll('ui.contacts > li');
+  const otherRooms = document.querySelectorAll("ui.contacts > li");
   otherRooms.forEach((dom) => {
     if (dom.id !== room.id) {
       dom.style.backgroundColor = null;
-      dom.className = '';
+      dom.className = "";
     }
   });
-  socket.emit('join', room.id, (data) => {
+  socket.emit("join", room.id, (data) => {
     const query = `query messages($input: QueryMessagesInput!) {
       messages(input: $input) {
         meta {
@@ -213,7 +215,7 @@ const messages = (event) => {
           roomId: room.id,
         },
       },
-      '',
+      ""
     )
       .then((r) => r.json())
       .then((data) => {
