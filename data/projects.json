@@ -4,6 +4,11 @@
       "name": "SimpChat",
       "url": "/projects/simpchat",
       "desc": "Webapp chat đơn giản với socket.io"
+    },
+    {
+      "name": "DrinkWater",
+      "url": "/projects/drinkwater",
+      "desc": "Ứng dụng nhắc  nhở uống nước với react, graphql, FCM"
     }
   ]
 }

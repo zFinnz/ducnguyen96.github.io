@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/projects/drinkwater/static/css/main.bc1790bc.chunk.css",
+    "main.js": "/projects/drinkwater/static/js/main.741e7828.chunk.js",
+    "main.js.map": "/projects/drinkwater/static/js/main.741e7828.chunk.js.map",
+    "runtime-main.js": "/projects/drinkwater/static/js/runtime-main.a8569d44.js",
+    "runtime-main.js.map": "/projects/drinkwater/static/js/runtime-main.a8569d44.js.map",
+    "static/js/2.aaef0c2d.chunk.js": "/projects/drinkwater/static/js/2.aaef0c2d.chunk.js",
+    "static/js/2.aaef0c2d.chunk.js.map": "/projects/drinkwater/static/js/2.aaef0c2d.chunk.js.map",
+    "static/css/3.5ea17c15.chunk.css": "/projects/drinkwater/static/css/3.5ea17c15.chunk.css",
+    "static/js/3.384ade5d.chunk.js": "/projects/drinkwater/static/js/3.384ade5d.chunk.js",
+    "static/js/3.384ade5d.chunk.js.map": "/projects/drinkwater/static/js/3.384ade5d.chunk.js.map",
+    "static/js/4.30165f39.chunk.js": "/projects/drinkwater/static/js/4.30165f39.chunk.js",
+    "static/js/4.30165f39.chunk.js.map": "/projects/drinkwater/static/js/4.30165f39.chunk.js.map",
+    "index.html": "/projects/drinkwater/index.html",
+    "static/css/3.5ea17c15.chunk.css.map": "/projects/drinkwater/static/css/3.5ea17c15.chunk.css.map",
+    "static/css/main.bc1790bc.chunk.css.map": "/projects/drinkwater/static/css/main.bc1790bc.chunk.css.map",
+    "static/js/2.aaef0c2d.chunk.js.LICENSE.txt": "/projects/drinkwater/static/js/2.aaef0c2d.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a8569d44.js",
+    "static/js/2.aaef0c2d.chunk.js",
+    "static/css/main.bc1790bc.chunk.css",
+    "static/js/main.741e7828.chunk.js"
+  ]
+}
