@@ -173,3 +173,13 @@ app.use(
 ```javascript
 var socket = io('http://localhost', {transports: ['websocket']});
 ```
+
+## 11. How to apply a git ?
+```sh
+git apply abc.diff
+```
+
+## 12. How to get a substring from curl output ?
+```sh
+curl "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT" | grep -oG 'lastPrice\":\"[0-9]*' | grep -oG '[0-9]*'
+```
