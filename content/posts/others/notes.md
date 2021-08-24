@@ -45,11 +45,11 @@ Ví dụ với thư mục `sample/28-sse` trong  repo nest của `nestjs` trên 
 https://github.com/nestjs/nest/tree/master/sample/28-sse
 
 ```sh
-svn checkout https://github.com/nestjs/nest/tree/trunk/sample/28-sse
+svn checkout https://github.com/nestjs/nest/trunk/sample/28-sse
 ```
 
-Ở đường link trên thì `trunk` thay thế cho `master` là tên của branch
-Đối với branch khác thì ta thay thế `trunk` bằng `branches/branch-name`.
+Ở đường link trên thì `trunk` thay thế cho `tree/master` là tên của branch
+Đối với branch khác thì ta thay thế `branches/branch-name` bằng `trunk`.
 
 Tham khảo thêm ở [đây](https://stackoverflow.com/questions/7106012/download-a-single-folder-or-directory-from-a-github-repo).
 
