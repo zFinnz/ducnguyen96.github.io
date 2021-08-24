@@ -38,7 +38,6 @@
 <ul>
 <li><a href=/>Home</a></li>
 <li><a href=/posts>Writings</a></li>
-<li><a href=/projects>Projects</a></li>
 <li><a href=/categories>Categories</a></li>
 <li><a href=/tags>Tags</a></li>
 </ul>
@@ -130,6 +129,8 @@
 <li><a href=#8-docker-exec-postgres-create-database>8. Docker exec postgres create database</a></li>
 <li><a href=#9-graphql-playground-not-loading-due-to-content-security-policy-directive>9. Graphql playground not loading due to Content Security Policy Directive</a></li>
 <li><a href=#10-httplocalhost8080-has-been-blocked-by-cors-policy-no-access-control-allow-origin-header-is-present-on-the-requested-resource>10. &lsquo;http://localhost:8080&rsquo; has been blocked by CORS policy: No &lsquo;Access-Control-Allow-Origin&rsquo; header is present on the requested resource.</a></li>
+<li><a href=#11-how-to-apply-a-git->11. How to apply a git ?</a></li>
+<li><a href=#12-how-to-get-a-substring-from-curl-output->12. How to get a substring from curl output ?</a></li>
 </ul>
 </nav>
 </div>
@@ -183,9 +184,9 @@ Những vấn đề mình mắc phải trong quá trình học tập và làm vi
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>sudo apt-get install subversion
 </code></pre></div><p>Ví dụ với thư mục <code>sample/28-sse</code> trong repo nest của <code>nestjs</code> trên <a href=https://github.com/nestjs/nest/tree/master/sample/28-sse>github</a></p>
 <p><a href=https://github.com/nestjs/nest/tree/master/sample/28-sse>https://github.com/nestjs/nest/tree/master/sample/28-sse</a></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>svn checkout https://github.com/nestjs/nest/tree/trunk/sample/28-sse
-</code></pre></div><p>Ở đường link trên thì <code>trunk</code> thay thế cho <code>master</code> là tên của branch
-Đối với branch khác thì ta thay thế <code>trunk</code> bằng <code>branches/branch-name</code>.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>svn checkout https://github.com/nestjs/nest/trunk/sample/28-sse
+</code></pre></div><p>Ở đường link trên thì <code>trunk</code> thay thế cho <code>tree/master</code> là tên của branch
+Đối với branch khác thì ta thay thế <code>branches/branch-name</code> bằng <code>trunk</code>.</p>
 <p>Tham khảo thêm ở <a href=https://stackoverflow.com/questions/7106012/download-a-single-folder-or-directory-from-a-github-repo>đây</a>.</p>
 <h2 id=5-config-pagination-hugo>5. Config pagination hugo</h2>
 <p>Mình cũng chỉ mới dùng được thằng gohugo này 2 ngày hôm nay và thực sự là chưa hiểu được hoàn toàn kiến trúc của thằng này. Và thực sự thì docs của hugo cho thằng pagination này chưa được rõ ràng lắm.
@@ -266,6 +267,10 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
   );
 </code></pre></div><h2 id=10-httplocalhost8080-has-been-blocked-by-cors-policy-no-access-control-allow-origin-header-is-present-on-the-requested-resource>10. &lsquo;http://localhost:8080&rsquo; has been blocked by CORS policy: No &lsquo;Access-Control-Allow-Origin&rsquo; header is present on the requested resource.</h2>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>socket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>io</span>(<span style=color:#e6db74>&#39;http://localhost&#39;</span>, {<span style=color:#a6e22e>transports</span><span style=color:#f92672>:</span> [<span style=color:#e6db74>&#39;websocket&#39;</span>]});
+</code></pre></div><h2 id=11-how-to-apply-a-git->11. How to apply a git ?</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>git apply abc.diff
+</code></pre></div><h2 id=12-how-to-get-a-substring-from-curl-output->12. How to get a substring from curl output ?</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>curl <span style=color:#e6db74>&#34;https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT&#34;</span> | grep -oG <span style=color:#e6db74>&#39;lastPrice\&#34;:\&#34;[0-9]*&#39;</span> | grep -oG <span style=color:#e6db74>&#39;[0-9]*&#39;</span>
 </code></pre></div>
 </div>
 </article>
@@ -282,7 +287,6 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <ul>
 <li><a href=/>Home</a></li>
 <li><a href=/posts>Writings</a></li>
-<li><a href=/projects>Projects</a></li>
 <li><a href=/categories>Categories</a></li>
 <li><a href=/tags>Tags</a></li>
 </ul>
@@ -300,6 +304,8 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <li><a href=#8-docker-exec-postgres-create-database>8. Docker exec postgres create database</a></li>
 <li><a href=#9-graphql-playground-not-loading-due-to-content-security-policy-directive>9. Graphql playground not loading due to Content Security Policy Directive</a></li>
 <li><a href=#10-httplocalhost8080-has-been-blocked-by-cors-policy-no-access-control-allow-origin-header-is-present-on-the-requested-resource>10. &lsquo;http://localhost:8080&rsquo; has been blocked by CORS policy: No &lsquo;Access-Control-Allow-Origin&rsquo; header is present on the requested resource.</a></li>
+<li><a href=#11-how-to-apply-a-git->11. How to apply a git ?</a></li>
+<li><a href=#12-how-to-get-a-substring-from-curl-output->12. How to get a substring from curl output ?</a></li>
 </ul>
 </nav>
 </div>
@@ -373,7 +379,6 @@ Copyright &copy; 2021 ducnguyen96
 <ul>
 <li><a href=/>Home</a></li>
 <li><a href=/posts>Writings</a></li>
-<li><a href=/projects>Projects</a></li>
 <li><a href=/categories>Categories</a></li>
 <li><a href=/tags>Tags</a></li>
 </ul>
