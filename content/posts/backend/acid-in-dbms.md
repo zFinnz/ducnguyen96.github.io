@@ -4,12 +4,12 @@ date: 2021-08-24 10:00:27
 draft: false
 categories: [backend]
 categories_weight: 9
-tags: [backend, acid, database, db]
+tags: [backend, acid, database, db, atomicity, isolation, read phenomeno, consistency, eventual consistency]
 tags_weight: 9
 ---
 **Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID**
 
-## Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency
+## Atomicity (/æt.əˈmɪs.ɪ.ti/)
 Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần. 
 
 Nó liên quan đến 2 thứ:
@@ -42,6 +42,34 @@ Ví dụ: ta có X = 10, Y = 5 và 2 transaction T và T'
 Điều này còn tùy thuộc vào developer, chẳng hạn như ví dụ ở trên nếu không có isolation nào thì T' sẽ Read(X) với giá trị không mong muốn.
 2. Read phenomena: khi thiếu isolation như ví dụ ở trên thì sẽ dẫn tới việc Read 1 giá trị nào đấy không đúng nữa.
 3. Isolation Levels: Để tránh Read phenomena thì ta sẽ thực hiện isolation cho transaction.
+
+### Read phenomena
+
+- Dirty reads: giống như ví dụ đã nêu ở trên, T' đọc X chưa được commit.
+- Non-repeatable reads: read COMMITTED data from an UPDATE query from another transaction, trong cùng 1 transaction khi READ 1 giá trị và nhận được 2 kết quả khác nhau.
+![non-repeatable-reads](/images/iPI0C.png)
+- Phantom reads: read COMMITTED data from an INSERT or DELETE query from another transaction, trong cùng 1 transaction khi READ lần 1 lấy số lượng Product được 3, cùng khi đó thì có 1 transaction khác insert hoặc delete 1 products và READ lần 2 nhận được 1 kết quả khác.
+![phantom-read](/images/aCtew.png)
+
+### Isolation levels for inflight transaction: performance sẽ bị giảm dần theo các levels dưới đây còn độ phức tạp thì ngược lại.
+![Isolation levels vs read phenomena.png](/images/Isolation_levels_vs_read_phenomena.png)
+- **Read uncommitted**: No Isolation, tất cả những thay đổi từ bên ngoài thì đều được transaction thấy.
+- **Read commited**: Mỗi query trong 1 transaction đều chỉ thấy những thay đổi đã được committed.
+- **Repeatable Read**: Mỗi query trong 1 transaction chỉ thấy những committed updates trước khi bắt đầu transcation.
+- **Serializable**: Transactions bị tuần tự hóa, nghĩa là sẽ được thực thi ngay sau transaction trức hoàn thành.
+
+## Consistency
+### Consistency in Dat
+Được điều chỉnh bởi user và được củng cố bằng cách thêm các primary keys, foreign keys.
+
+Vì sao user lại điều chỉnh mà không phải đặt mặc định lúc nào database cũng phải chặt chẽ, chính xác nhất ❓
+
+Vì ở một số trường hợp thì có developer có thể cho phép sai số nhỏ để đổi lấy performance.
+### Consistency in reads
+1. Nếu một transaction change database và commit thì 1 transaction mới có ngay lập tức thấy được change đó không ?
+- Điều này còn tùy thuộc. Nếu bạn chỉ dùng 1 database thì điều ở trên là đúng. Còn nếu bạn muốn horizontal scale thì bắt buộc bạn phải có nhiều replica database và 1 primary database. Lúc này transaction được commit sẽ thay đổi primary database và sẽ mất thời gian để update các replica, nếu sau khi transaction được commit mà có 1 transaction mới thực hiện việc read từ replica thì transaction đó sẽ nhận được data cũ.
+2. Cả relational và NoSQL database đều bị ảnh hưởng.
+3. Điều này được gọi là eventual consitency.
 
 ## Durability
 Tính chất này đảm bảo rằng 1 khi mà transaction đã thực thi xong thì những thay đổi đến database sẽ được ghi vào ổ đĩa và chúng vẫn sẽ được dữ ngay cả khi có 1 lỗi hệ thống xảy ra chẳng hạn như lỗi phần mềm hoặc là mất điện 😢. (Committed Data is never lost)
