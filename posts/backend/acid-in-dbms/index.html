@@ -206,7 +206,13 @@ ACID trong cơ sở dữ liệu
 </tr>
 </tbody>
 </table>
-<p>Ở ví dụ trên nếu transaction T thực hiện xong bước Write(X) và transaction T' bắt đầu, nếu không đảm bảo tính cô lập của các transaction thì X ở T' sẽ có giá trị là 100 trong khi Y vẫn là 5 dẫn tới Z = 50 + 5 = 55. Trong khi đáng lẽ Z = 10 + 5 = 15 hoặc Z = 100 + 3 = 103</p>
+<p>Ở ví dụ trên nếu transaction T thực hiện xong bước Write(X) và transaction T' bắt đầu, nếu không đảm bảo tính cô lập của các transaction thì X ở T' sẽ có giá trị là 100 dẫn tới Z = 100 + 5 = 105. Trường hợp T không commit mà rollback thì sẽ dẫn đến X quay lại là 10 và Z sẽ sai.</p>
+<ol>
+<li>Can my inflight transaction see changes made by other transactions ?
+Điều này còn tùy thuộc vào developer, chẳng hạn như ví dụ ở trên nếu không có isolation nào thì T' sẽ Read(X) với giá trị không mong muốn.</li>
+<li>Read phenomena: khi thiếu isolation như ví dụ ở trên thì sẽ dẫn tới việc Read 1 giá trị nào đấy không đúng nữa.</li>
+<li>Isolation Levels: Để tránh Read phenomena thì ta sẽ thực hiện isolation cho transaction.</li>
+</ol>
 <h2 id=durability>Durability</h2>
 <p>Tính chất này đảm bảo rằng 1 khi mà transaction đã thực thi xong thì những thay đổi đến database sẽ được ghi vào ổ đĩa và chúng vẫn sẽ được dữ ngay cả khi có 1 lỗi hệ thống xảy ra chẳng hạn như lỗi phần mềm hoặc là mất điện 😢. (Committed Data is never lost)</p>
 </div>
