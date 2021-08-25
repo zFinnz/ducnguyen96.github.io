@@ -4,7 +4,7 @@ theme = "cactus"
 title = 'Thỉnh thoảng đôi lời'
 copyright = 'ducnguyen96'
 disqusShortname = 'ducnguyen96'
-paginate = 12
+paginate = 10
 staticDir = ['static']
 enableemoji = true
 

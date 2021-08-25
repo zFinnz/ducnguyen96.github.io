@@ -1,5 +1,5 @@
 ---
-title: "Docker Fundamentals"
+title: "Docker nền tảng"
 date: 2021-07-08 08:45:15
 draft: false
 categories: [backend]
