@@ -7,14 +7,14 @@ categories_weight: 9
 tags: [backend, acid, database, db]
 tags_weight: 9
 ---
-**Transaction là một đơn vị logic nớ thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trùy tính thống nhất cả databse trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID**
+**Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID**
 
-## Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consitency
+## Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency
 Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần. 
 
 Nó liên quan đến 2 thứ:
 - **Abort**: Nếu 1 transaction bị hủy bỏ thì những thay đổi đã được thực hiện sẽ không còn nữa.
-- **Commit**: Nếu 1 transaction được commit thì những thay đổi sẽ được thực hiện.
+- **Commit**: Nếu 1 transaction được commit thì những thay đổi sẽ được ghi lại.
 
 2 tính chất này nó liên quan chặt chẽ đến nhau.
 
