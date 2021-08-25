@@ -2,4 +2,4 @@
 Lấy một ví dụ đơn giản. Giả sử một nhân viên ngân hàng chuyển 500 triệu từ tài khoản A đến tài khoản B. Đây là một transaction đơn giản chứa những task sau đây.
 A&amp;rsquo;s Account
 Open_Account(A) Old_Balance = A.balance New_Balance = Old_Balance - 500 A.</description></item><item><title>ACID trong cơ sở dữ liệu</title><link>/posts/backend/acid-in-dbms/</link><pubDate>Tue, 24 Aug 2021 10:00:27 +0000</pubDate><guid>/posts/backend/acid-in-dbms/</guid><description>Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID
-Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.</description></item></channel></rss>
+Atomicity (/æt.əˈmɪs.ɪ.ti/) Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.</description></item></channel></rss>

@@ -14,7 +14,7 @@
 <meta name=googlebot content="index,follow,snippet,archive">
 <meta property="og:title" content="ACID trong cơ sở dữ liệu">
 <meta property="og:description" content="Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID
-Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.">
+Atomicity (/æt.əˈmɪs.ɪ.ti/) Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="/posts/backend/acid-in-dbms/"><meta property="article:section" content="posts">
 <meta property="article:published_time" content="2021-08-24T10:00:27+00:00">
@@ -22,7 +22,7 @@ Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency Yêu cầu transaction phải t
 <meta name=twitter:card content="summary">
 <meta name=twitter:title content="ACID trong cơ sở dữ liệu">
 <meta name=twitter:description content="Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID
-Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.">
+Atomicity (/æt.əˈmɪs.ɪ.ti/) Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.">
 <link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
 <script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
 <link rel=icon type=image/png href=/images/favicon.ico>
@@ -110,7 +110,7 @@ Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency Yêu cầu transaction phải t
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20v%c3%a0%20Consistency%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
 <i class="fab fa-tumblr" aria-hidden=true></i>
 </a>
 </li>
@@ -124,8 +124,19 @@ Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency Yêu cầu transaction phải t
 <div id=toc>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#atomicity-ætəˈmɪsɪti-và-consistency>Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency</a></li>
-<li><a href=#isolation>Isolation</a></li>
+<li><a href=#atomicity-ætəˈmɪsɪti>Atomicity (/æt.əˈmɪs.ɪ.ti/)</a></li>
+<li><a href=#isolation>Isolation</a>
+<ul>
+<li><a href=#read-phenomena>Read phenomena</a></li>
+<li><a href=#isolation-levels-for-inflight-transaction-performance-sẽ-bị-giảm-dần-theo-các-levels-dưới-đây-còn-độ-phức-tạp-thì-ngược-lại>Isolation levels for inflight transaction: performance sẽ bị giảm dần theo các levels dưới đây còn độ phức tạp thì ngược lại.</a></li>
+</ul>
+</li>
+<li><a href=#consistency>Consistency</a>
+<ul>
+<li><a href=#consistency-in-dat>Consistency in Dat</a></li>
+<li><a href=#consistency-in-reads>Consistency in reads</a></li>
+</ul>
+</li>
 <li><a href=#durability>Durability</a></li>
 </ul>
 </nav>
@@ -154,12 +165,22 @@ ACID trong cơ sở dữ liệu
 <a class=tag-link href=/tags/database rel=tag>database</a>
 ,
 <a class=tag-link href=/tags/db rel=tag>db</a>
+,
+<a class=tag-link href=/tags/atomicity rel=tag>atomicity</a>
+,
+<a class=tag-link href=/tags/isolation rel=tag>isolation</a>
+,
+<a class=tag-link href=/tags/read-phenomeno rel=tag>read phenomeno</a>
+,
+<a class=tag-link href=/tags/consistency rel=tag>consistency</a>
+,
+<a class=tag-link href=/tags/eventual-consistency rel=tag>eventual consistency</a>
 </div>
 </div>
 </header>
 <div class=content itemprop=articleBody>
 <p><strong>Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID</strong></p>
-<h2 id=atomicity-ætəˈmɪsɪti-và-consistency>Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency</h2>
+<h2 id=atomicity-ætəˈmɪsɪti>Atomicity (/æt.əˈmɪs.ɪ.ti/)</h2>
 <p>Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.</p>
 <p>Nó liên quan đến 2 thứ:</p>
 <ul>
@@ -213,6 +234,38 @@ ACID trong cơ sở dữ liệu
 <li>Read phenomena: khi thiếu isolation như ví dụ ở trên thì sẽ dẫn tới việc Read 1 giá trị nào đấy không đúng nữa.</li>
 <li>Isolation Levels: Để tránh Read phenomena thì ta sẽ thực hiện isolation cho transaction.</li>
 </ol>
+<h3 id=read-phenomena>Read phenomena</h3>
+<ul>
+<li>Dirty reads: giống như ví dụ đã nêu ở trên, T' đọc X chưa được commit.</li>
+<li>Non-repeatable reads: read COMMITTED data from an UPDATE query from another transaction, trong cùng 1 transaction khi READ 1 giá trị và nhận được 2 kết quả khác nhau.
+<img src=/images/iPI0C.png alt=non-repeatable-reads></li>
+<li>Phantom reads: read COMMITTED data from an INSERT or DELETE query from another transaction, trong cùng 1 transaction khi READ lần 1 lấy số lượng Product được 3, cùng khi đó thì có 1 transaction khác insert hoặc delete 1 products và READ lần 2 nhận được 1 kết quả khác.
+<img src=/images/aCtew.png alt=phantom-read></li>
+</ul>
+<h3 id=isolation-levels-for-inflight-transaction-performance-sẽ-bị-giảm-dần-theo-các-levels-dưới-đây-còn-độ-phức-tạp-thì-ngược-lại>Isolation levels for inflight transaction: performance sẽ bị giảm dần theo các levels dưới đây còn độ phức tạp thì ngược lại.</h3>
+<p><img src=/images/Isolation_levels_vs_read_phenomena.png alt="Isolation levels vs read phenomena.png"></p>
+<ul>
+<li><strong>Read uncommitted</strong>: No Isolation, tất cả những thay đổi từ bên ngoài thì đều được transaction thấy.</li>
+<li><strong>Read commited</strong>: Mỗi query trong 1 transaction đều chỉ thấy những thay đổi đã được committed.</li>
+<li><strong>Repeatable Read</strong>: Mỗi query trong 1 transaction chỉ thấy những committed updates trước khi bắt đầu transcation.</li>
+<li><strong>Serializable</strong>: Transactions bị tuần tự hóa, nghĩa là sẽ được thực thi ngay sau transaction trức hoàn thành.</li>
+</ul>
+<h2 id=consistency>Consistency</h2>
+<h3 id=consistency-in-dat>Consistency in Dat</h3>
+<p>Được điều chỉnh bởi user và được củng cố bằng cách thêm các primary keys, foreign keys.</p>
+<p>Vì sao user lại điều chỉnh mà không phải đặt mặc định lúc nào database cũng phải chặt chẽ, chính xác nhất ❓</p>
+<p>Vì ở một số trường hợp thì có developer có thể cho phép sai số nhỏ để đổi lấy performance.</p>
+<h3 id=consistency-in-reads>Consistency in reads</h3>
+<ol>
+<li>Nếu một transaction change database và commit thì 1 transaction mới có ngay lập tức thấy được change đó không ?</li>
+</ol>
+<ul>
+<li>Điều này còn tùy thuộc. Nếu bạn chỉ dùng 1 database thì điều ở trên là đúng. Còn nếu bạn muốn horizontal scale thì bắt buộc bạn phải có nhiều replica database và 1 primary database. Lúc này transaction được commit sẽ thay đổi primary database và sẽ mất thời gian để update các replica, nếu sau khi transaction được commit mà có 1 transaction mới thực hiện việc read từ replica thì transaction đó sẽ nhận được data cũ.</li>
+</ul>
+<ol start=2>
+<li>Cả relational và NoSQL database đều bị ảnh hưởng.</li>
+<li>Điều này được gọi là eventual consitency.</li>
+</ol>
 <h2 id=durability>Durability</h2>
 <p>Tính chất này đảm bảo rằng 1 khi mà transaction đã thực thi xong thì những thay đổi đến database sẽ được ghi vào ổ đĩa và chúng vẫn sẽ được dữ ngay cả khi có 1 lỗi hệ thống xảy ra chẳng hạn như lỗi phần mềm hoặc là mất điện 😢. (Committed Data is never lost)</p>
 </div>
@@ -237,8 +290,19 @@ ACID trong cơ sở dữ liệu
 <div id=toc-footer style=display:none>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#atomicity-ætəˈmɪsɪti-và-consistency>Atomicity (/æt.əˈmɪs.ɪ.ti/) và Consistency</a></li>
-<li><a href=#isolation>Isolation</a></li>
+<li><a href=#atomicity-ætəˈmɪsɪti>Atomicity (/æt.əˈmɪs.ɪ.ti/)</a></li>
+<li><a href=#isolation>Isolation</a>
+<ul>
+<li><a href=#read-phenomena>Read phenomena</a></li>
+<li><a href=#isolation-levels-for-inflight-transaction-performance-sẽ-bị-giảm-dần-theo-các-levels-dưới-đây-còn-độ-phức-tạp-thì-ngược-lại>Isolation levels for inflight transaction: performance sẽ bị giảm dần theo các levels dưới đây còn độ phức tạp thì ngược lại.</a></li>
+</ul>
+</li>
+<li><a href=#consistency>Consistency</a>
+<ul>
+<li><a href=#consistency-in-dat>Consistency in Dat</a></li>
+<li><a href=#consistency-in-reads>Consistency in reads</a></li>
+</ul>
+</li>
 <li><a href=#durability>Durability</a></li>
 </ul>
 </nav>
@@ -281,7 +345,7 @@ ACID trong cơ sở dữ liệu
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20v%c3%a0%20Consistency%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
 <i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
 </a>
 </li>
