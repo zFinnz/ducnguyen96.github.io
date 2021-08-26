@@ -12,5 +12,6 @@ tags_weight: 8
 ## More about databases
 
 - [ORMs](https://viblo.asia/p/object-relational-mapping-djeZ1PQ3KWz)
-- [ACID](/posts/backend/acid-in-dbms/)
-- [Transactions](/posts/backend/transaction-in-a-nut-shell/)
+- [ACID](/posts/databases/acid-in-dbms/)
+- [Transactions](/posts/databases/transaction-in-a-nut-shell/)
+- [Indexing](/posts/databases/database-indexing/)

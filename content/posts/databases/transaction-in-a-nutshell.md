@@ -2,10 +2,10 @@
 title: "Transaction in a nutshell"
 date: 2021-08-25
 draft: false
-categories: [backend]
-categories_weight: 8
+categories: [database, backend]
+categories_weight: 9
 tags: [backend, database, transaction, dbms, schedule, serial schedule, non-serial, serializability]
-tags_weight: 8
+tags_weight: 9
 ---
 *Transaction có thể được định nghĩa là 1 nhóm task. Một task đơn lẻ là 1 đơn vị xử lý mà không thể chia nhỏ hơn nữa.*
 

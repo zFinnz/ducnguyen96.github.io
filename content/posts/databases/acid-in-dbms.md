@@ -2,9 +2,9 @@
 title: "ACID trong cơ sở dữ liệu"
 date: 2021-08-24 10:00:27
 draft: false
-categories: [backend]
-categories_weight: 9
-tags: [backend, acid, database, db, atomicity, isolation, read phenomeno, consistency, eventual consistency]
+categories: [database, backend]
+categories_weight: 10
+tags: [acid, database, db, atomicity, isolation, read phenomeno, consistency, eventual consistency, backend]
 tags_weight: 9
 ---
 **Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID**
@@ -47,9 +47,9 @@ Ví dụ: ta có X = 10, Y = 5 và 2 transaction T và T'
 
 - Dirty reads: giống như ví dụ đã nêu ở trên, T' đọc X chưa được commit.
 - Non-repeatable reads: read COMMITTED data from an UPDATE query from another transaction, trong cùng 1 transaction khi READ 1 giá trị và nhận được 2 kết quả khác nhau.
-![non-repeatable-reads](/images/iPI0C.png)
-- Phantom reads: read COMMITTED data from an INSERT or DELETE query from another transaction, trong cùng 1 transaction khi READ lần 1 lấy số lượng Product được 3, cùng khi đó thì có 1 transaction khác insert hoặc delete 1 products và READ lần 2 nhận được 1 kết quả khác.
-![phantom-read](/images/aCtew.png)
+![non-repeatable-reads](/images/iPI0C.png). Lưu ý: Đối với hầu hết các platform khác ngoại trừ Postgres. Repeatable read isolation level chỉ chắc chắn là nó chỉ đọc những giá trị đã commit mà không thay đổi. Còn nếu xảy ra phantom reads thì giá trị đấy vẫn được đọc.
+- Phantom reads: read COMMITTED data from an INSERT or DELETE query from another transaction, trong cùng 1 transaction khi READ lần 1 lấy số lượng Product được 3, cùng khi đó thì có 1 transaction khác insert hoặc delete 1 products và READ lần 2 nhận được 1 kết quả khác. 
+![phantom-read](/images/aCtew.png).
 
 ### Isolation levels for inflight transaction: performance sẽ bị giảm dần theo các levels dưới đây còn độ phức tạp thì ngược lại.
 ![Isolation levels vs read phenomena.png](/images/Isolation_levels_vs_read_phenomena.png)
