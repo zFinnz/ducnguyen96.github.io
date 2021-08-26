@@ -7,7 +7,7 @@
 <meta charset=utf-8>
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title> ACID trong cơ sở dữ liệu | Thỉnh thoảng đôi lời</title>
-<link rel=canonical href=/posts/backend/acid-in-dbms/>
+<link rel=canonical href=/posts/databases/acid-in-dbms/>
 <meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=robots content="all,follow">
@@ -16,7 +16,7 @@
 <meta property="og:description" content="Transaction là một đơn vị logic nó thực hiện việc truy xuất và chỉnh sửa nội dung của database. Để duy trì tính thống nhất cả database trước và sau khi thực hiện transaction thì cần tuân theo một số tính chất và được viết tắt là ACID
 Atomicity (/æt.əˈmɪs.ɪ.ti/) Yêu cầu transaction phải thực hiện 1 cách hoàn chỉnh hoặc là không thực hiện, chứ không có việc chỉ thực hiện 1 phần.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="/posts/backend/acid-in-dbms/"><meta property="article:section" content="posts">
+<meta property="og:url" content="/posts/databases/acid-in-dbms/"><meta property="article:section" content="posts">
 <meta property="article:published_time" content="2021-08-24T10:00:27+00:00">
 <meta property="article:modified_time" content="2021-08-24T10:00:27+00:00">
 <meta name=twitter:card content="summary">
@@ -51,7 +51,7 @@ Atomicity (/æt.əˈmɪs.ɪ.ti/) Yêu cầu transaction phải thực hiện 1 c
 </a>
 </li>
 <li>
-<a class=icon href=/posts/backend/transaction-in-a-nutshell/ aria-label=Next>
+<a class=icon href=/posts/databases/transaction-in-a-nutshell/ aria-label=Next>
 <i class="fas fa-chevron-right" aria-hidden=true onmouseover="$('#i-next').toggle()" onmouseout="$('#i-next').toggle()"></i>
 </a>
 </li>
@@ -75,47 +75,47 @@ Atomicity (/æt.əˈmɪs.ɪ.ti/) Yêu cầu transaction phải thực hiện 1 c
 <div id=share style=display:none>
 <ul>
 <li>
-<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2facid-in-dbms%2f" aria-label=Facebook>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdatabases%2facid-in-dbms%2f" aria-label=Facebook>
 <i class="fab fa-facebook" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2facid-in-dbms%2f&text=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Twitter>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdatabases%2facid-in-dbms%2f&text=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Twitter>
 <i class="fab fa-twitter" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Linkedin>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdatabases%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Linkedin>
 <i class="fab fa-linkedin" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2facid-in-dbms%2f&is_video=false&description=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pinterest>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdatabases%2facid-in-dbms%2f&is_video=false&description=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pinterest>
 <i class="fab fa-pinterest" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="mailto:?subject=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&body=Check out this article: %2fposts%2fbackend%2facid-in-dbms%2f" aria-label=Email>
+<a class=icon href="mailto:?subject=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&body=Check out this article: %2fposts%2fdatabases%2facid-in-dbms%2f" aria-label=Email>
 <i class="fas fa-envelope" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pocket>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdatabases%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pocket>
 <i class="fab fa-get-pocket" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=reddit>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdatabases%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=reddit>
 <i class="fab fa-reddit" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdatabases%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
 <i class="fab fa-tumblr" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2facid-in-dbms%2f&t=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label="Hacker News">
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdatabases%2facid-in-dbms%2f&t=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label="Hacker News">
 <i class="fab fa-hacker-news" aria-hidden=true></i>
 </a>
 </li>
@@ -154,12 +154,12 @@ ACID trong cơ sở dữ liệu
 </div>
 <div class=article-category>
 <i class="fas fa-archive"></i>
+<a class=category-link href=/categories/database>database</a>
+,
 <a class=category-link href=/categories/backend>backend</a>
 </div>
 <div class=article-tag>
 <i class="fas fa-tag"></i>
-<a class=tag-link href=/tags/backend rel=tag>backend</a>
-,
 <a class=tag-link href=/tags/acid rel=tag>acid</a>
 ,
 <a class=tag-link href=/tags/database rel=tag>database</a>
@@ -175,6 +175,8 @@ ACID trong cơ sở dữ liệu
 <a class=tag-link href=/tags/consistency rel=tag>consistency</a>
 ,
 <a class=tag-link href=/tags/eventual-consistency rel=tag>eventual consistency</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
 </div>
 </div>
 </header>
@@ -238,9 +240,9 @@ ACID trong cơ sở dữ liệu
 <ul>
 <li>Dirty reads: giống như ví dụ đã nêu ở trên, T' đọc X chưa được commit.</li>
 <li>Non-repeatable reads: read COMMITTED data from an UPDATE query from another transaction, trong cùng 1 transaction khi READ 1 giá trị và nhận được 2 kết quả khác nhau.
-<img src=/images/iPI0C.png alt=non-repeatable-reads></li>
+<img src=/images/iPI0C.png alt=non-repeatable-reads>. Lưu ý: Đối với hầu hết các platform khác ngoại trừ Postgres. Repeatable read isolation level chỉ chắc chắn là nó chỉ đọc những giá trị đã commit mà không thay đổi. Còn nếu xảy ra phantom reads thì giá trị đấy vẫn được đọc.</li>
 <li>Phantom reads: read COMMITTED data from an INSERT or DELETE query from another transaction, trong cùng 1 transaction khi READ lần 1 lấy số lượng Product được 3, cùng khi đó thì có 1 transaction khác insert hoặc delete 1 products và READ lần 2 nhận được 1 kết quả khác.
-<img src=/images/aCtew.png alt=phantom-read></li>
+<img src=/images/aCtew.png alt=phantom-read>.</li>
 </ul>
 <h3 id=isolation-levels-for-inflight-transaction-performance-sẽ-bị-giảm-dần-theo-các-levels-dưới-đây-còn-độ-phức-tạp-thì-ngược-lại>Isolation levels for inflight transaction: performance sẽ bị giảm dần theo các levels dưới đây còn độ phức tạp thì ngược lại.</h3>
 <p><img src=/images/Isolation_levels_vs_read_phenomena.png alt="Isolation levels vs read phenomena.png"></p>
@@ -310,47 +312,47 @@ ACID trong cơ sở dữ liệu
 <div id=share-footer style=display:none>
 <ul>
 <li>
-<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2facid-in-dbms%2f" aria-label=Facebook>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdatabases%2facid-in-dbms%2f" aria-label=Facebook>
 <i class="fab fa-facebook fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2facid-in-dbms%2f&text=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Twitter>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdatabases%2facid-in-dbms%2f&text=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Twitter>
 <i class="fab fa-twitter fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Linkedin>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdatabases%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Linkedin>
 <i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2facid-in-dbms%2f&is_video=false&description=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pinterest>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdatabases%2facid-in-dbms%2f&is_video=false&description=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pinterest>
 <i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="mailto:?subject=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&body=Check out this article: %2fposts%2fbackend%2facid-in-dbms%2f" aria-label=Email>
+<a class=icon href="mailto:?subject=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&body=Check out this article: %2fposts%2fdatabases%2facid-in-dbms%2f" aria-label=Email>
 <i class="fas fa-envelope fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pocket>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdatabases%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=Pocket>
 <i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=reddit>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdatabases%2facid-in-dbms%2f&title=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label=reddit>
 <i class="fab fa-reddit fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdatabases%2facid-in-dbms%2f&name=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u&description=Transaction%20l%c3%a0%20m%e1%bb%99t%20%c4%91%c6%a1n%20v%e1%bb%8b%20logic%20n%c3%b3%20th%e1%bb%b1c%20hi%e1%bb%87n%20vi%e1%bb%87c%20truy%20xu%e1%ba%a5t%20v%c3%a0%20ch%e1%bb%89nh%20s%e1%bb%ada%20n%e1%bb%99i%20dung%20c%e1%bb%a7a%20database.%20%c4%90%e1%bb%83%20duy%20tr%c3%ac%20t%c3%adnh%20th%e1%bb%91ng%20nh%e1%ba%a5t%20c%e1%ba%a3%20database%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20sau%20khi%20th%e1%bb%b1c%20hi%e1%bb%87n%20transaction%20th%c3%ac%20c%e1%ba%a7n%20tu%c3%a2n%20theo%20m%e1%bb%99t%20s%e1%bb%91%20t%c3%adnh%20ch%e1%ba%a5t%20v%c3%a0%20%c4%91%c6%b0%e1%bb%a3c%20vi%e1%ba%bft%20t%e1%ba%aft%20l%c3%a0%20ACID%0aAtomicity%20%28%2f%c3%a6t.%c9%99%cb%88m%c9%aas.%c9%aa.ti%2f%29%20Y%c3%aau%20c%e1%ba%a7u%20transaction%20ph%e1%ba%a3i%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20c%c3%a1ch%20ho%c3%a0n%20ch%e1%bb%89nh%20ho%e1%ba%b7c%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%b1c%20hi%e1%bb%87n%2c%20ch%e1%bb%a9%20kh%c3%b4ng%20c%c3%b3%20vi%e1%bb%87c%20ch%e1%bb%89%20th%e1%bb%b1c%20hi%e1%bb%87n%201%20ph%e1%ba%a7n." aria-label=Tumblr>
 <i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2facid-in-dbms%2f&t=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label="Hacker News">
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdatabases%2facid-in-dbms%2f&t=ACID%20trong%20c%c6%a1%20s%e1%bb%9f%20d%e1%bb%af%20li%e1%bb%87u" aria-label="Hacker News">
 <i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
 </a>
 </li>

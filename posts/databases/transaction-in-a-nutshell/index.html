@@ -7,7 +7,7 @@
 <meta charset=utf-8>
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title> Transaction in a nutshell | Thỉnh thoảng đôi lời</title>
-<link rel=canonical href=/posts/backend/transaction-in-a-nutshell/>
+<link rel=canonical href=/posts/databases/transaction-in-a-nutshell/>
 <meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=robots content="all,follow">
@@ -18,7 +18,7 @@ Lấy một ví dụ đơn giản. Giả sử một nhân viên ngân hàng chuy
 A&rsquo;s Account
 Open_Account(A) Old_Balance = A.balance New_Balance = Old_Balance - 500 A.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="/posts/backend/transaction-in-a-nutshell/"><meta property="article:section" content="posts">
+<meta property="og:url" content="/posts/databases/transaction-in-a-nutshell/"><meta property="article:section" content="posts">
 <meta property="article:published_time" content="2021-08-25T00:00:00+00:00">
 <meta property="article:modified_time" content="2021-08-25T00:00:00+00:00">
 <meta name=twitter:card content="summary">
@@ -50,8 +50,13 @@ Open_Account(A) Old_Balance = A.balance New_Balance = Old_Balance - 500 A.">
 <span id=actions>
 <ul>
 <li>
-<a class=icon href=/posts/backend/acid-in-dbms/ aria-label=Previous>
+<a class=icon href=/posts/databases/acid-in-dbms/ aria-label=Previous>
 <i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=/posts/databases/database-indexing/ aria-label=Next>
+<i class="fas fa-chevron-right" aria-hidden=true onmouseover="$('#i-next').toggle()" onmouseout="$('#i-next').toggle()"></i>
 </a>
 </li>
 <li>
@@ -74,47 +79,47 @@ Open_Account(A) Old_Balance = A.balance New_Balance = Old_Balance - 500 A.">
 <div id=share style=display:none>
 <ul>
 <li>
-<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f" aria-label=Facebook>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f" aria-label=Facebook>
 <i class="fab fa-facebook" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&text=Transaction%20in%20a%20nutshell" aria-label=Twitter>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&text=Transaction%20in%20a%20nutshell" aria-label=Twitter>
 <i class="fab fa-twitter" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Linkedin>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Linkedin>
 <i class="fab fa-linkedin" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&is_video=false&description=Transaction%20in%20a%20nutshell" aria-label=Pinterest>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&is_video=false&description=Transaction%20in%20a%20nutshell" aria-label=Pinterest>
 <i class="fab fa-pinterest" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="mailto:?subject=Transaction%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2ftransaction-in-a-nutshell%2f" aria-label=Email>
+<a class=icon href="mailto:?subject=Transaction%20in%20a%20nutshell&body=Check out this article: %2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f" aria-label=Email>
 <i class="fas fa-envelope" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Pocket>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Pocket>
 <i class="fab fa-get-pocket" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=reddit>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=reddit>
 <i class="fab fa-reddit" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&name=Transaction%20in%20a%20nutshell&description=Transaction%20c%c3%b3%20th%e1%bb%83%20%c4%91%c6%b0%e1%bb%a3c%20%c4%91%e1%bb%8bnh%20ngh%c4%a9a%20l%c3%a0%201%20nh%c3%b3m%20task.%20M%e1%bb%99t%20task%20%c4%91%c6%a1n%20l%e1%ba%bb%20l%c3%a0%201%20%c4%91%c6%a1n%20v%e1%bb%8b%20x%e1%bb%ad%20l%c3%bd%20m%c3%a0%20kh%c3%b4ng%20th%e1%bb%83%20chia%20nh%e1%bb%8f%20h%c6%a1n%20n%e1%bb%afa.%0aL%e1%ba%a5y%20m%e1%bb%99t%20v%c3%ad%20d%e1%bb%a5%20%c4%91%c6%a1n%20gi%e1%ba%a3n.%20Gi%e1%ba%a3%20s%e1%bb%ad%20m%e1%bb%99t%20nh%c3%a2n%20vi%c3%aan%20ng%c3%a2n%20h%c3%a0ng%20chuy%e1%bb%83n%20500%20tri%e1%bb%87u%20t%e1%bb%ab%20t%c3%a0i%20kho%e1%ba%a3n%20A%20%c4%91%e1%ba%bfn%20t%c3%a0i%20kho%e1%ba%a3n%20B.%20%c4%90%c3%a2y%20l%c3%a0%20m%e1%bb%99t%20transaction%20%c4%91%c6%a1n%20gi%e1%ba%a3n%20ch%e1%bb%a9a%20nh%e1%bb%afng%20task%20sau%20%c4%91%c3%a2y.%0aA%26rsquo%3bs%20Account%0aOpen_Account%28A%29%20Old_Balance%20%3d%20A.balance%20New_Balance%20%3d%20Old_Balance%20-%20500%20A." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&name=Transaction%20in%20a%20nutshell&description=Transaction%20c%c3%b3%20th%e1%bb%83%20%c4%91%c6%b0%e1%bb%a3c%20%c4%91%e1%bb%8bnh%20ngh%c4%a9a%20l%c3%a0%201%20nh%c3%b3m%20task.%20M%e1%bb%99t%20task%20%c4%91%c6%a1n%20l%e1%ba%bb%20l%c3%a0%201%20%c4%91%c6%a1n%20v%e1%bb%8b%20x%e1%bb%ad%20l%c3%bd%20m%c3%a0%20kh%c3%b4ng%20th%e1%bb%83%20chia%20nh%e1%bb%8f%20h%c6%a1n%20n%e1%bb%afa.%0aL%e1%ba%a5y%20m%e1%bb%99t%20v%c3%ad%20d%e1%bb%a5%20%c4%91%c6%a1n%20gi%e1%ba%a3n.%20Gi%e1%ba%a3%20s%e1%bb%ad%20m%e1%bb%99t%20nh%c3%a2n%20vi%c3%aan%20ng%c3%a2n%20h%c3%a0ng%20chuy%e1%bb%83n%20500%20tri%e1%bb%87u%20t%e1%bb%ab%20t%c3%a0i%20kho%e1%ba%a3n%20A%20%c4%91%e1%ba%bfn%20t%c3%a0i%20kho%e1%ba%a3n%20B.%20%c4%90%c3%a2y%20l%c3%a0%20m%e1%bb%99t%20transaction%20%c4%91%c6%a1n%20gi%e1%ba%a3n%20ch%e1%bb%a9a%20nh%e1%bb%afng%20task%20sau%20%c4%91%c3%a2y.%0aA%26rsquo%3bs%20Account%0aOpen_Account%28A%29%20Old_Balance%20%3d%20A.balance%20New_Balance%20%3d%20Old_Balance%20-%20500%20A." aria-label=Tumblr>
 <i class="fab fa-tumblr" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&t=Transaction%20in%20a%20nutshell" aria-label="Hacker News">
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&t=Transaction%20in%20a%20nutshell" aria-label="Hacker News">
 <i class="fab fa-hacker-news" aria-hidden=true></i>
 </a>
 </li>
@@ -144,6 +149,8 @@ Transaction in a nutshell
 </div>
 <div class=article-category>
 <i class="fas fa-archive"></i>
+<a class=category-link href=/categories/database>database</a>
+,
 <a class=category-link href=/categories/backend>backend</a>
 </div>
 <div class=article-tag>
@@ -303,47 +310,47 @@ Blind write operation là những task thực hiện việc ghi mà không thự
 <div id=share-footer style=display:none>
 <ul>
 <li>
-<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f" aria-label=Facebook>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f" aria-label=Facebook>
 <i class="fab fa-facebook fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&text=Transaction%20in%20a%20nutshell" aria-label=Twitter>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&text=Transaction%20in%20a%20nutshell" aria-label=Twitter>
 <i class="fab fa-twitter fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Linkedin>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Linkedin>
 <i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&is_video=false&description=Transaction%20in%20a%20nutshell" aria-label=Pinterest>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&is_video=false&description=Transaction%20in%20a%20nutshell" aria-label=Pinterest>
 <i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="mailto:?subject=Transaction%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2ftransaction-in-a-nutshell%2f" aria-label=Email>
+<a class=icon href="mailto:?subject=Transaction%20in%20a%20nutshell&body=Check out this article: %2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f" aria-label=Email>
 <i class="fas fa-envelope fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Pocket>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=Pocket>
 <i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=reddit>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&title=Transaction%20in%20a%20nutshell" aria-label=reddit>
 <i class="fab fa-reddit fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&name=Transaction%20in%20a%20nutshell&description=Transaction%20c%c3%b3%20th%e1%bb%83%20%c4%91%c6%b0%e1%bb%a3c%20%c4%91%e1%bb%8bnh%20ngh%c4%a9a%20l%c3%a0%201%20nh%c3%b3m%20task.%20M%e1%bb%99t%20task%20%c4%91%c6%a1n%20l%e1%ba%bb%20l%c3%a0%201%20%c4%91%c6%a1n%20v%e1%bb%8b%20x%e1%bb%ad%20l%c3%bd%20m%c3%a0%20kh%c3%b4ng%20th%e1%bb%83%20chia%20nh%e1%bb%8f%20h%c6%a1n%20n%e1%bb%afa.%0aL%e1%ba%a5y%20m%e1%bb%99t%20v%c3%ad%20d%e1%bb%a5%20%c4%91%c6%a1n%20gi%e1%ba%a3n.%20Gi%e1%ba%a3%20s%e1%bb%ad%20m%e1%bb%99t%20nh%c3%a2n%20vi%c3%aan%20ng%c3%a2n%20h%c3%a0ng%20chuy%e1%bb%83n%20500%20tri%e1%bb%87u%20t%e1%bb%ab%20t%c3%a0i%20kho%e1%ba%a3n%20A%20%c4%91%e1%ba%bfn%20t%c3%a0i%20kho%e1%ba%a3n%20B.%20%c4%90%c3%a2y%20l%c3%a0%20m%e1%bb%99t%20transaction%20%c4%91%c6%a1n%20gi%e1%ba%a3n%20ch%e1%bb%a9a%20nh%e1%bb%afng%20task%20sau%20%c4%91%c3%a2y.%0aA%26rsquo%3bs%20Account%0aOpen_Account%28A%29%20Old_Balance%20%3d%20A.balance%20New_Balance%20%3d%20Old_Balance%20-%20500%20A." aria-label=Tumblr>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&name=Transaction%20in%20a%20nutshell&description=Transaction%20c%c3%b3%20th%e1%bb%83%20%c4%91%c6%b0%e1%bb%a3c%20%c4%91%e1%bb%8bnh%20ngh%c4%a9a%20l%c3%a0%201%20nh%c3%b3m%20task.%20M%e1%bb%99t%20task%20%c4%91%c6%a1n%20l%e1%ba%bb%20l%c3%a0%201%20%c4%91%c6%a1n%20v%e1%bb%8b%20x%e1%bb%ad%20l%c3%bd%20m%c3%a0%20kh%c3%b4ng%20th%e1%bb%83%20chia%20nh%e1%bb%8f%20h%c6%a1n%20n%e1%bb%afa.%0aL%e1%ba%a5y%20m%e1%bb%99t%20v%c3%ad%20d%e1%bb%a5%20%c4%91%c6%a1n%20gi%e1%ba%a3n.%20Gi%e1%ba%a3%20s%e1%bb%ad%20m%e1%bb%99t%20nh%c3%a2n%20vi%c3%aan%20ng%c3%a2n%20h%c3%a0ng%20chuy%e1%bb%83n%20500%20tri%e1%bb%87u%20t%e1%bb%ab%20t%c3%a0i%20kho%e1%ba%a3n%20A%20%c4%91%e1%ba%bfn%20t%c3%a0i%20kho%e1%ba%a3n%20B.%20%c4%90%c3%a2y%20l%c3%a0%20m%e1%bb%99t%20transaction%20%c4%91%c6%a1n%20gi%e1%ba%a3n%20ch%e1%bb%a9a%20nh%e1%bb%afng%20task%20sau%20%c4%91%c3%a2y.%0aA%26rsquo%3bs%20Account%0aOpen_Account%28A%29%20Old_Balance%20%3d%20A.balance%20New_Balance%20%3d%20Old_Balance%20-%20500%20A." aria-label=Tumblr>
 <i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
 </a>
 </li>
 <li>
-<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2ftransaction-in-a-nutshell%2f&t=Transaction%20in%20a%20nutshell" aria-label="Hacker News">
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdatabases%2ftransaction-in-a-nutshell%2f&t=Transaction%20in%20a%20nutshell" aria-label="Hacker News">
 <i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
 </a>
 </li>
