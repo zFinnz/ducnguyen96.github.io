@@ -1,6 +1,6 @@
 ---
 title: "Database indexing cơ bản"
-date: 2021-08-25
+date: 2021-08-26
 draft: false
 categories: [database, backend]
 categories_weight: 8
