@@ -15,3 +15,8 @@ tags_weight: 8
 - [ACID](/posts/databases/acid-in-dbms/)
 - [Transactions](/posts/databases/transaction-in-a-nut-shell/)
 - [Indexing](/posts/databases/database-indexing/)
+- [N+1 Problem](https://viblo.asia/p/n-1-query-tinh-nang-hay-la-bug-maGK7WnMKj2)
+
+## Internet
+
+- [What is HTTP ?](/posts/backend/http-in-a-nutshell/)
