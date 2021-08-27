@@ -1,0 +1,387 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> HTTP in a nutshell | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/http-in-a-nutshell/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="HTTP in a nutshell">
+<meta property="og:description" content="Hypertext Transfer Protocol (HTTP) là một giao thức(protocol) thuộc lớp ứng dụng được thiết kế cho để thực hiện giao tiếp giữa web browsers và web servers, nhưng nó cũng được sử dụng cho nhiều mục đích khác. HTTP tuân theo mô hình client-server cổ điển, với một client open connection để tạo request, sau đó chờ cho đến khi nhận được response. HTTP là một giao thức không có trạng thái, nghĩa là sserver không dữ trạng thái giữa 2 lần requests.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/http-in-a-nutshell/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-08-27T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-08-27T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="HTTP in a nutshell">
+<meta name=twitter:description content="Hypertext Transfer Protocol (HTTP) là một giao thức(protocol) thuộc lớp ứng dụng được thiết kế cho để thực hiện giao tiếp giữa web browsers và web servers, nhưng nó cũng được sử dụng cho nhiều mục đích khác. HTTP tuân theo mô hình client-server cổ điển, với một client open connection để tạo request, sau đó chờ cho đến khi nhận được response. HTTP là một giao thức không có trạng thái, nghĩa là sserver không dữ trạng thái giữa 2 lần requests.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/databases/database-indexing/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&text=HTTP%20in%20a%20nutshell" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&title=HTTP%20in%20a%20nutshell" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&is_video=false&description=HTTP%20in%20a%20nutshell" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=HTTP%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2fhttp-in-a-nutshell%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&title=HTTP%20in%20a%20nutshell" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&title=HTTP%20in%20a%20nutshell" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&name=HTTP%20in%20a%20nutshell&description=Hypertext%20Transfer%20Protocol%20%28HTTP%29%20l%c3%a0%20m%e1%bb%99t%20giao%20th%e1%bb%a9c%28protocol%29%20thu%e1%bb%99c%20l%e1%bb%9bp%20%e1%bb%a9ng%20d%e1%bb%a5ng%20%c4%91%c6%b0%e1%bb%a3c%20thi%e1%ba%bft%20k%e1%ba%bf%20cho%20%c4%91%e1%bb%83%20th%e1%bb%b1c%20hi%e1%bb%87n%20giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%20web%20browsers%20v%c3%a0%20web%20servers%2c%20nh%c6%b0ng%20n%c3%b3%20c%c5%a9ng%20%c4%91%c6%b0%e1%bb%a3c%20s%e1%bb%ad%20d%e1%bb%a5ng%20cho%20nhi%e1%bb%81u%20m%e1%bb%a5c%20%c4%91%c3%adch%20kh%c3%a1c.%20HTTP%20tu%c3%a2n%20theo%20m%c3%b4%20h%c3%acnh%20client-server%20c%e1%bb%95%20%c4%91i%e1%bb%83n%2c%20v%e1%bb%9bi%20m%e1%bb%99t%20client%20open%20connection%20%c4%91%e1%bb%83%20t%e1%ba%a1o%20request%2c%20sau%20%c4%91%c3%b3%20ch%e1%bb%9d%20cho%20%c4%91%e1%ba%bfn%20khi%20nh%e1%ba%adn%20%c4%91%c6%b0%e1%bb%a3c%20response.%20HTTP%20l%c3%a0%20m%e1%bb%99t%20giao%20th%e1%bb%a9c%20kh%c3%b4ng%20c%c3%b3%20tr%e1%ba%a1ng%20th%c3%a1i%2c%20ngh%c4%a9a%20l%c3%a0%20sserver%20kh%c3%b4ng%20d%e1%bb%af%20tr%e1%ba%a1ng%20th%c3%a1i%20gi%e1%bb%afa%202%20l%e1%ba%a7n%20requests." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&t=HTTP%20in%20a%20nutshell" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#http-messages>HTTP Messages</a></li>
+<li><a href=#content-security-policy-csp>Content Security Policy (CSP)</a>
+<ul>
+<li><a href=#threats>Threats</a></li>
+<li><a href=#directives>Directives</a></li>
+</ul>
+</li>
+<li><a href=#strict-transport-security>Strict-Transport-Security</a></li>
+<li><a href=#sử-dụng-http-cookies>Sử dụng HTTP cookies</a>
+<ul>
+<li><a href=#định-nghĩa-lifetime-cho-1-cookie>Định nghĩa lifetime cho 1 cookie</a></li>
+<li><a href=#hạn-chế-truy-cập-tới-cookies>Hạn chế truy cập tới cookies</a></li>
+</ul>
+</li>
+<li><a href=#x-content-type-options>X-Content-Type-Options</a></li>
+<li><a href=#x-frame-options>X-Frame-Options</a></li>
+<li><a href=#x-xss-protection>X-XSS-Protection</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+HTTP in a nutshell
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-08-27 00:00:00 +0000 UTC" itemprop=datePublished>2021-08-27</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/http rel=tag>http</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/protocol rel=tag>protocol</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p><em><strong>Hypertext Transfer Protocol (HTTP)</strong></em> là một giao thức(protocol) thuộc <a href=https://ducnguyen96.github.io/posts/others/mang-may-tinh/>lớp ứng dụng</a> được thiết kế cho để thực hiện giao tiếp giữa web browsers và web servers, nhưng nó cũng được sử dụng cho nhiều mục đích khác. HTTP tuân theo mô hình client-server cổ điển, với một client open connection để tạo request, sau đó chờ cho đến khi nhận được response. HTTP là một giao thức không có trạng thái, nghĩa là sserver không dữ trạng thái giữa 2 lần requests.</p>
+<h2 id=http-messages>HTTP Messages</h2>
+<p>HTTP messages là cách mà data được trao đổi giữa client và server. Có 2 loại messages: requests gửi từ client để trigger 1 action từ server và responses từ server.</p>
+<p><img src=/images/httpmsg2.png alt=httpmsg2.png>
+HTTP requests, responses có cấu trúc tương tự nhau:</p>
+<ol>
+<li>start-line miêu ta requests được thực hiện hoặc là status của response.</li>
+<li>Một set HTTP headres chỉ rõ về request hoặc là miêu tả body của response.</li>
+<li>Một dòng trống chỉ rằng tất cả meta-info đều đã được gửi.</li>
+<li>Một body chứa data của request (chẳng hạn như HTML form) hoặc là doc gửi theo response. Kích thước và loại data mà phần body chứa sẽ được chỉ rõ ở phần headers.
+<img src=/images/httpmsgstructure2.png alt=httpmsgstructure2.png></li>
+</ol>
+<h2 id=content-security-policy-csp>Content Security Policy (CSP)</h2>
+<p><strong>Content Security Policy</strong> là một lớp bảo mật giúp phát hiện và giảm thiểu một vài thể loại tấn công bao gồm Cross-Site Scripting (XSS) và Data Injection. Những cuộc tấn công này được sử dụng cho tất cả mục đích từ trộm dữ liệu cho đến site defacement(thay đổi diện mạo của site) để phân tán malware.</p>
+<p>CSP được thiết kế để có thể fully <a href=/posts/others/common-terminology/#backward-compatibility-l%C3%A0-g%C3%AC->backward compatibility</a>. Những browsers mà không hỗ trợ CSP thì vẫn có thể kích hoạt lớp bảo mật này bằng server và ngược lại. Nếu một website không cung cấp CSP header thì browsers sẽ sử dụng <a href=/posts/others/common-terminology/#same-origin-policy-l%C3%A0-g%C3%AC->same-origin policy</a>.</p>
+<p>Để kích hoạt CSP thì bạn cần cấu hình webserver trả về Content-Security-Policy HTTP header. (Thỉnh thoảng bạn sẽ thấy X-Content-Security-Policy header nhưng đây là 1 phiên bản cũ của CSP nên bạn không cần quan tâm đến nữa).</p>
+<p>Hoặc bạn cũng có thể thêm thẻ sau vào file html để kích hoạt CSP:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>&lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>http-equiv</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;Content-Security-Policy&#34;</span>
+      <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;default-src &#39;self&#39;; img-src https://*; child-src &#39;none&#39;;&#34;</span>&gt;
+</code></pre></div><h3 id=threats>Threats</h3>
+<ol>
+<li>Giảm thiểu XSS attacks.
+Mục tiêu chính của CSP là giảm thiểu XSS attacks. XSS attacks lợi dụng sự tin tưởng của browser vào content nhận được từ server. Các đoạn scripts độc có thể được thực thi bởi browser của nạn nhân vì browserđã tin tưởng vào nguồn của content mình nhận được, kể cả khi nó không đến từ nơi mà nó đáng lẽ phải đến từ.</li>
+</ol>
+<p>CSP giúp server admin giảm thiểu XSS bằng cách chỉ rõ cho browser biết chỉ nên tin tưởng vào những domain cụ thể. Sau đó thì khi browser nhận được scripts thì nó sẽ chỉ thực thi những scripts có nguồn gốc được chỉ định từ web server hoặc từ thẻ meta ở trên và bỏ qua các scripts khác (kể cả inline scripts và event-handling HTML attributes)</p>
+<ol start=2>
+<li>Giảm thiểu packet sniffing attacks
+Để giảm thiểu sniffing thì cần giao tiếp qua HTTPS.</li>
+</ol>
+<h3 id=directives>Directives</h3>
+<p>Tham khảo thêm <a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy>ở đây</a></p>
+<h2 id=strict-transport-security>Strict-Transport-Security</h2>
+<p><strong>HTTP Strict-Transport-Security</strong> response header là một header webserver trả về và nó nói với browser là chỉ truy cập với giao thức HTTPS thay vì HTTP thông thường.</p>
+<p>Syntax</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-nginx data-lang=nginx><span style=color:#66d9ef>Strict-Transport-Security:</span> <span style=color:#e6db74>max-age=&lt;expire-time&gt;</span>;
+<span style=color:#66d9ef>Strict-Transport-Security:</span> <span style=color:#e6db74>max-age=&lt;expire-time&gt;</span>; <span style=color:#66d9ef>includeSubDomains</span>;
+<span style=color:#66d9ef>Strict-Transport-Security:</span> <span style=color:#e6db74>max-age=&lt;expire-time&gt;</span>; <span style=color:#66d9ef>preload</span>
+</code></pre></div><ul>
+<li><code>expire-time</code> được tính bằng giây.</li>
+<li><code>includeSubDomains</code> được chỉ định thì những quy tắc này cũng áp dụng với subdomains của site.</li>
+<li><code>preload</code> xem thêm ở <a href>đây</a></li>
+</ul>
+<p>Nếu một site cho phép connect qua HTTP và sau đó redirects tới HTTPS thì người dùng có thể giao tiếp với phiên bản chưa được mã hóa của site trước khi được redirect, điều này tạo cơ hội cho <a href=/posts/others/common-terminology/#man-in-the-middle-attack-l%C3%A0-g%C3%AC->man-in-the-middle</a> attack. Việc redirect cũng có thể được khai thác để hướng người dùng đến 1 site khác thay vì bản bảo mật của site gốc.</p>
+<p>HSTS header nói với browsers rằng không bao giờ truy cập vào 1 site sử dụng giao thức HTTP mà nên tự động chuyển tất cả qua HTTPS.</p>
+<p>Ví dụ: Bạn sử dụng Wifi miễn phí ở sân bay và bắt đầu truy cập web. Bạn truy cập dịch vụ ngân hàng để kiểm tra tài khoản và thanh toán 1 số hóa đơn. Không may rằng điểm wifi miễn phí đó lại đến từ laptop của hacker, và hacker đó chặn tất cả các HTTP request của bạn và chuyển hướng về 1 trang khác clone giao diện của bank mà bạn đang định dùng. Bây giờ bạn nhập tài khoản và mật khẩu vào thì hacker sẽ nhận được tất cả thông tin này.</p>
+<p>HSTS giải quyết vấn đề này, một khi bạn đã truy cập vào trang web của bank sử dụng HTTPS và site đó sử dụng HSTS thì browser của bạn sẽ mặc chỉ giao tiếp với bạn qua HTTPS ngăn chặn hacker tấn công man-in-the-middle.</p>
+<h2 id=sử-dụng-http-cookies>Sử dụng HTTP cookies</h2>
+<p><strong>HTTP cookie</strong> hay web cookie, browser cookie là một mảnh data nhỏ được gửi từ server đến browser. Browser có thể lưu nó và gửi lại cùng với những request tiếp theo cho browser. Tiêu biểu thì nó được sử dụng để server biết 2 requests đến cùng 1 browser giữ cho user logged-in.</p>
+<p>Cookies được sử dụng cho 3 mục đích chính sau:</p>
+<ul>
+<li>Quản lý session: Logins, Shopping carts, game scores hay bất cứ thứ gì mà server nên nhớ.</li>
+<li>Personalization: Một số preferences của user, themes, cài đặt.</li>
+<li>Tracking: Lưu trữ và phân tích hành vi người dùng.</li>
+</ul>
+<p>Cookies từng được sử dụng để lưu trữ chung phía client và từng là cách duy nhất, ngày nay thì lưu trữ phía client nên sử dụng các APIs như Web Storage API(localStorage và sessionStorage) và IndexedDB.</p>
+<h3 id=định-nghĩa-lifetime-cho-1-cookie>Định nghĩa lifetime cho 1 cookie</h3>
+<p>Có 2 cách để định nghĩa như sau:</p>
+<ul>
+<li>Session cookies được xóa khi mỗi current session kết thúc - được quy định bởi browser, một số browser sử dụng lưu trữ lại session khi restart browser, việc này có thể làm cho session cookies kéo dài vô tận.</li>
+<li>Permanent cookies được set ngày cụ thể cho việc hết hạn, hoặc cũng có thể được set 1 khoảng thời gian hết hạn qua <code>Max-Age</code>.</li>
+</ul>
+<p>Nếu site của bạn có authenticates users, thì bạn nên regenerate và gửi lại session cookies mỗi khi user authenticates cho dù session cookies đã tồn tại. Kỹ thuật này ngăn chặn session fixation attacks, khi mà 1 bên thứ 3 có thể sử dụng lại session của user.</p>
+<h3 id=hạn-chế-truy-cập-tới-cookies>Hạn chế truy cập tới cookies</h3>
+<p>Có một số cách để đảm bảo cookies được gửi đi một cách bảo mật và không thể một cách không chủ ý thông qua thuộc tính <code>Secure</code> và <code>HttpOnly</code>.</p>
+<p>Một cookie với thuộc tính <code>Secure</code> sẽ chỉ được gửi để sever khi đang kết nối bằng HTTPS. Các site với http thì không thể set <code>Secure</code> cho cookie. Tuy nhiên <code>Secure</code> cũng không thể đảm bảo chặn được tất các các truy cập vào thông tin nhạy cảm ở cookie; ví dụ nó có thể đọc dược và chỉnh sửa bởi người khác nếu họ truy cập được vào ổ cứng của client hoặc JS nếu <code>HttpOnly</code> không được set.</p>
+<p>Một cookie với thuộc tính <code>HttpOnly</code> thì không thể được truy cập bằng <code>Document.cookie</code> API; nó sẽ chỉ được gửi đến sever. Ví dụ với những cookie mà giữ server-side sessions thì không cần truy cập bởi JS, và nên có thuộc tính này. Nó giảm thiểu XSS attacks.</p>
+<p>Ví dụ:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>Set</span><span style=color:#f92672>-</span><span style=color:#a6e22e>Cookie</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#a6e22e>a3fWa</span>; <span style=color:#a6e22e>Expires</span><span style=color:#f92672>=</span><span style=color:#a6e22e>Thu</span>, <span style=color:#ae81ff>21</span> <span style=color:#a6e22e>Oct</span> <span style=color:#ae81ff>2021</span> <span style=color:#ae81ff>07</span><span style=color:#f92672>:</span><span style=color:#ae81ff>28</span><span style=color:#f92672>:</span><span style=color:#ae81ff>00</span> <span style=color:#a6e22e>GMT</span>; <span style=color:#a6e22e>Secure</span>; <span style=color:#a6e22e>HttpOnly</span>
+</code></pre></div><h2 id=x-content-type-options>X-Content-Type-Options</h2>
+<p><strong>X-Content-Type-Options</strong> header là một HTTP header được gửi từ webserver như là một cái mark được sử dụng để server chỉ ra những <a href=http://localhost:1313/posts/others/common-terminology/#mime-types-l%C3%A0-g%C3%AC->MIME types</a> báo trong Content-Type headers không nên bị thay đổi và phải được tuân theo. Hay nói cách khác MIME types đã được cấu hình một cách cẩn thận.</p>
+<p>Những tester về bảo mật sẽ luôn mong muốn header này được set.</p>
+<p>Tìm hiểu thêm <a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options>ở đây</a></p>
+<h2 id=x-frame-options>X-Frame-Options</h2>
+<p><strong>X-Frame-Options</strong> header là một HTTP header được gửi từ server để nói cho browser biết có nên đồng ý render một page trong một <code>frame</code>, <code>iframe</code>, <code>embed</code> hoặc <code>object</code> hay không. Các site có thể sử dụng header này để tránh <a href=http://localhost:1313/posts/others/common-terminology/#click-jacking-attack-l%C3%A0-g%C3%AC->click-jacking</a> attacks, bằng cách đảm bảo rằng content của site không bị nhúng vào những sites khác.</p>
+<p>Lớp bảo mật này chỉ được thêm vào khi browser của người dùng hỗ trợ <code>X-Frame-Options</code></p>
+<p><strong>Syntax</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-nginx data-lang=nginx><span style=color:#66d9ef>X-Frame-Options:</span> <span style=color:#e6db74>DENY</span>
+<span style=color:#e6db74>X-Frame-Options:</span> <span style=color:#e6db74>SAMEORIGIN</span>
+</code></pre></div><ul>
+<li>DENY: page không thể hiển thị trong 1 frame</li>
+<li>SAMEORIGIN: page chỉ có thể được hiển thị trong 1 frame có cùng origin với page.</li>
+<li>ALLOW-FROM uri: không còn hoạt động ở trên browsers mới. Không nên sử dụng.</li>
+</ul>
+<p><strong>Config trên Nginx</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-nginx data-lang=nginx><span style=color:#66d9ef>add_header</span> <span style=color:#e6db74>X-Frame-Options</span> <span style=color:#e6db74>SAMEORIGIN</span> <span style=color:#e6db74>always</span>;
+</code></pre></div><p><strong>Config trên Express</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>helmet</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>require</span>(<span style=color:#e6db74>&#39;helmet&#39;</span>);
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>app</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>();
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>helmet</span>.<span style=color:#a6e22e>frameguard</span>({ <span style=color:#a6e22e>action</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;SAMEORIGIN&#39;</span> }));
+</code></pre></div><h2 id=x-xss-protection>X-XSS-Protection</h2>
+<p><strong>X-Frame-Options</strong> header là một HTTP header được gửi từ server, đây là một header để kích hoạt tính năng bảo vệ XSS attacks trên những trình duyệt như IE, Chrome, Safari ngăn việc load những page mà browser phát hiện khả năng có XSS attacks. Mặc dù tính năng này là không cần thiết vì hầu hết các site có thể implement CSP những vẫn có thể hữu ích đối với những browser cũ chưa hỗ trợ CSP.</p>
+<p><strong>Note</strong>:</p>
+<ul>
+<li>Chrome đã loại bỏ XSS Auditor</li>
+<li>Firefox sẽ không implement tính năng này.</li>
+<li>Edge cũng loại bỏ XSS filter.</li>
+</ul>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#http-messages>HTTP Messages</a></li>
+<li><a href=#content-security-policy-csp>Content Security Policy (CSP)</a>
+<ul>
+<li><a href=#threats>Threats</a></li>
+<li><a href=#directives>Directives</a></li>
+</ul>
+</li>
+<li><a href=#strict-transport-security>Strict-Transport-Security</a></li>
+<li><a href=#sử-dụng-http-cookies>Sử dụng HTTP cookies</a>
+<ul>
+<li><a href=#định-nghĩa-lifetime-cho-1-cookie>Định nghĩa lifetime cho 1 cookie</a></li>
+<li><a href=#hạn-chế-truy-cập-tới-cookies>Hạn chế truy cập tới cookies</a></li>
+</ul>
+</li>
+<li><a href=#x-content-type-options>X-Content-Type-Options</a></li>
+<li><a href=#x-frame-options>X-Frame-Options</a></li>
+<li><a href=#x-xss-protection>X-XSS-Protection</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&text=HTTP%20in%20a%20nutshell" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&title=HTTP%20in%20a%20nutshell" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&is_video=false&description=HTTP%20in%20a%20nutshell" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=HTTP%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2fhttp-in-a-nutshell%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&title=HTTP%20in%20a%20nutshell" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&title=HTTP%20in%20a%20nutshell" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&name=HTTP%20in%20a%20nutshell&description=Hypertext%20Transfer%20Protocol%20%28HTTP%29%20l%c3%a0%20m%e1%bb%99t%20giao%20th%e1%bb%a9c%28protocol%29%20thu%e1%bb%99c%20l%e1%bb%9bp%20%e1%bb%a9ng%20d%e1%bb%a5ng%20%c4%91%c6%b0%e1%bb%a3c%20thi%e1%ba%bft%20k%e1%ba%bf%20cho%20%c4%91%e1%bb%83%20th%e1%bb%b1c%20hi%e1%bb%87n%20giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%20web%20browsers%20v%c3%a0%20web%20servers%2c%20nh%c6%b0ng%20n%c3%b3%20c%c5%a9ng%20%c4%91%c6%b0%e1%bb%a3c%20s%e1%bb%ad%20d%e1%bb%a5ng%20cho%20nhi%e1%bb%81u%20m%e1%bb%a5c%20%c4%91%c3%adch%20kh%c3%a1c.%20HTTP%20tu%c3%a2n%20theo%20m%c3%b4%20h%c3%acnh%20client-server%20c%e1%bb%95%20%c4%91i%e1%bb%83n%2c%20v%e1%bb%9bi%20m%e1%bb%99t%20client%20open%20connection%20%c4%91%e1%bb%83%20t%e1%ba%a1o%20request%2c%20sau%20%c4%91%c3%b3%20ch%e1%bb%9d%20cho%20%c4%91%e1%ba%bfn%20khi%20nh%e1%ba%adn%20%c4%91%c6%b0%e1%bb%a3c%20response.%20HTTP%20l%c3%a0%20m%e1%bb%99t%20giao%20th%e1%bb%a9c%20kh%c3%b4ng%20c%c3%b3%20tr%e1%ba%a1ng%20th%c3%a1i%2c%20ngh%c4%a9a%20l%c3%a0%20sserver%20kh%c3%b4ng%20d%e1%bb%af%20tr%e1%ba%a1ng%20th%c3%a1i%20gi%e1%bb%afa%202%20l%e1%ba%a7n%20requests." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fhttp-in-a-nutshell%2f&t=HTTP%20in%20a%20nutshell" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
