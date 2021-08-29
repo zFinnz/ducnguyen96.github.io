@@ -20,3 +20,9 @@ tags_weight: 8
 ## Internet
 
 - [What is HTTP ?](/posts/backend/http-in-a-nutshell/)
+
+## Authentication
+- [OAuth](/posts/backend/authentication-in-a-nutshell/#oauth)
+- [Basic Authentication](/posts/backend/authentication-in-a-nutshell/#session-based-authentication)
+- [Token Authentication](/posts/backend/authentication-in-a-nutshell/#token-based-authentication)
+- [JWT](/posts/backend/authentication-in-a-nutshell/#jwt)

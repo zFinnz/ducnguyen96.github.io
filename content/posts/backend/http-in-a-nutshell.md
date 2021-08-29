@@ -8,7 +8,7 @@ tags: [http, backend, protocol]
 tags_weight: 7
 ---
 
-***Hypertext Transfer Protocol (HTTP)*** là một giao thức(protocol) thuộc [lớp ứng dụng](https://ducnguyen96.github.io/posts/others/mang-may-tinh/) được thiết kế cho để thực hiện giao tiếp giữa web browsers và web servers, nhưng nó cũng được sử dụng cho nhiều mục đích khác. HTTP tuân theo mô hình client-server cổ điển, với một client open connection để tạo request, sau đó chờ cho đến khi nhận được response. HTTP là một giao thức không có trạng thái, nghĩa là sserver không dữ trạng thái giữa 2 lần requests.
+***Hypertext Transfer Protocol (HTTP)*** là một giao thức(protocol) thuộc [lớp ứng dụng](https://ducnguyen96.github.io/posts/others/mang-may-tinh/) được thiết kế cho để thực hiện giao tiếp giữa web browsers và web servers, nhưng nó cũng được sử dụng cho nhiều mục đích khác. HTTP tuân theo mô hình client-server cổ điển, với một client open connection để tạo request, sau đó chờ cho đến khi nhận được response. HTTP là một giao thức không có trạng thái, nghĩa là server không dữ trạng thái giữa 2 lần requests.
 
 ## HTTP Messages
 HTTP messages là cách mà data được trao đổi giữa client và server. Có 2 loại messages: requests gửi từ client để trigger 1 action từ server và responses từ server.
