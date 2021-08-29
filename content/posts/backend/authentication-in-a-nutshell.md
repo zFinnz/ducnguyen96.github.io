@@ -4,7 +4,7 @@ date: 2021-08-29
 draft: false
 categories: [backend]
 categories_weight: 7
-tags: backend, authentication, oauth, jwt]
+tags: [backend, authentication, oauth, jwt]
 tags_weight: 7
 ---
 Như đã nói trong bài [này](/posts/backend/http-in-a-nutshell/), http không giữ trạng thái giữa 2 lần request vì vậy ví dụ sau khi đăng nhập sau, user đến một page nào đó cần xác minh chẳng hạn như setting thì user lại bị yêu cầu đăng nhập lần nữa. Nhưng với session hoặc token authentication thì server có thể nhận biết là user đã đăng nhập và nên được cấp quyền truy cập.
