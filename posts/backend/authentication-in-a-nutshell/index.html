@@ -1,0 +1,285 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Authentication in a nutshell | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/authentication-in-a-nutshell/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Authentication in a nutshell">
+<meta property="og:description" content="Như đã nói trong bài này, http không giữ trạng thái giữa 2 lần request vì vậy ví dụ sau khi đăng nhập sau, user đến một page nào đó cần xác minh chẳng hạn như setting thì user lại bị yêu cầu đăng nhập lần nữa. Nhưng với session hoặc token authentication thì server có thể nhận biết là user đã đăng nhập và nên được cấp quyền truy cập.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/authentication-in-a-nutshell/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-08-29T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-08-29T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Authentication in a nutshell">
+<meta name=twitter:description content="Như đã nói trong bài này, http không giữ trạng thái giữa 2 lần request vì vậy ví dụ sau khi đăng nhập sau, user đến một page nào đó cần xác minh chẳng hạn như setting thì user lại bị yêu cầu đăng nhập lần nữa. Nhưng với session hoặc token authentication thì server có thể nhận biết là user đã đăng nhập và nên được cấp quyền truy cập.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/http-in-a-nutshell/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&text=Authentication%20in%20a%20nutshell" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&title=Authentication%20in%20a%20nutshell" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&is_video=false&description=Authentication%20in%20a%20nutshell" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Authentication%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2fauthentication-in-a-nutshell%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&title=Authentication%20in%20a%20nutshell" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&title=Authentication%20in%20a%20nutshell" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&name=Authentication%20in%20a%20nutshell&description=Nh%c6%b0%20%c4%91%c3%a3%20n%c3%b3i%20trong%20b%c3%a0i%20n%c3%a0y%2c%20http%20kh%c3%b4ng%20gi%e1%bb%af%20tr%e1%ba%a1ng%20th%c3%a1i%20gi%e1%bb%afa%202%20l%e1%ba%a7n%20request%20v%c3%ac%20v%e1%ba%ady%20v%c3%ad%20d%e1%bb%a5%20sau%20khi%20%c4%91%c4%83ng%20nh%e1%ba%adp%20sau%2c%20user%20%c4%91%e1%ba%bfn%20m%e1%bb%99t%20page%20n%c3%a0o%20%c4%91%c3%b3%20c%e1%ba%a7n%20x%c3%a1c%20minh%20ch%e1%ba%b3ng%20h%e1%ba%a1n%20nh%c6%b0%20setting%20th%c3%ac%20user%20l%e1%ba%a1i%20b%e1%bb%8b%20y%c3%aau%20c%e1%ba%a7u%20%c4%91%c4%83ng%20nh%e1%ba%adp%20l%e1%ba%a7n%20n%e1%bb%afa.%20Nh%c6%b0ng%20v%e1%bb%9bi%20session%20ho%e1%ba%b7c%20token%20authentication%20th%c3%ac%20server%20c%c3%b3%20th%e1%bb%83%20nh%e1%ba%adn%20bi%e1%ba%bft%20l%c3%a0%20user%20%c4%91%c3%a3%20%c4%91%c4%83ng%20nh%e1%ba%adp%20v%c3%a0%20n%c3%aan%20%c4%91%c6%b0%e1%bb%a3c%20c%e1%ba%a5p%20quy%e1%bb%81n%20truy%20c%e1%ba%adp." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&t=Authentication%20in%20a%20nutshell" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#session-based-authentication>Session based authentication</a></li>
+<li><a href=#token-based-authentication>Token based authentication</a></li>
+<li><a href=#oauth>OAuth</a></li>
+<li><a href=#jwt>JWT</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Authentication in a nutshell
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-08-29 00:00:00 +0000 UTC" itemprop=datePublished>2021-08-29</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p>Như đã nói trong bài <a href=/posts/backend/http-in-a-nutshell/>này</a>, http không giữ trạng thái giữa 2 lần request vì vậy ví dụ sau khi đăng nhập sau, user đến một page nào đó cần xác minh chẳng hạn như setting thì user lại bị yêu cầu đăng nhập lần nữa. Nhưng với session hoặc token authentication thì server có thể nhận biết là user đã đăng nhập và nên được cấp quyền truy cập.</p>
+<h2 id=session-based-authentication>Session based authentication</h2>
+<p>Sever tạo và lưu lại dữ liệu session ở server và lưu trữ session id trên trình duyệt của user.</p>
+<p><img src=/images/session-based-authentication.png alt=sesssion-based-authentication></p>
+<ul>
+<li>user đến trang đăng nhập vào gửi thông tin đăng nhập đến server.</li>
+<li>server sẽ tạo 1 session và lưu trữ lại, sau đó gửi session id vừa tạo cho user.</li>
+<li>user gửi request lấy profile của user (kèm session id).</li>
+<li>server so sánh session id với session data đã lưu để nhận biết user và gửi lại đúng profile của user này.</li>
+</ul>
+<p>Vậy có thể nói trạng thái của user được lưu ở server.</p>
+<h2 id=token-based-authentication>Token based authentication</h2>
+<p>Đối với token based authentication thì trạng thái của user được lưu ở client và phương pháp này được khuyên dùng hơn so với phương pháp session based.
+<img src=/images/token-based-authentication.png alt=token-based-authentication></p>
+<ul>
+<li>user đến trang đăng nhập vào gửi thông tin đăng nhập đến server.</li>
+<li>Dữ liệu của người dùng sẽ được mã hóa dưới dạng JWT (Json Web Token) bằng 1 đoạn mã và gửi về client.</li>
+<li>JWT được lưu ở client (hầu hết là ở localStorage).</li>
+<li>user gửi request lấy profile của user (kèm jwt).</li>
+<li>Server nhận được JWT, sử dụng đoạn mã đã dùng để tạo ra JWT để giải mã và có thông tin người dùng.</li>
+<li>Server gửi lại đúng profile của user.</li>
+</ul>
+<h2 id=oauth>OAuth</h2>
+<p><em>Về cơ bản thì oauth là một phương thức chứng thực, mà nhờ đó một web service hay một application bên thứ 3 có thể đại diện cho người dùng để truy cập vào tài nguyên người dùng nằm trên một dịch vụ nào đó.</em></p>
+<p><img src=/images/blog-open1.webp alt=oauth-flow></p>
+<p>Ở đây user chính là người dùng app của bạn, consumer là app của bạn - Yelp và service provider có thể là google, facebook,&mldr;</p>
+<p>Khi người dùng click vào đăng nhập với google thì app của bạn sẽ direct bạn đến google, nếu bạn chưa đăng nhập google thì sẽ phải đăng nhập, sau đó google sẽ hỏi bạn đồng ý trao quyền truy cập cho Yelp. Sau khi bạn đồng ý thì google sẽ điều hướng bạn về Yelp cùng với 1 <code>Authorization Code</code>. Yelp gửi <code>Authorization Code</code> cho <code>Authorization Server</code> của google và nhận lại được <code>accessToken</code>. Yelp sẽ sử dụng <code>accessToken</code> này và gửi đến <code>Resource server</code> của google để nhận về được <code>resource</code> như avatar hoặc email,&mldr;</p>
+<h2 id=jwt>JWT</h2>
+<p>Tham khảo <a href=https://viblo.asia/p/tim-hieu-ve-json-web-token-jwt-7rVRqp73v4bP>ở đây</a></p>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#session-based-authentication>Session based authentication</a></li>
+<li><a href=#token-based-authentication>Token based authentication</a></li>
+<li><a href=#oauth>OAuth</a></li>
+<li><a href=#jwt>JWT</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&text=Authentication%20in%20a%20nutshell" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&title=Authentication%20in%20a%20nutshell" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&is_video=false&description=Authentication%20in%20a%20nutshell" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Authentication%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2fauthentication-in-a-nutshell%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&title=Authentication%20in%20a%20nutshell" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&title=Authentication%20in%20a%20nutshell" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&name=Authentication%20in%20a%20nutshell&description=Nh%c6%b0%20%c4%91%c3%a3%20n%c3%b3i%20trong%20b%c3%a0i%20n%c3%a0y%2c%20http%20kh%c3%b4ng%20gi%e1%bb%af%20tr%e1%ba%a1ng%20th%c3%a1i%20gi%e1%bb%afa%202%20l%e1%ba%a7n%20request%20v%c3%ac%20v%e1%ba%ady%20v%c3%ad%20d%e1%bb%a5%20sau%20khi%20%c4%91%c4%83ng%20nh%e1%ba%adp%20sau%2c%20user%20%c4%91%e1%ba%bfn%20m%e1%bb%99t%20page%20n%c3%a0o%20%c4%91%c3%b3%20c%e1%ba%a7n%20x%c3%a1c%20minh%20ch%e1%ba%b3ng%20h%e1%ba%a1n%20nh%c6%b0%20setting%20th%c3%ac%20user%20l%e1%ba%a1i%20b%e1%bb%8b%20y%c3%aau%20c%e1%ba%a7u%20%c4%91%c4%83ng%20nh%e1%ba%adp%20l%e1%ba%a7n%20n%e1%bb%afa.%20Nh%c6%b0ng%20v%e1%bb%9bi%20session%20ho%e1%ba%b7c%20token%20authentication%20th%c3%ac%20server%20c%c3%b3%20th%e1%bb%83%20nh%e1%ba%adn%20bi%e1%ba%bft%20l%c3%a0%20user%20%c4%91%c3%a3%20%c4%91%c4%83ng%20nh%e1%ba%adp%20v%c3%a0%20n%c3%aan%20%c4%91%c6%b0%e1%bb%a3c%20c%e1%ba%a5p%20quy%e1%bb%81n%20truy%20c%e1%ba%adp." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fauthentication-in-a-nutshell%2f&t=Authentication%20in%20a%20nutshell" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
