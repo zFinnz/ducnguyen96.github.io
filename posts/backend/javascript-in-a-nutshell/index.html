@@ -1,0 +1,612 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Javascript in a nutshell | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/javascript-in-a-nutshell/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Javascript in a nutshell">
+<meta property="og:description" content="Do bài viết có rất nhiều mục và dài nên bạn đọc nhìn vào Table Of Content (TOC) ở side-bar bên phải để đọc mục mình quan tâm nhé.
+Variables var &ldquo;var&rdquo; không có block scope
+if (true) { var test = true; // dùng &#34;var&#34; thay &#34;let&#34; } alert(test); // true, var không có block scope nên nó được kéo ra khỏi block scope. Nếu một block nằm trong 1 function thì var sẽ trở thành biến function-level">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/javascript-in-a-nutshell/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-08-30T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-08-30T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Javascript in a nutshell">
+<meta name=twitter:description content="Do bài viết có rất nhiều mục và dài nên bạn đọc nhìn vào Table Of Content (TOC) ở side-bar bên phải để đọc mục mình quan tâm nhé.
+Variables var &ldquo;var&rdquo; không có block scope
+if (true) { var test = true; // dùng &#34;var&#34; thay &#34;let&#34; } alert(test); // true, var không có block scope nên nó được kéo ra khỏi block scope. Nếu một block nằm trong 1 function thì var sẽ trở thành biến function-level">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/authentication-in-a-nutshell/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&text=Javascript%20in%20a%20nutshell" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&title=Javascript%20in%20a%20nutshell" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&is_video=false&description=Javascript%20in%20a%20nutshell" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Javascript%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2fjavascript-in-a-nutshell%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&title=Javascript%20in%20a%20nutshell" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&title=Javascript%20in%20a%20nutshell" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&name=Javascript%20in%20a%20nutshell&description=Do%20b%c3%a0i%20vi%e1%ba%bft%20c%c3%b3%20r%e1%ba%a5t%20nhi%e1%bb%81u%20m%e1%bb%a5c%20v%c3%a0%20d%c3%a0i%20n%c3%aan%20b%e1%ba%a1n%20%c4%91%e1%bb%8dc%20nh%c3%acn%20v%c3%a0o%20Table%20Of%20Content%20%28TOC%29%20%e1%bb%9f%20side-bar%20b%c3%aan%20ph%e1%ba%a3i%20%c4%91%e1%bb%83%20%c4%91%e1%bb%8dc%20m%e1%bb%a5c%20m%c3%acnh%20quan%20t%c3%a2m%20nh%c3%a9.%0aVariables%20var%20%26ldquo%3bvar%26rdquo%3b%20kh%c3%b4ng%20c%c3%b3%20block%20scope%0aif%20%28true%29%20%7b%20var%20test%20%3d%20true%3b%20%2f%2f%20d%c3%b9ng%20%26%2334%3bvar%26%2334%3b%20thay%20%26%2334%3blet%26%2334%3b%20%7d%20alert%28test%29%3b%20%2f%2f%20true%2c%20var%20kh%c3%b4ng%20c%c3%b3%20block%20scope%20n%c3%aan%20n%c3%b3%20%c4%91%c6%b0%e1%bb%a3c%20k%c3%a9o%20ra%20kh%e1%bb%8fi%20block%20scope.%20N%e1%ba%bfu%20m%e1%bb%99t%20block%20n%e1%ba%b1m%20trong%201%20function%20th%c3%ac%20var%20s%e1%ba%bd%20tr%e1%bb%9f%20th%c3%a0nh%20bi%e1%ba%bfn%20function-level" aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&t=Javascript%20in%20a%20nutshell" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#variables>Variables</a>
+<ul>
+<li><a href=#var>var</a></li>
+<li><a href=#let>let</a></li>
+<li><a href=#const>const</a></li>
+</ul>
+</li>
+<li><a href=#hoisted>Hoisted</a></li>
+<li><a href=#loops>Loops</a>
+<ul>
+<li><a href=#labels-for-breakcontinue>Labels for break/continue</a></li>
+</ul>
+</li>
+<li><a href=#functions>Functions</a>
+<ul>
+<li><a href=#a-function-declaration-can-be-called-earlier-than-it-is-defined>A Function Declaration can be called earlier than it is defined.</a></li>
+<li><a href=#khi-nào-sử-dụng-function-declaration-vs-function-expression>Khi nào sử dụng Function Declaration vs Function Expression.</a></li>
+</ul>
+</li>
+<li><a href=#the-javascript-this-keyword>The JavaScript &ldquo;this&rdquo; keyword</a></li>
+<li><a href=#object-references-and-copying>Object references and copying</a>
+<ul>
+<li><a href=#khi-một-biến-được-gán-vào-1-object-thì-nó-không-lưu-trữ-object-đó-mà-là-địa-chỉ-bộ-nhớ---nói-cách-khác-là-1-reference-tới-object>Khi một biến được gán vào 1 object thì nó không lưu trữ object đó mà là &ldquo;địa chỉ bộ nhớ&rdquo; - nói cách khác là &ldquo;1 reference&rdquo; tới object.</a></li>
+<li><a href=#khi-một-biến-object-được-cope-thì-địa-chỉ-được-copy-chứ-không-phải-cái-object-mà-địa-chỉ-trỏ-đến-vì-vậy-object-sẽ-không-được-nhân-bản-lên>Khi một biến object được cope thì địa chỉ được copy chứ không phải cái object mà địa chỉ trỏ đến, vì vậy object sẽ không được nhân bản lên.</a></li>
+<li><a href=#cloning-and-merging-objectassign>Cloning and merging, Object.assign</a></li>
+</ul>
+</li>
+<li><a href=#rest-parameters-and-spread-syntax>Rest parameters and spread syntax</a>
+<ul>
+<li><a href=#rest-parameters->Rest parameters &mldr;</a></li>
+<li><a href=#the-arguments-variable>The “arguments” variable</a></li>
+<li><a href=#spread-syntax>Spread syntax</a></li>
+</ul>
+</li>
+<li><a href=#lexical-environment>Lexical Environment</a>
+<ul>
+<li><a href=#closure>Closure</a></li>
+</ul>
+</li>
+<li><a href=#the-new-function-syntax>The &ldquo;new Function&rdquo; syntax</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Javascript in a nutshell
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-08-30 00:00:00 +0000 UTC" itemprop=datePublished>2021-08-30</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/javascript rel=tag>javascript</a>
+,
+<a class=tag-link href=/tags/js rel=tag>js</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p>Do bài viết có rất nhiều mục và dài nên bạn đọc nhìn vào Table Of Content (TOC) ở side-bar bên phải để đọc mục mình quan tâm nhé.</p>
+<h2 id=variables>Variables</h2>
+<h3 id=var>var</h3>
+<p><strong>&ldquo;var&rdquo; không có block scope</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>if</span> (<span style=color:#66d9ef>true</span>) {
+  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>test</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>; <span style=color:#75715e>// dùng &#34;var&#34; thay &#34;let&#34;
+</span><span style=color:#75715e></span>}
+
+<span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>test</span>); <span style=color:#75715e>// true, var không có block scope nên nó được kéo ra khỏi block scope.
+</span></code></pre></div><p>Nếu một block nằm trong 1 function thì <code>var</code> sẽ trở thành biến <code>function-level</code></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sayHi</span>() {
+  <span style=color:#66d9ef>if</span> (<span style=color:#66d9ef>true</span>) {
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>phrase</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello&#34;</span>;
+  }
+
+  <span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>phrase</span>); <span style=color:#75715e>// works
+</span><span style=color:#75715e></span>}
+
+<span style=color:#a6e22e>sayHi</span>();
+<span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>phrase</span>); <span style=color:#75715e>// ReferenceError: phrase is not defined
+</span></code></pre></div><p><strong>&ldquo;var&rdquo; chấp nhận khai báo lại</strong>
+Nếu chúng ta khai báo 1 biến với <code>let</code> 2 lần trong cùng 1 scope thì sẽ lỗi</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>user</span>;
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>user</span>; <span style=color:#75715e>// SyntaxError: &#39;user&#39; has already been declared
+</span></code></pre></div><p>Với var, chúng ta có thể khai báo lại bao nhiêu lần tùy ý.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Pete&#34;</span>;
+
+<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;John&#34;</span>; <span style=color:#75715e>// this &#34;var&#34; does nothing (already declared)
+</span><span style=color:#75715e>// ...it doesn&#39;t trigger an error
+</span><span style=color:#75715e></span>
+<span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>user</span>); <span style=color:#75715e>// John
+</span></code></pre></div><p><strong>&ldquo;var&rdquo; có thể khai báo sau khi sử dụng</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sayHi</span>() {
+  <span style=color:#a6e22e>phrase</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello&#34;</span>;
+
+  <span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>phrase</span>);
+
+  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>phrase</span>;
+}
+<span style=color:#a6e22e>sayHi</span>();
+</code></pre></div><p>Đoạn code trên tương đương với</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sayHi</span>() {
+  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>phrase</span>;
+
+  <span style=color:#a6e22e>phrase</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello&#34;</span>;
+
+  <span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>phrase</span>);
+}
+<span style=color:#a6e22e>sayHi</span>();
+</code></pre></div><p>Đây được gọi là <code>hoisting</code> (kéo lên), vì tất cả <code>var</code> đều được kéo lên đầu của 1 hàm.
+<strong>Khai báo thì được kéo lên còn gán giá trị thì không</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sayHi</span>() {
+  <span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>phrase</span>);
+
+  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>phrase</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello&#34;</span>;
+}
+
+<span style=color:#a6e22e>sayHi</span>();
+</code></pre></div><p>Đoạn code trên tương đương với</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sayHi</span>() {
+  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>phrase</span>; <span style=color:#75715e>// declaration works at the start...
+</span><span style=color:#75715e></span>
+  <span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>phrase</span>); <span style=color:#75715e>// undefined
+</span><span style=color:#75715e></span>
+  <span style=color:#a6e22e>phrase</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello&#34;</span>; <span style=color:#75715e>// ...assignment - when the execution reaches it.
+</span><span style=color:#75715e></span>}
+
+<span style=color:#a6e22e>sayHi</span>();
+</code></pre></div><h3 id=let>let</h3>
+<p><strong>&ldquo;let&rdquo; có block scoped chứ không phải global scope hay local scope</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>greeting</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;say Hi&#34;</span>;
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>times</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>4</span>;
+<span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>times</span> <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>3</span>) {
+   <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>hello</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;say Hello instead&#34;</span>;
+   <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>hello</span>); <span style=color:#75715e>// &#34;say Hello instead&#34;
+</span><span style=color:#75715e></span>   }
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>hello</span>); <span style=color:#75715e>// hello is not defined
+</span></code></pre></div><p><strong>&ldquo;let&rdquo; cho phép gán lại giá trị, không cho phép khai báo lại</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>greeting</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;say Hi&#34;</span>;
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>greeting</span>); <span style=color:#75715e>//&#34;say Hi&#34;
+</span><span style=color:#75715e></span>
+<span style=color:#a6e22e>greeting</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;say Hello instead&#34;</span>;
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>greeting</span>); <span style=color:#75715e>//&#34;say Hello instead&#34;
+</span><span style=color:#75715e></span><span style=color:#f92672>-----------------------------------------------------</span>
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>greeting</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;say Hi&#34;</span>;
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>greeting</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;say Hello instead&#34;</span>; <span style=color:#75715e>// error: Identifier &#39;greeting&#39; has been declared
+</span></code></pre></div><p><strong>&ldquo;let&rdquo; có hoisted không ?</strong>
+Tham khảo ở <a href=/posts/backend/javascript-in-a-nutshell/#hoisted>đây</a></p>
+<h3 id=const>const</h3>
+<p><code>const</code> thì giống với <code>let</code> ở chỗ nó cũng có block scope và hoisting, tuy nhiên nó không thể gán lại giá trị của biến. Tuy nhiên đối với biến dạng reference (object, array, function) thì ta vẫn có thể cập nhật được giá trị thuộc tính của biến đó.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>greeting</span> <span style=color:#f92672>=</span> {
+  <span style=color:#a6e22e>message</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Hello&#34;</span>,
+  <span style=color:#a6e22e>number</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;five&#34;</span>
+}
+<span style=color:#a6e22e>greeting</span>.<span style=color:#a6e22e>message</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;say Hello instead&#34;</span>;
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>greeting</span>); <span style=color:#75715e>// {message:&#34;say Hello instead&#34;,number:&#34;five&#34;}
+</span></code></pre></div><h2 id=hoisted>Hoisted</h2>
+<p>Tất cả các khai báo trong javascript (var, let, const, function, function*, class) đều được <code>hoisted</code>. Có nghĩa là nếu một biến được khai báo trong 1 scope, thì trong scope đó, định danh của nó sẽ luôn trỏ đến biến đó. Xem ví dụ dưới đây:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>x</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;global&#34;</span>;
+<span style=color:#75715e>// function scope:
+</span><span style=color:#75715e></span>(<span style=color:#66d9ef>function</span>() {
+    <span style=color:#a6e22e>x</span>; <span style=color:#75715e>// not &#34;global&#34;
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>var</span><span style=color:#e6db74>/let/</span><span style=color:#960050;background-color:#1e0010>…</span> <span style=color:#a6e22e>x</span>;
+}());
+<span style=color:#75715e>// block scope (not for `var`s):
+</span><span style=color:#75715e></span>{
+    <span style=color:#a6e22e>x</span>; <span style=color:#75715e>// not &#34;global&#34;
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>let</span><span style=color:#e6db74>/const/</span><span style=color:#960050;background-color:#1e0010>…</span> <span style=color:#a6e22e>x</span>;
+}
+</code></pre></div><p>Ở trên ta có x được khai báo ở global scope, tuy nhiên ở trong function và block kia đều khai báo lại biến đó ở dưới cùng của block và nó được neo lên đầu, chính vì thế mà x không có giá trị là &ldquo;global&rdquo;.</p>
+<h2 id=loops>Loops</h2>
+<h3 id=labels-for-breakcontinue>Labels for break/continue</h3>
+<p>Đôi khi ta muốn break khỉ nhiều vòng lặp lồng nhau cùng lúc.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>3</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span>) {
+
+  <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>j</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>j</span> <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>3</span>; <span style=color:#a6e22e>j</span><span style=color:#f92672>++</span>) {
+
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>input</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>prompt</span>(<span style=color:#e6db74>`Value at coords (</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>i</span><span style=color:#e6db74>}</span><span style=color:#e6db74>,</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>j</span><span style=color:#e6db74>}</span><span style=color:#e6db74>)`</span>, <span style=color:#e6db74>&#39;&#39;</span>);
+
+    <span style=color:#75715e>// what if we want to exit from here to Done (below)?
+</span><span style=color:#75715e></span>  }
+}
+
+<span style=color:#a6e22e>alert</span>(<span style=color:#e6db74>&#39;Done!&#39;</span>);
+</code></pre></div><p>Ví dụ chúng ta cần 1 cách để dừng xử lý khi người dùng cancel input. Break thông thường sẽ chỉ dừng 1 vòng lặp. Khi đó chúng ta sẽ cần đến label.</p>
+<pre><code>outer: for (let i = 0; i &lt; 3; i++) {
+
+  for (let j = 0; j &lt; 3; j++) {
+
+    let input = prompt(`Value at coords (${i},${j})`, '');
+
+    // if an empty string or canceled, then break out of both loops
+    if (!input) break outer; // (*)
+
+    // do something with the value...
+  }
+}
+alert('Done!');
+</code></pre><p>Ở đoạn code trên, <code>break outer</code> đã tìm lên và thấy 1 label với tên <code>outer</code> và break vòng lặp đó.</p>
+<p>Chúng ta cũng có thể sử dụng label cho cả <code>continue</code>, lúc đó thì code sẽ thực hiện nhảy đến vòng lặp tiếp theo của loop đã được đánh nhãn.</p>
+<h2 id=functions>Functions</h2>
+<h3 id=a-function-declaration-can-be-called-earlier-than-it-is-defined>A Function Declaration can be called earlier than it is defined.</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>sayHi</span>(<span style=color:#e6db74>&#34;John&#34;</span>); <span style=color:#75715e>// Hello, John
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sayHi</span>(<span style=color:#a6e22e>name</span>) {
+  <span style=color:#a6e22e>alert</span>( <span style=color:#e6db74>`Hello, </span><span style=color:#e6db74>${</span><span style=color:#a6e22e>name</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span> );
+}
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>sayHi</span>(<span style=color:#e6db74>&#34;John&#34;</span>); <span style=color:#75715e>// error!
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>sayHi</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>name</span>) {  <span style=color:#75715e>// (*) no magic any more
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>alert</span>( <span style=color:#e6db74>`Hello, </span><span style=color:#e6db74>${</span><span style=color:#a6e22e>name</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span> );
+};
+</code></pre></div><h3 id=khi-nào-sử-dụng-function-declaration-vs-function-expression>Khi nào sử dụng Function Declaration vs Function Expression.</h3>
+<p>Như một quy luật, khi khai báo 1 function thì đầu tiên ta cân nhắc sử dụng Function Declaration. Nó giúp chúng ta sắp xếp code dễ dàng hơn vì chúng ta có thể gọi nó trước khi nó được khai báo.</p>
+<p>Nhưng nếu Function Declaration không phù hợp vì 1 số lý do hoặc chúng ta cần 1 khai báo có điều kiện thì khi đó nên sử dụng Function Expression.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>age</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>prompt</span>(<span style=color:#e6db74>&#34;What is your age?&#34;</span>, <span style=color:#ae81ff>18</span>);
+
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>welcome</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>age</span> <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>18</span>) <span style=color:#f92672>?</span>
+  <span style=color:#66d9ef>function</span>() { <span style=color:#a6e22e>alert</span>(<span style=color:#e6db74>&#34;Hello!&#34;</span>); } <span style=color:#f92672>:</span>
+  <span style=color:#66d9ef>function</span>() { <span style=color:#a6e22e>alert</span>(<span style=color:#e6db74>&#34;Greetings!&#34;</span>); };
+
+<span style=color:#a6e22e>welcome</span>(); <span style=color:#75715e>// ok now
+</span></code></pre></div><h2 id=the-javascript-this-keyword>The JavaScript &ldquo;this&rdquo; keyword</h2>
+<ul>
+<li>In a method, this refers to the owner object.</li>
+<li>Alone, this refers to the global object.</li>
+<li>In a function, this refers to the global object.</li>
+<li>In a function, in strict mode, this is undefined.</li>
+<li>In an event, this refers to the element that received the event.</li>
+<li>Methods like call(), and apply() can refer this to any object.</li>
+</ul>
+<h2 id=object-references-and-copying>Object references and copying</h2>
+<h3 id=khi-một-biến-được-gán-vào-1-object-thì-nó-không-lưu-trữ-object-đó-mà-là-địa-chỉ-bộ-nhớ---nói-cách-khác-là-1-reference-tới-object>Khi một biến được gán vào 1 object thì nó không lưu trữ object đó mà là &ldquo;địa chỉ bộ nhớ&rdquo; - nói cách khác là &ldquo;1 reference&rdquo; tới object.</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> {
+  <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;John&#34;</span>
+};
+</code></pre></div><p>Object được lưu ở đâu đấy trong bộ nhớ và biến user có 1 reference tới nó.</p>
+<p>Chúng ta có thể xem user như 1 tờ giấy có địa chỉ có object trên đó. Khi chúng ta thực hiện action lên object chẳng hạn như <code>user.name</code> thì JavaScript engine sẽ nhìn lên địa chỉ đó và tìm đến object thực sự trong bộ nhớ và thực hiện hành động lên đó.</p>
+<h3 id=khi-một-biến-object-được-cope-thì-địa-chỉ-được-copy-chứ-không-phải-cái-object-mà-địa-chỉ-trỏ-đến-vì-vậy-object-sẽ-không-được-nhân-bản-lên>Khi một biến object được cope thì địa chỉ được copy chứ không phải cái object mà địa chỉ trỏ đến, vì vậy object sẽ không được nhân bản lên.</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;John&#39;</span> };
+
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>admin</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>user</span>;
+
+<span style=color:#a6e22e>admin</span>.<span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;Pete&#39;</span>; <span style=color:#75715e>// changed by the &#34;admin&#34; reference
+</span><span style=color:#75715e></span>
+<span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>user</span>.<span style=color:#a6e22e>name</span>); <span style=color:#75715e>// &#39;Pete&#39;, changes are seen from the &#34;user&#34; reference
+</span></code></pre></div><h3 id=cloning-and-merging-objectassign>Cloning and merging, Object.assign</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;John&#34;</span> };
+
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>permissions1</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>canView</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span> };
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>permissions2</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>canEdit</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span> };
+
+<span style=color:#75715e>// copies all properties from permissions1 and permissions2 into user
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>assign</span>(<span style=color:#a6e22e>user</span>, <span style=color:#a6e22e>permissions1</span>, <span style=color:#a6e22e>permissions2</span>);
+
+<span style=color:#75715e>// now user = { name: &#34;John&#34;, canView: true, canEdit: true }
+</span></code></pre></div><h2 id=rest-parameters-and-spread-syntax>Rest parameters and spread syntax</h2>
+<h3 id=rest-parameters->Rest parameters &mldr;</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sum</span>(<span style=color:#a6e22e>a</span>, <span style=color:#a6e22e>b</span>) {
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>a</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>b</span>;
+}
+
+<span style=color:#a6e22e>alert</span>( <span style=color:#a6e22e>sum</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>) ); <span style=color:#75715e>// 3
+</span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>sumAll</span>(...<span style=color:#a6e22e>args</span>) { <span style=color:#75715e>// args is the name for the array
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>sum</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+
+  <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>arg</span> <span style=color:#66d9ef>of</span> <span style=color:#a6e22e>args</span>) <span style=color:#a6e22e>sum</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>arg</span>;
+
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>sum</span>;
+}
+
+<span style=color:#a6e22e>alert</span>( <span style=color:#a6e22e>sumAll</span>(<span style=color:#ae81ff>1</span>) ); <span style=color:#75715e>// 1
+</span><span style=color:#75715e></span><span style=color:#a6e22e>alert</span>( <span style=color:#a6e22e>sumAll</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>) ); <span style=color:#75715e>// 3
+</span><span style=color:#75715e></span><span style=color:#a6e22e>alert</span>( <span style=color:#a6e22e>sumAll</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>) ); <span style=color:#75715e>// 6
+</span></code></pre></div><h3 id=the-arguments-variable>The “arguments” variable</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>showName</span>() {
+  <span style=color:#a6e22e>alert</span>( <span style=color:#a6e22e>arguments</span>.<span style=color:#a6e22e>length</span> );
+  <span style=color:#a6e22e>alert</span>( <span style=color:#a6e22e>arguments</span>[<span style=color:#ae81ff>0</span>] );
+  <span style=color:#a6e22e>alert</span>( <span style=color:#a6e22e>arguments</span>[<span style=color:#ae81ff>1</span>] );
+
+  <span style=color:#75715e>// it&#39;s iterable
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// for(let arg of arguments) alert(arg);
+</span><span style=color:#75715e></span>}
+
+<span style=color:#75715e>// shows: 2, Julius, Caesar
+</span><span style=color:#75715e></span><span style=color:#a6e22e>showName</span>(<span style=color:#e6db74>&#34;Julius&#34;</span>, <span style=color:#e6db74>&#34;Caesar&#34;</span>);
+
+<span style=color:#75715e>// shows: 1, Ilya, undefined (no second argument)
+</span><span style=color:#75715e></span><span style=color:#a6e22e>showName</span>(<span style=color:#e6db74>&#34;Ilya&#34;</span>);
+</code></pre></div><h3 id=spread-syntax>Spread syntax</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>arr</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>5</span>, <span style=color:#ae81ff>1</span>];
+
+<span style=color:#a6e22e>alert</span>( Math.<span style=color:#a6e22e>max</span>(...<span style=color:#a6e22e>arr</span>) ); <span style=color:#75715e>// 5 (spread turns array into a list of arguments)
+</span></code></pre></div><h2 id=lexical-environment>Lexical Environment</h2>
+<p>Trong JavaScript, tất cả các function, code block {&mldr;}, và cả file script đều có 1 internal object liên kết với chúng được ẩn đi là <em>Lexial Environment</em></p>
+<p>Object Lexical Environment thì chứa 2 phần:</p>
+<ul>
+<li>Environment Record - là một object lưu trữ tất cả các biến local và các thuộc tính của nó.</li>
+<li>Một reference đến outer lexical environment để kết nối với các code bên ngoài block hoặc function.</li>
+</ul>
+<p><img src=/images/search-lexical-environment alt=search-lexical-environment>
+Khi một đoạn code muốn truy cập vào biến thì inner Lexical Environment sẽ được tìm kiếm đầu tiên -> outer -> outer &mldr;. -> global one.</p>
+<h3 id=closure>Closure</h3>
+<p><img src=/images/closure.png alt=closure>
+Closure là một function mà có thể nhớ các biến bên ngoài của nó và có thể truy cập chúng. Ở một số ngôn ngữ thì điều này là không thể hoặc là function đó phải được viết một cách đặc biệt. Nhưng với JavaScript thì mọi functions đều là closures.</p>
+<p>Hầu hết thì một Lexical Environment sẽ được loại khỏi bộ nhớ cùng với tất cả các biến sau khi function đã thực hiện xong vì không có references nào tới nó nữa.</p>
+<p>Tuy nhiên, nếu có một function lồng nhau và nó vẫn reachable thì sau khi function kết thúc, thì nó vẫn có các property mà trỏ đến lexical environment.</p>
+<p>Như ví dụ ở trên, counter() sau khi được gọi lần 1 nó thực hiện makeCounter() và trả về 0, tuy nhiên thì counter vẫn reachable và do đó các biến trong makeCounter vẫn được dữ lại, vì thế nếu bạn gọi counter() 1 lần nữa thì nó sẽ trả về 1, tiếp theo là 2, 3, &mldr;</p>
+<h2 id=the-new-function-syntax>The &ldquo;new Function&rdquo; syntax</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getFunc</span>() {
+  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>value</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;test&#34;</span>;
+
+  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>func</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Function(<span style=color:#e6db74>&#39;alert(value)&#39;</span>);
+
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>func</span>;
+}
+
+<span style=color:#a6e22e>getFunc</span>()(); <span style=color:#75715e>// error: value is not defined
+</span></code></pre></div><p>Tất cả function đều nhớ nó được tạo ra ở đâu nhờ vào 1 thuộc tính đặc biệt là <code>[[Environment]]</code>. Nó trỏ đến Lexical Environment nơi nó được tạo ra.</p>
+<p>Nhưng nếu function được tạo sử dụng synxtax <code>new Function</code> thì <code>[[Environment]]</code> của nó sẽ được set để trỏ đến glocal Lexical Environment chứ không phải Lexical Environment. So với hàm được tạo 1 cách thông thường:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getFunc</span>() {
+  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>value</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;test&#34;</span>;
+
+  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>func</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() { <span style=color:#a6e22e>alert</span>(<span style=color:#a6e22e>value</span>); };
+
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>func</span>;
+}
+
+<span style=color:#a6e22e>getFunc</span>()(); <span style=color:#75715e>// &#34;test&#34;, from the Lexical Environment of getFunc
+</span></code></pre></div>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#variables>Variables</a>
+<ul>
+<li><a href=#var>var</a></li>
+<li><a href=#let>let</a></li>
+<li><a href=#const>const</a></li>
+</ul>
+</li>
+<li><a href=#hoisted>Hoisted</a></li>
+<li><a href=#loops>Loops</a>
+<ul>
+<li><a href=#labels-for-breakcontinue>Labels for break/continue</a></li>
+</ul>
+</li>
+<li><a href=#functions>Functions</a>
+<ul>
+<li><a href=#a-function-declaration-can-be-called-earlier-than-it-is-defined>A Function Declaration can be called earlier than it is defined.</a></li>
+<li><a href=#khi-nào-sử-dụng-function-declaration-vs-function-expression>Khi nào sử dụng Function Declaration vs Function Expression.</a></li>
+</ul>
+</li>
+<li><a href=#the-javascript-this-keyword>The JavaScript &ldquo;this&rdquo; keyword</a></li>
+<li><a href=#object-references-and-copying>Object references and copying</a>
+<ul>
+<li><a href=#khi-một-biến-được-gán-vào-1-object-thì-nó-không-lưu-trữ-object-đó-mà-là-địa-chỉ-bộ-nhớ---nói-cách-khác-là-1-reference-tới-object>Khi một biến được gán vào 1 object thì nó không lưu trữ object đó mà là &ldquo;địa chỉ bộ nhớ&rdquo; - nói cách khác là &ldquo;1 reference&rdquo; tới object.</a></li>
+<li><a href=#khi-một-biến-object-được-cope-thì-địa-chỉ-được-copy-chứ-không-phải-cái-object-mà-địa-chỉ-trỏ-đến-vì-vậy-object-sẽ-không-được-nhân-bản-lên>Khi một biến object được cope thì địa chỉ được copy chứ không phải cái object mà địa chỉ trỏ đến, vì vậy object sẽ không được nhân bản lên.</a></li>
+<li><a href=#cloning-and-merging-objectassign>Cloning and merging, Object.assign</a></li>
+</ul>
+</li>
+<li><a href=#rest-parameters-and-spread-syntax>Rest parameters and spread syntax</a>
+<ul>
+<li><a href=#rest-parameters->Rest parameters &mldr;</a></li>
+<li><a href=#the-arguments-variable>The “arguments” variable</a></li>
+<li><a href=#spread-syntax>Spread syntax</a></li>
+</ul>
+</li>
+<li><a href=#lexical-environment>Lexical Environment</a>
+<ul>
+<li><a href=#closure>Closure</a></li>
+</ul>
+</li>
+<li><a href=#the-new-function-syntax>The &ldquo;new Function&rdquo; syntax</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&text=Javascript%20in%20a%20nutshell" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&title=Javascript%20in%20a%20nutshell" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&is_video=false&description=Javascript%20in%20a%20nutshell" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Javascript%20in%20a%20nutshell&body=Check out this article: %2fposts%2fbackend%2fjavascript-in-a-nutshell%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&title=Javascript%20in%20a%20nutshell" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&title=Javascript%20in%20a%20nutshell" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&name=Javascript%20in%20a%20nutshell&description=Do%20b%c3%a0i%20vi%e1%ba%bft%20c%c3%b3%20r%e1%ba%a5t%20nhi%e1%bb%81u%20m%e1%bb%a5c%20v%c3%a0%20d%c3%a0i%20n%c3%aan%20b%e1%ba%a1n%20%c4%91%e1%bb%8dc%20nh%c3%acn%20v%c3%a0o%20Table%20Of%20Content%20%28TOC%29%20%e1%bb%9f%20side-bar%20b%c3%aan%20ph%e1%ba%a3i%20%c4%91%e1%bb%83%20%c4%91%e1%bb%8dc%20m%e1%bb%a5c%20m%c3%acnh%20quan%20t%c3%a2m%20nh%c3%a9.%0aVariables%20var%20%26ldquo%3bvar%26rdquo%3b%20kh%c3%b4ng%20c%c3%b3%20block%20scope%0aif%20%28true%29%20%7b%20var%20test%20%3d%20true%3b%20%2f%2f%20d%c3%b9ng%20%26%2334%3bvar%26%2334%3b%20thay%20%26%2334%3blet%26%2334%3b%20%7d%20alert%28test%29%3b%20%2f%2f%20true%2c%20var%20kh%c3%b4ng%20c%c3%b3%20block%20scope%20n%c3%aan%20n%c3%b3%20%c4%91%c6%b0%e1%bb%a3c%20k%c3%a9o%20ra%20kh%e1%bb%8fi%20block%20scope.%20N%e1%ba%bfu%20m%e1%bb%99t%20block%20n%e1%ba%b1m%20trong%201%20function%20th%c3%ac%20var%20s%e1%ba%bd%20tr%e1%bb%9f%20th%c3%a0nh%20bi%e1%ba%bfn%20function-level" aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fjavascript-in-a-nutshell%2f&t=Javascript%20in%20a%20nutshell" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
