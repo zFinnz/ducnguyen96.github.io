@@ -8,6 +8,9 @@ tags: [javascript, js, backend]
 tags_weight: 6
 ---
 Do bài viết có rất nhiều mục và dài nên bạn đọc nhìn vào Table Of Content (TOC) ở side-bar bên phải để đọc mục mình quan tâm nhé.
+
+Tham khảo: [javascript.info](https://javascript.info)
+
 ## Variables
 ### var
 **"var" không có block scope**
@@ -349,4 +352,268 @@ function getFunc() {
 }
 
 getFunc()(); // "test", from the Lexical Environment of getFunc
+```
+
+## Property flags and descriptors
+Như ta đã biết thì objects có thể lưu trữ thuộc tính, thuộc tính không đơn giản chỉ là 1 cặp `key-value` mà nó linh hoạt hơn vậy.
+
+### Property flags
+```javascript
+let user = {
+  name: "John"
+};
+
+let descriptor = Object.getOwnPropertyDescriptor(user, 'name');
+
+alert( JSON.stringify(descriptor, null, 2 ) );
+/* property descriptor:
+{
+  "value": "John",
+  "writable": true,
+  "enumerable": true,
+  "configurable": true
+}
+*/
+```
+Các thuộc tính của objects ngoài **value** thì còn có 3 attributes sau:
+- **writeable**: if `true` thì **value** có thể thay đổi, còn không thì chỉ có thể `read`
+- **enumerable**: if `true` thì được list ra trong vòng lặp và ngược lại
+- **configurable**: if `true` thì thuộc tính này có thể bị deleted những attributes có thể được chỉnh sửa và ngược lại.
+```javascript
+let user = { };
+
+Object.defineProperty(user, "name", {
+  value: "John",
+  // for new properties we need to explicitly list what's true
+  enumerable: true,
+  configurable: true
+});
+
+alert(user.name); // John
+user.name = "Pete"; // Error
+```
+Với defineProperty nếu 1 attribute không được chỉ định thì nó sẽ mặc định có giá trị là `false`.
+
+## Property getters and setters
+Object có 2 loại thuộc tính là `data properties` và `accessor properties`
+### Getters and Setters
+```javascript
+let user = {
+  name: "John",
+  surname: "Smith",
+
+  get fullName() {
+    return `${this.name} ${this.surname}`;
+  },
+
+  set fullName(value) {
+    [this.name, this.surname] = value.split(" ");
+  }
+};
+
+// set fullName is executed with the given value.
+user.fullName = "Alice Cooper";
+
+alert(user.name); // Alice
+alert(user.surname); // Cooper
+```
+### Smarter getters/setters
+Getters/setters có thể được sử dụng như `wrapper` cho 1 thuộc tính để tăng thêm quyền điều khiển.
+
+```javascript
+let user = {
+  get name() {
+    return this._name;
+  },
+
+  set name(value) {
+    if (value.length < 4) {
+      alert("Name is too short, need at least 4 characters");
+      return;
+    }
+    this._name = value;
+  }
+};
+
+user.name = "Pete";
+alert(user.name); // Pete
+
+user.name = ""; // Name is too short...
+```
+### Using for compatibility
+Ví dụ ta implement 1 object user như sau:
+```javascript
+function User(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+let john = new User("John", 25);
+
+alert( john.age ); // 25
+```
+Nhưng sau đó chúng ta quyết định là lưu `birthday` thay vì `age`, vì nó chính xác hơn và tiện hơn. Nhưng ta vẫn muốn giữ lại thuộc tính age vì age có thể được sử dụng ở nhiều nơi bởi nhiều người.
+
+Ta sẽ thêm `age` như sau:
+```javascript
+function User(name, birthday) {
+  this.name = name;
+  this.birthday = birthday;
+
+  // age is calculated from the current date and birthday
+  Object.defineProperty(this, "age", {
+    get() {
+      let todayYear = new Date().getFullYear();
+      return todayYear - this.birthday.getFullYear();
+    }
+  });
+}
+
+let john = new User("John", new Date(1992, 6, 1));
+
+alert( john.birthday ); // birthday is available
+alert( john.age );      // ...as well as the age
+```
+
+## Callbacks
+Rất nhiều hàm được cấp bởi môi trường chạy JS cho phép bạn schedule những hành động bất đồng bộ. Nói cách khác là những hành động chúng ta khởi tạo bây giờ, nhưng sau này mới hoàn thành. Ví dụ 1 trong những function đó là `setTimeout`.
+
+Xem ví dụ dưới đây:
+```javascript
+function loadScript(src) {
+  // creates a <script> tag and append it to the page
+  // this causes the script with given src to start loading and run when complete
+  let script = document.createElement('script');
+  script.src = src;
+  document.head.append(script);
+}
+loadScript('/my/script.js'); // the script has "function newFunction() {…}"
+
+newFunction(); // no such function!
+```
+`script.js` chứa hàm `newFunction()` và ta cần chạy hàm này ngay sau khi `loadScript` thành công. Hiện tại thì `loadScript` chưa cung cấp 1 cách nào để có thể theo dõi được việc load script thành công hay chưa, loadScript chạy và nó thực hiện ngay hàm tiếp theo dù script chưa được load hay chưa. Nhưng chúng ta cần biết khi nào load xong để sử dụng `newFunction()`. Và `callback` là giải pháp lúc này.
+
+```javascript
+function loadScript(src, callback) {
+  let script = document.createElement('script');
+  script.src = src;
+
+  script.onload = () => callback(script);
+
+  document.head.append(script);
+}
+
+loadScript('/my/script.js', function() {
+  // the callback runs after the script is loaded
+  newFunction(); // so now it works
+  ...
+});
+```
+## Promise
+1. "producing code" là đoạn code mà cần thời gian để hoàn thành, chẳng hạn như load data từ network.
+2. "consuming code" là đoạn code mà muốn result sau khi producing code hoàn thành. Nhiều hàm có thể cần đến result.
+3. promise là một JS object mà kết nối "producing code" và "consuming code".
+```javascript
+let promise = new Promise(function(resolve, reject) {
+  // executor (the producing code, "singer")
+});
+```
+Hàm được truyền vào Promise được gọi là `executor`. Khi một Promise được tạo ra thì executor chạy ngay. resolver và reject là 2 callbacks mà JS tạo ra, code của chúng ta chỉ nằm trong executor.
+
+![promise-1](/images/promise-1.png)
+
+Khi executor có result thì nó sẽ gọi 1 trong 2 callbacks:
+- resolve(value) - nếu job hoàn thành cùng với `value`.
+- reject(error) - nếu có lỗi xảy ra, error là error object.
+
+Tóm lại: Executor sẽ tự động chạy ngay khi Promise được tạo và nó sẽ cố hoàn thành công việc. Khi nó hoàn thành thì sẽ gọi `resolve` và gọi `reject` nếu có lỗi xảy ra.
+
+Promise object chứa những thuộc tính sau:
+- state - khởi tạo với `pending` sau đó thay đổi thành `fullfilled` hoặc `rejected`
+- result - khởi tạo với `undefined` sau đó thay đổi thành `value` hoặc `error`
+
+Ví dụ:
+```javascript
+function loadScript(src) {
+  return new Promise(function(resolve, reject) {
+    let script = document.createElement('script');
+    script.src = src;
+
+    script.onload = () => resolve(script);
+    script.onerror = () => reject(new Error(`Script load error for ${src}`));
+
+    document.head.append(script);
+  });
+}
+
+let promise = loadScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.js");
+
+promise.then(
+  script => alert(`${script.src} is loaded!`),
+  error => alert(`Error: ${error.message}`)
+);
+
+promise.then(script => alert('Another handler...'));
+```
+Chúng ta có thể thấy ngay 1 vài lợi ích của promise so với callbacks:
+- Promises cho phép chúng ta làm theo thứ tự tự nhiên hơn, ví dụ loadScript(script) sau đó thì `.then` để viết những thứ muốn làm với result.
+
+- Đối với callback thì chúng ta phải biết làm gì tiếp theo với result ngay trước khi loadScript được gọi.
+
+## Promise API
+### Promise.all
+Execute nhiều promises đồng thời và chờ cho đến khi tất cả đều hoàn thành.
+```javascript
+let promise = Promise.all([...promises...]);
+```
+- Nếu có bất cứ promise nào trong array promises kia bị rejected thì Promise.all sẽ bị reject cùng với lỗi, các promise không bị lỗi sẽ bị ignore chứ k bị cancel. 
+- Promise.all cho phép các giá trị không phải promise trong iterable.
+### Promise.allSettled
+Execute nhiều promises đồng thời và chờ cho đến khi tất cả đều hoàn thành, nếu có promise nào bị lỗi thì vẫn sẽ tiếp tục thực hiện và theo dõi những promise còn lại.
+
+### Polyfill
+Nếu browser không hỗ trợ Promise.allSetted thì chúng ta có thể làm như sau:
+```javascript
+if (!Promise.allSettled) {
+  const rejectHandler = reason => ({ status: 'rejected', reason });
+
+  const resolveHandler = value => ({ status: 'fulfilled', value });
+
+  Promise.allSettled = function (promises) {
+    const convertedPromises = promises.map(p => Promise.resolve(p).then(resolveHandler, rejectHandler));
+    return Promise.all(convertedPromises);
+  };
+}
+```
+### Promise.race
+Tương tự Promise.all nhưng nó chỉ chờ cho đến khi 1 promise hoàn thành hoặc gặp lỗi.
+
+### Promise.any
+Tương tự Promise.race nhưng chờ cho đến khi 1 promise được fulfilled.
+
+## Async/await
+`async` trước 1 function có nghĩa là function đó sẽ luôn trả về 1 promise. Tất cả các giá trị khác đều được wrapped trong 1 resolved promise.
+
+Ví dụ, function dưới đây sẽ trả về 1 resolved promise với giá trị là 1
+```javascript
+async function f() {
+  return 1;
+}
+
+f().then(alert); // 1
+```
+`await` sẽ làm JS chờ cho đến khi 1 promise hoàn thành hoặc gặp lỗi.
+```javascript
+async function f() {
+
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(() => resolve("done!"), 1000)
+  });
+
+  let result = await promise; // wait until the promise resolves (*)
+
+  alert(result); // "done!"
+}
+
+f();
 ```
