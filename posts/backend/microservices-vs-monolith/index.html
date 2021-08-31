@@ -1,0 +1,315 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices vs Monoliths | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-vs-monolith/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices vs Monoliths">
+<meta property="og:description" content="Trong xu hướng mới nổi của microservices thì các cuộc tranh luận về nó và Monolith là không thể tránh khỏi. Kiến trúc microservices cung cấp những lợi ích như khả năng mở rộng ,tính linh thoạt và là một cách hiệu quả về chi phí đối với những ứng dụng nhiều tính năng. Những gã khổng lồ về công nghệ như Netflix, Amazon và Oracle thường triển khai kiến trúc microservice trong 1 hoặc nhiều ứng dụng.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-vs-monolith/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-08-31T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-08-31T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices vs Monoliths">
+<meta name=twitter:description content="Trong xu hướng mới nổi của microservices thì các cuộc tranh luận về nó và Monolith là không thể tránh khỏi. Kiến trúc microservices cung cấp những lợi ích như khả năng mở rộng ,tính linh thoạt và là một cách hiệu quả về chi phí đối với những ứng dụng nhiều tính năng. Những gã khổng lồ về công nghệ như Netflix, Amazon và Oracle thường triển khai kiến trúc microservice trong 1 hoặc nhiều ứng dụng.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/javascript-in-a-nutshell/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&text=Microservices%20vs%20Monoliths" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&title=Microservices%20vs%20Monoliths" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&is_video=false&description=Microservices%20vs%20Monoliths" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20vs%20Monoliths&body=Check out this article: %2fposts%2fbackend%2fmicroservices-vs-monolith%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&title=Microservices%20vs%20Monoliths" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&title=Microservices%20vs%20Monoliths" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&name=Microservices%20vs%20Monoliths&description=Trong%20xu%20h%c6%b0%e1%bb%9bng%20m%e1%bb%9bi%20n%e1%bb%95i%20c%e1%bb%a7a%20microservices%20th%c3%ac%20c%c3%a1c%20cu%e1%bb%99c%20tranh%20lu%e1%ba%adn%20v%e1%bb%81%20n%c3%b3%20v%c3%a0%20Monolith%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%83%20tr%c3%a1nh%20kh%e1%bb%8fi.%20Ki%e1%ba%bfn%20tr%c3%bac%20microservices%20cung%20c%e1%ba%a5p%20nh%e1%bb%afng%20l%e1%bb%a3i%20%c3%adch%20nh%c6%b0%20kh%e1%ba%a3%20n%c4%83ng%20m%e1%bb%9f%20r%e1%bb%99ng%20%2ct%c3%adnh%20linh%20tho%e1%ba%a1t%20v%c3%a0%20l%c3%a0%20m%e1%bb%99t%20c%c3%a1ch%20hi%e1%bb%87u%20qu%e1%ba%a3%20v%e1%bb%81%20chi%20ph%c3%ad%20%c4%91%e1%bb%91i%20v%e1%bb%9bi%20nh%e1%bb%afng%20%e1%bb%a9ng%20d%e1%bb%a5ng%20nhi%e1%bb%81u%20t%c3%adnh%20n%c4%83ng.%20Nh%e1%bb%afng%20g%c3%a3%20kh%e1%bb%95ng%20l%e1%bb%93%20v%e1%bb%81%20c%c3%b4ng%20ngh%e1%bb%87%20nh%c6%b0%20Netflix%2c%20Amazon%20v%c3%a0%20Oracle%20th%c6%b0%e1%bb%9dng%20tri%e1%bb%83n%20khai%20ki%e1%ba%bfn%20tr%c3%bac%20microservice%20trong%201%20ho%e1%ba%b7c%20nhi%e1%bb%81u%20%e1%bb%a9ng%20d%e1%bb%a5ng." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&t=Microservices%20vs%20Monoliths" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#microservices-là-gì->Microservices là gì ?</a></li>
+<li><a href=#monoliths-là-gì->Monoliths là gì ?</a></li>
+<li><a href=#microservices-vs-monoliths-pros-and-cons>Microservices vs Monoliths: Pros and Cons</a>
+<ul>
+<li><a href=#monolithic-architecture>Monolithic architecture</a></li>
+<li><a href=#microservices-architecture>Microservices architecture</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices vs Monoliths
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-08-31 00:00:00 +0000 UTC" itemprop=datePublished>2021-08-31</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p>Trong xu hướng mới nổi của microservices thì các cuộc tranh luận về nó và Monolith là không thể tránh khỏi. Kiến trúc microservices cung cấp những lợi ích như khả năng mở rộng ,tính linh thoạt và là một cách hiệu quả về chi phí đối với những ứng dụng nhiều tính năng. Những gã khổng lồ về công nghệ như Netflix, Amazon và Oracle thường triển khai kiến trúc microservice trong 1 hoặc nhiều ứng dụng. Ngược lại, Monolith ngày càng mất đi giá trị của nó vì nó gây rủi ro cho các phương pháp phân phối phần mềm hiện tại. Trước khi đi vào so sánh Microservices và Monoliths thì hãy nhìn lại từng kiến trúc.</p>
+<h2 id=microservices-là-gì->Microservices là gì ?</h2>
+<p><img src=/images/Microservices-VS-Monolith-Diagramss-47-1024x1013.jpg alt=microservice>
+Là những services nhỏ có thể deploy được, nó được mô hình hóa xung quanh các ứng dụng phức tạp. Chẳng hạn 1 app sẽ có chức năng quản lý user &ndash;> userservice, authentication &ndash;> authservice, quản lý product &ndash;> productservice,&mldr; Các service này có thể sử dụng ngôn ngữ khác nhau, deploy ở môi trường khác nhau (máy ảo, container, cloud,&mldr;), và chúng giao tiếp với nhau để tạo ra 1 application hoàn chỉnh.</p>
+<h2 id=monoliths-là-gì->Monoliths là gì ?</h2>
+<p><img src=/images/Microservices-VS-Monolith-Diagramss-48-768x760.jpg alt=monoliths>
+Ngược lại với việc chia nhỏ thành các microservice, monolith sẽ đóng gói toàn bộ các service lại thành một khối thống nhất.</p>
+<h2 id=microservices-vs-monoliths-pros-and-cons>Microservices vs Monoliths: Pros and Cons</h2>
+<h3 id=monolithic-architecture>Monolithic architecture</h3>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Điểm lợi ích đầu tiên có thể thấy ngay khi sử dụng kiến trúc Monolith là dễ dàng phát triển và deploy.</li>
+<li>Điểm lợi thứ 2 là vì tất cả các service đều tập trung nên chúng ta không phải gọi bị <code>Internet delay</code> như microservices. 1 ứng dụng với kiến trúc microservice có thể phải gọi hàng chục API khác nhau đến hàng chục microserrvice để load 1 UI screen, trong khi với Monolith thì chỉ cần 1 là đủ.</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Điểm trừ lớn nhất của monolithic là khó để scale.</li>
+<li>Code base lớn nên những người vào dự án sau này rất mất thời gian để hiểu được và bổ sung tính năng mới cho app.</li>
+<li>Khó debug.</li>
+<li>Khó ứng dụng các công nghệ mới.</li>
+<li>Release chậm, khi deploy thì depoy toàn bộ service nên user không thể tương tác được với app.</li>
+</ul>
+<h3 id=microservices-architecture>Microservices architecture</h3>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Điểm cộng lớn nhất là rất dễ nâng cấp và scale. Các services của 1 application không phải chịu lượng requests giống nhau, nếu có 1 service chịu lượng tải nhiều hơn thì ta chỉ cần scale service đó lên. Hơn nữa với cloud computing thì chỉ cần một vài click chuột là có thể scale được 1 service, điều này là không thể với monolith.</li>
+<li>Do các service tách biệt nên nếu 1 service bị lỗi thì các service vẫn hoạt động bình thường, còn với monolith thì chỉ cần 1 module bị lỗi là có thể kéo sập toàn bộ hệ thống.</li>
+<li>Các service khác nhau có thể viết bằng ngôn ngữ khác nhau, mỗi team có thể tập trung viết 1 service, đồng thời thì team size sẽ bé lại và làm việc hiệu quả hơn.</li>
+<li>Có thể deploy từng service riêng lẽ.</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Các module giao tiếp với nhau qua api nên có tốc độ không cao bằng monolith, ngoài ra thì mỗi module phải tự giải quyết các vấn đề bảo mật, transaction, lỗi két nối,&mldr;</li>
+<li>Đảm bảo tính đồng nhất trong dữ liệu sẽ trở nên phức tạp hơn.</li>
+<li>Nhiều service ở nhiều nơi nên quản lý, theo dõi các service phức tạp.</li>
+<li>Thiết kế được kiến trúc microservices hiệu quả rất khó.</li>
+</ul>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#microservices-là-gì->Microservices là gì ?</a></li>
+<li><a href=#monoliths-là-gì->Monoliths là gì ?</a></li>
+<li><a href=#microservices-vs-monoliths-pros-and-cons>Microservices vs Monoliths: Pros and Cons</a>
+<ul>
+<li><a href=#monolithic-architecture>Monolithic architecture</a></li>
+<li><a href=#microservices-architecture>Microservices architecture</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&text=Microservices%20vs%20Monoliths" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&title=Microservices%20vs%20Monoliths" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&is_video=false&description=Microservices%20vs%20Monoliths" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20vs%20Monoliths&body=Check out this article: %2fposts%2fbackend%2fmicroservices-vs-monolith%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&title=Microservices%20vs%20Monoliths" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&title=Microservices%20vs%20Monoliths" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&name=Microservices%20vs%20Monoliths&description=Trong%20xu%20h%c6%b0%e1%bb%9bng%20m%e1%bb%9bi%20n%e1%bb%95i%20c%e1%bb%a7a%20microservices%20th%c3%ac%20c%c3%a1c%20cu%e1%bb%99c%20tranh%20lu%e1%ba%adn%20v%e1%bb%81%20n%c3%b3%20v%c3%a0%20Monolith%20l%c3%a0%20kh%c3%b4ng%20th%e1%bb%83%20tr%c3%a1nh%20kh%e1%bb%8fi.%20Ki%e1%ba%bfn%20tr%c3%bac%20microservices%20cung%20c%e1%ba%a5p%20nh%e1%bb%afng%20l%e1%bb%a3i%20%c3%adch%20nh%c6%b0%20kh%e1%ba%a3%20n%c4%83ng%20m%e1%bb%9f%20r%e1%bb%99ng%20%2ct%c3%adnh%20linh%20tho%e1%ba%a1t%20v%c3%a0%20l%c3%a0%20m%e1%bb%99t%20c%c3%a1ch%20hi%e1%bb%87u%20qu%e1%ba%a3%20v%e1%bb%81%20chi%20ph%c3%ad%20%c4%91%e1%bb%91i%20v%e1%bb%9bi%20nh%e1%bb%afng%20%e1%bb%a9ng%20d%e1%bb%a5ng%20nhi%e1%bb%81u%20t%c3%adnh%20n%c4%83ng.%20Nh%e1%bb%afng%20g%c3%a3%20kh%e1%bb%95ng%20l%e1%bb%93%20v%e1%bb%81%20c%c3%b4ng%20ngh%e1%bb%87%20nh%c6%b0%20Netflix%2c%20Amazon%20v%c3%a0%20Oracle%20th%c6%b0%e1%bb%9dng%20tri%e1%bb%83n%20khai%20ki%e1%ba%bfn%20tr%c3%bac%20microservice%20trong%201%20ho%e1%ba%b7c%20nhi%e1%bb%81u%20%e1%bb%a9ng%20d%e1%bb%a5ng." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-vs-monolith%2f&t=Microservices%20vs%20Monoliths" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
