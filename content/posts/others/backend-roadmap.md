@@ -26,3 +26,6 @@ tags_weight: 8
 - [Basic Authentication](/posts/backend/authentication-in-a-nutshell/#session-based-authentication)
 - [Token Authentication](/posts/backend/authentication-in-a-nutshell/#token-based-authentication)
 - [JWT](/posts/backend/authentication-in-a-nutshell/#jwt)
+
+## Learn a language
+- [JavaScript](/posts/backend/javascript-in-a-nutshell/)
