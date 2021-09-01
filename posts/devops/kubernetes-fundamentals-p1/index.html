@@ -1,0 +1,311 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Kubernetes fundamentals phần 1 - Overview | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/devops/kubernetes-fundamentals-p1/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Kubernetes fundamentals phần 1 - Overview">
+<meta property="og:description" content="Kubernetes là gì ? Kubernetes là một nền tảng open-source để quản lý các services và workloads đã được container hóa, nó giúp việc khai báo, cấu hình và tự động hóa một cách dễ hàng hơn.
+Cái tên kubernetes có nguồn gốc từ Hy Lạp, có nghĩa là thuyền trưởng hoặc là hoa tiêu. K8s là viêt tắt của K, số lượng ký tự giữa K và s, s.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/devops/kubernetes-fundamentals-p1/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-01T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-01T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Kubernetes fundamentals phần 1 - Overview">
+<meta name=twitter:description content="Kubernetes là gì ? Kubernetes là một nền tảng open-source để quản lý các services và workloads đã được container hóa, nó giúp việc khai báo, cấu hình và tự động hóa một cách dễ hàng hơn.
+Cái tên kubernetes có nguồn gốc từ Hy Lạp, có nghĩa là thuyền trưởng hoặc là hoa tiêu. K8s là viêt tắt của K, số lượng ký tự giữa K và s, s.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/microservices-vs-monolith/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=/posts/devops/deployment-strategies/ aria-label=Next>
+<i class="fas fa-chevron-right" aria-hidden=true onmouseover="$('#i-next').toggle()" onmouseout="$('#i-next').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&text=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&title=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&is_video=false&description=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview&body=Check out this article: %2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&title=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&title=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&name=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview&description=Kubernetes%20l%c3%a0%20g%c3%ac%20%3f%20Kubernetes%20l%c3%a0%20m%e1%bb%99t%20n%e1%bb%81n%20t%e1%ba%a3ng%20open-source%20%c4%91%e1%bb%83%20qu%e1%ba%a3n%20l%c3%bd%20c%c3%a1c%20services%20v%c3%a0%20workloads%20%c4%91%c3%a3%20%c4%91%c6%b0%e1%bb%a3c%20container%20h%c3%b3a%2c%20n%c3%b3%20gi%c3%bap%20vi%e1%bb%87c%20khai%20b%c3%a1o%2c%20c%e1%ba%a5u%20h%c3%acnh%20v%c3%a0%20t%e1%bb%b1%20%c4%91%e1%bb%99ng%20h%c3%b3a%20m%e1%bb%99t%20c%c3%a1ch%20d%e1%bb%85%20h%c3%a0ng%20h%c6%a1n.%0aC%c3%a1i%20t%c3%aan%20kubernetes%20c%c3%b3%20ngu%e1%bb%93n%20g%e1%bb%91c%20t%e1%bb%ab%20Hy%20L%e1%ba%a1p%2c%20c%c3%b3%20ngh%c4%a9a%20l%c3%a0%20thuy%e1%bb%81n%20tr%c6%b0%e1%bb%9fng%20ho%e1%ba%b7c%20l%c3%a0%20hoa%20ti%c3%aau.%20K8s%20l%c3%a0%20vi%c3%aat%20t%e1%ba%aft%20c%e1%bb%a7a%20K%2c%20s%e1%bb%91%20l%c6%b0%e1%bb%a3ng%20k%c3%bd%20t%e1%bb%b1%20gi%e1%bb%afa%20K%20v%c3%a0%20s%2c%20s." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&t=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#kubernetes-là-gì->Kubernetes là gì ?</a></li>
+<li><a href=#tại-sao-lại-cần-đến-kubernetes-và-nó-có-thể-làm-gì->Tại sao lại cần đến Kubernetes và nó có thể làm gì ?</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Kubernetes fundamentals phần 1 - Overview
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-01 00:00:00 +0000 UTC" itemprop=datePublished>2021-09-01</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/devops>devops</a>
+,
+<a class=category-link href=/categories/backend>backend</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+,
+<a class=tag-link href=/tags/kubernetes rel=tag>kubernetes</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<h2 id=kubernetes-là-gì->Kubernetes là gì ?</h2>
+<p>Kubernetes là một nền tảng open-source để quản lý các services và workloads đã được container hóa, nó giúp việc khai báo, cấu hình và tự động hóa một cách dễ hàng hơn.</p>
+<p>Cái tên kubernetes có nguồn gốc từ Hy Lạp, có nghĩa là thuyền trưởng hoặc là hoa tiêu. K8s là viêt tắt của K, số lượng ký tự giữa K và s, s.</p>
+<p><strong>Quay ngược lại quá khứ</strong>
+<img src=/images/container_evolution.svg alt=container-evolution>
+<strong>- Deployment truyền thống</strong>: Thời kỳ đầu, các tổ chức chạy apps trên các servers vật lý. Lúc đó thì không có cách nào để định rõ giới hạn về resource của 1 app trên server vật lý, và điều này gây nên vấn đề về phân phối tài nguyên. Ví dụ, nếu có nhiều ứng dụng chạy cùng lúc trên cùng 1 server vật lý, thì có thể có 1 app sẽ chiếm hầu hết result khiến các app còn lại kém hiệu quả. Một giải pháp cho vấn đề này là chỉ chạy 1 app trên 1 server vật lý, nhưng cách này khiến chúng ta không scale được vì sử dụng resource kém hiệu quả hơn nữa thì việc duy trì nhiều server vật lý cùng lúc cũng rất đắt đỏ.</p>
+<p><strong>- Deployment với ảo hóa</strong>: Như một kết quả thì ảo hóa được ra đời. Nó cho phép bạn chạy nhiều máy ảo trên 1 server vật lý. Ảo hóa cho phép các app được cô lập giữa các máy ảo và cung cấp nhiều tầng bảo mật vì các thông tin của 1 app không thể bị truy cập một cách dễ dàng bởi các app khác.</p>
+<p>Ảo hóa cho phép sử dụng resource tốt hơn trên 1 server vật lý và giúp việc scale tốt hơn vì một app có thể được thêm và update một cách dễ dàng, giảm chi phí phần cứng,&mldr;</p>
+<p>Mỗi máy ảo là một machine chạy tất cả các components bao gồm cả hệ điều hành trên các phần cứng ảo.</p>
+<p><strong>- Deployment với container</strong>: Containers tương tự với máy ảo, nhưng chúng có các thuộc tính thoải mái hơn để chia sẻ OS giữa các app.
+<img src=/images/WhatIsALinuxContainer_Image.webp alt=container>
+Như hình ở trên ta có thể thấy thì các container có cùng 1 host OS.</p>
+<p>Containers ngày càng phổ biến vì chúng mang tới những lợi ích sau:</p>
+<ul>
+<li>Tạo và triển khai các app nhanh hơn</li>
+<li>CICD: việc build và deploy container image nhanh chóng và đáng tin cậy hơn, với khả năng rollbacks hiệu quả (do tính bất biến của image).</li>
+<li>Phân tách Dev với Ops: tạo container images ở build/release time thay vì deployment time ==> tách app ra khỏi infrastructure.</li>
+<li>Khả năng quan sát: không chỉ hiện thị thông tin và số liệu ở OS-level mà còn hiển thị tình trạng ứng dụng và các tín hiệu khác.</li>
+<li>Tính nhất quán về môi trường xuyên suốt quá trình developement, testing, production: chạy trên laptop cũng giống như chạy trên cloud.</li>
+<li>Chạy trên tất cả các distro, tất cả nền tảng cloud.</li>
+<li>Micro-services: app được tách ra làm các service nhỏ độc lập có thể deploy và quản lý 1 cách linh hoạt.</li>
+<li>Resource được cô lập => hiệu suất app có thể dự đoán được.</li>
+<li>Hiệu quả sử dụng resource được tăng cao.</li>
+</ul>
+<h2 id=tại-sao-lại-cần-đến-kubernetes-và-nó-có-thể-làm-gì->Tại sao lại cần đến Kubernetes và nó có thể làm gì ?</h2>
+<p>Containers là một cách tốt để đóng gói và chạy app của bạn. Trong một môi trường production, bạn cần quản lý các containers để chạy các app và đảm bảo không có downtime. Ví dụ, nếu 1 container down thì 1 container khác cần phải chạy thay thế. Và sẽ dễ dàng hơn nếu có 1 hệ thống có thể quản lý việc này.</p>
+<p>Và đây là lúc Kubernetes ra đời. Kubernetes cung cấp co bạn 1 framework để chạy các hệ thống phân tán (distributed systems) một cách đảm bảo hơn. Nó đảm nhận việc scale và chuyển đổi container cho app của bạn, nó cung cấp các pattern về deployment,&mldr; Ví dụ kubernetes có thể dễ dàng quản lý một <a href=/posts/devops/deployment-strategies/>canary deployment</a>.</p>
+<p>Kubernetes cung cấp cho bạn:</p>
+<ul>
+<li><strong>Service discovery and load balancing</strong>: Kubernetes có thể expose container sử dụng DNS hoặc là IP. Nếu mà traffice quá tới container quá lớn nó có thể cân bằng tải và phân phối lại traffic để deployment ổn định hơn.</li>
+<li><strong>Storage orchestration</strong>: Cho phép bạn tự động mount 1 hệ thống lưu trữ tùy vào lựa chọn của bạn, chẳng hạn như local storages, cloud providers,&mldr;</li>
+<li><strong>Tự động hóa rollouts và rollbacks</strong>: Thay đổi trạng thái đối 1 trạng thái mong muốn, chẳng hạn như có thể tự động hóa việc tạo containers mới, xóa containers và chuyển resources đến container mới.</li>
+<li><strong>Automatic bin packing</strong>: Điều khiển resource cho từng container để tối ưu hóa resource.</li>
+<li><strong>Self-healing</strong>: Restart những container failed, thay thế containers, kill containers mà không responed, không để client sử dụng cho đến khi container đã sẵn sàng.</li>
+<li><strong>Secret and configuration management</strong>: Giúp quản lý các thông tin nhạy cảm như passwords, OAuth tokens và SSH keys.</li>
+</ul>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#kubernetes-là-gì->Kubernetes là gì ?</a></li>
+<li><a href=#tại-sao-lại-cần-đến-kubernetes-và-nó-có-thể-làm-gì->Tại sao lại cần đến Kubernetes và nó có thể làm gì ?</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&text=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&title=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&is_video=false&description=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview&body=Check out this article: %2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&title=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&title=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&name=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview&description=Kubernetes%20l%c3%a0%20g%c3%ac%20%3f%20Kubernetes%20l%c3%a0%20m%e1%bb%99t%20n%e1%bb%81n%20t%e1%ba%a3ng%20open-source%20%c4%91%e1%bb%83%20qu%e1%ba%a3n%20l%c3%bd%20c%c3%a1c%20services%20v%c3%a0%20workloads%20%c4%91%c3%a3%20%c4%91%c6%b0%e1%bb%a3c%20container%20h%c3%b3a%2c%20n%c3%b3%20gi%c3%bap%20vi%e1%bb%87c%20khai%20b%c3%a1o%2c%20c%e1%ba%a5u%20h%c3%acnh%20v%c3%a0%20t%e1%bb%b1%20%c4%91%e1%bb%99ng%20h%c3%b3a%20m%e1%bb%99t%20c%c3%a1ch%20d%e1%bb%85%20h%c3%a0ng%20h%c6%a1n.%0aC%c3%a1i%20t%c3%aan%20kubernetes%20c%c3%b3%20ngu%e1%bb%93n%20g%e1%bb%91c%20t%e1%bb%ab%20Hy%20L%e1%ba%a1p%2c%20c%c3%b3%20ngh%c4%a9a%20l%c3%a0%20thuy%e1%bb%81n%20tr%c6%b0%e1%bb%9fng%20ho%e1%ba%b7c%20l%c3%a0%20hoa%20ti%c3%aau.%20K8s%20l%c3%a0%20vi%c3%aat%20t%e1%ba%aft%20c%e1%bb%a7a%20K%2c%20s%e1%bb%91%20l%c6%b0%e1%bb%a3ng%20k%c3%bd%20t%e1%bb%b1%20gi%e1%bb%afa%20K%20v%c3%a0%20s%2c%20s." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fdevops%2fkubernetes-fundamentals-p1%2f&t=Kubernetes%20fundamentals%20ph%e1%ba%a7n%201%20-%20Overview" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
