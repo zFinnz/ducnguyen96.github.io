@@ -1,7 +1,7 @@
 ---
 title: "Kubernetes fundamentals phần 1 - Overview"
 date: 2021-09-01
-draft: false
+draft: true
 categories: [devops, backend]
 categories_weight: 4
 tags: [microservices, monoliths, architecture, backend, devops, kubernetes]
@@ -37,7 +37,7 @@ Containers ngày càng phổ biến vì chúng mang tới những lợi ích sau
 - Resource được cô lập => hiệu suất app có thể dự đoán được.
 - Hiệu quả sử dụng resource được tăng cao.
 
-## Tại sao lại cần đến Kubernetes và nó có thể làm gì ?
+### Tại sao lại cần đến Kubernetes ?
 Containers là một cách tốt để đóng gói và chạy app của bạn. Trong một môi trường production, bạn cần quản lý các containers để chạy các app và đảm bảo không có downtime. Ví dụ, nếu 1 container down thì 1 container khác cần phải chạy thay thế. Và sẽ dễ dàng hơn nếu có 1 hệ thống có thể quản lý việc này.
 
 Và đây là lúc Kubernetes ra đời. Kubernetes cung cấp co bạn 1 framework để chạy các hệ thống phân tán (distributed systems) một cách đảm bảo hơn. Nó đảm nhận việc scale và chuyển đổi container cho app của bạn, nó cung cấp các pattern về deployment,... Ví dụ kubernetes có thể dễ dàng quản lý một [canary deployment](/posts/devops/deployment-strategies/).
@@ -49,3 +49,12 @@ Kubernetes cung cấp cho bạn:
 - **Automatic bin packing**: Điều khiển resource cho từng container để tối ưu hóa resource.
 - **Self-healing**: Restart những container failed, thay thế containers, kill containers mà không responed, không để client sử dụng cho đến khi container đã sẵn sàng.
 - **Secret and configuration management**: Giúp quản lý các thông tin nhạy cảm như passwords, OAuth tokens và SSH keys.
+## Kubernetes components ?
+Khi bạn deploy Kubernetes, bạn có 1 cluster.
+
+Kubernetes cluster chứa các máy chủ, được gọi là các nodes, mỗi node thì chạy các containerized apps (app được container hóa). Mọi cluster đều có ít nhất 1 node.
+
+Mỗi node lại host các Pods, là các components của một app workload. Control plane (bộ điều khiển) quản lý các nodes và các pods trong cluster.
+![components-of-kubernetes.svg](/images/components-of-kubernetes.svg)
+### Control Plane Components
+Các components của contrl plane đưa ra các global decisions (ví dụ như scheduling), cũng như phát hiện và phản hồi đến các cluster events (ví dụ, start new pod khi)
