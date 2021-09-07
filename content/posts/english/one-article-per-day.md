@@ -83,6 +83,46 @@ Mạng Bitcoin được thiết kế để làm cho trò chơi đoán ngày càn
 
 Người chiến thắng trong trò chơi đoán kia xác thực một “khối” giao dịch Bitcoin và được thưởng với 6,25 Bitcoin mới được đúc, mỗi Bitcoin trị giá khoảng 50.000 đô la. Vì vậy, bạn có thể thấy lý do tại sao mọi người có thể đổ xô vào khai thác.
 
+Kẻ xấu có thể tàn phá toàn bộ hệ thống, ngăn chặn việc chuyển tiền hợp pháp hoặc lừa đảo mọi người bằng các giao dịch Bitcoin giả mạo. Nhưng cách Bitcoin được thiết kế để kẻ cần phải chiến thắng phần lớn các trò chơi đoán kia để có phần lớn quyền trên mạng lưới Bitcoin, điều này sẽ đòi hỏi rất nhiều tiền và rất nhiều điện.
+
+Trong hệ thống của Nakamoto, một tin tặc khi sử dụng tài nguyên để khai thác Bitcoin và thu thập phần thưởng sẽ đạt hiệu quả kinh tế hơn thay vì tấn công hệ thống Bitcoin.
+
+Đây là cách khai thác Bitcoin biến điện thành bảo mật. Đó cũng là lý do để hệ thông bitcoin được thiết kế theo cách tiêu tốn năng lượng như vậy.
+
+## Sự thèm khát năng lượng ngày càng tăng của Bitcoin
+
+Trong những ngày đầu của Bitcoin, khi nó còn ít phổ biến và giá trị thấp, bất kỳ ai có máy tính đều có thể dễ dàng khai thác tại nhà. Bây giờ thì không còn dễ như thế nữa 😢
+
+Ngày nay bạn cần những chiếc máy chuyên dụng, đắt tiền, một không gian rộng và đủ sức làm mát để giữ cho phần cứng hoạt động liên tục không bị quá nóng. Đó là lý do tại sao việc khai thác hiện diễn ra trong các trung tâm dữ liệu khổng lồ thuộc sở hữu của các công ty hoặc nhóm người.
+
+Trên thực tế, các nhóm trên đã hợp nhất đến mức hiện tại, chỉ có bảy nhóm khai thác sở hữu gần 80% toàn bộ sức mạnh tính toán trên mạng. (Mục đích đằng sau sự hợp nhất như thế này là phân phối thu nhập đồng đều hơn để những người tham gia nhận được 10 đô la mỗi ngày thay vì 50.000 đô la cứ sau 10 năm.)
+
+Khai thác diễn ra khắp nơi trên thế giới, thường xuyên ở nơi nào có nguồn năng lượng rẻ, dồi dào. Trong nhiều năm, phần lớn hoạt động khai thác Bitcoin là ở Trung Quốc, mặc dù gần đây, quốc gia này đã bắt đầu loại bỏ các công ty khai thác. Các nhà nghiên cứu tại Đại học Cambridge, những người đã theo dõi hoạt động khai thác Bitcoin cho biết rằng gần đây thị phần khai thác Bitcoin toàn cầu của Trung Quốc đã giảm xuống 46% vào tháng 4 từ 75% vào cuối năm 2019. Trong khi đó, thị phần khai thác của Hoa Kỳ đã tăng lên 16% từ 4% trong cùng một khoảng thời gian.
+
+Khai thác Bitcoin không chỉ có vấn đề về phát thải. Phần cứng cũng dùng để khai thác cũng bị chất đống. Mọi người đều muốn máy móc mới nhất, nhanh nhất, tạo ra doanh thu cao. Alex de Vries, một nhà kinh tế học tại Paris, ước tính rằng cứ sau mỗi năm rưỡi, sức mạnh tính toán của phần cứng khai thác tăng gấp đôi, khiến các máy cũ trở nên lỗi thời. Theo tính toán của ông, vào đầu năm 2021, chỉ riêng Bitcoin đã tạo ra nhiều rác thải điện tử hơn nhiều quốc gia cỡ vừa.
+
+Ông de Vries, người điều hành Digiconomist, một trang web theo dõi tính bền vững của tiền điện tử, cho biết: “Các thợ đào Bitcoin đang hoàn toàn bỏ qua vấn đề này vì họ không có giải pháp. "Chỉ còn cách là vứt bỏ chúng thôi."
+
+## Nó có thể xanh hơn không?
+
+Điều gì sẽ xảy ra nếu Bitcoin có thể được khai thác bằng cách sử dụng nhiều nguồn năng lượng tái tạo hơn, như gió, năng lượng mặt trời hoặc thủy điện?
+
+Thật khó để tìm ra chính xác lượng khai thác Bitcoin được cung cấp bởi năng lượng tái tạo vì bản chất của Bitcoin: một loại tiền tệ phi tập trung mà những người khai thác phần lớn là ẩn danh.
+
+Trên toàn cầu, ước tính về việc sử dụng năng lượng tái tạo của Bitcoin nằm trong khoảng từ 40% đến gần 75%. Nhưng nhìn chung, các chuyên gia cho biết, sử dụng năng lượng tái tạo để cung cấp năng lượng khai thác Bitcoin có nghĩa là nó sẽ không khả dụng để cung cấp năng lượng cho nhà cửa, công xưởng hay ô tô.
+
+Một số thợ mỏ đang bắt đầu thử nghiệm khai thác khí tự nhiên dư thừa từ các địa điểm khoan dầu khí, nhưng số lượng vẫn còn thưa thớt và khó định lượng. Thêm vào đó, việc này cuối cùng có thể thúc đẩy hoạt động khoan dầu khí nhiều hơn. Các thợ mỏ cũng tuyên bố sẽ khai thác lượng thủy điện dư thừa được tạo ra trong mùa mưa ở những nơi như tây nam Trung Quốc. Nhưng nếu những thợ mỏ đó hoạt động trong suốt mùa khô, họ sẽ chủ yếu sử dụng nhiên liệu hóa thạch.
+
+“Theo như chúng tôi có thể nói, phần lớn là sử dụng nhiên liệu hóa thạch, nhưng thay đổi theo mùa, cũng như tùy từng quốc gia,” Benjamin A. Jones, một trợ lý giáo sư kinh tế tại Đại học New Mexico cho biết. “Đó là lý do tại sao bạn nhận được những ước tính cực kỳ khác biệt này,” ông nói.
+
+Cách thức hoạt động của Bitcoin có thể được viết lại để sử dụng ít năng lượng hơn không? Một số loại tiền điện tử khác đã thúc đẩy một hệ thống kế toán thay thế, trong đó việc xử lý các giao dịch không phải thông qua hoạt động tính toán mà bằng cách chứng minh quyền sở hữu đủ số coins. Điều này sẽ hiệu quả hơn. Nhưng nó chưa được chứng minh ở quy mô lớn và không có khả năng sẽ áp dụng cho Bitcoin, vì trong một vài lý do khác, các bên liên quan đến Bitcoin có động cơ tài chính mạnh mẽ để không thay đổi, vì họ đã đầu tư rất nhiều vào hoạt động khai thác.
+
+Một số chính phủ cũng cảnh giác với Bitcoin như các nhà bảo vệ môi trường. Nếu họ hạn chế khai thác, điều đó về mặt lý thuyết có thể làm giảm căng thẳng vấn đề năng lượng. Nhưng hãy nhớ rằng, đây là một mạng được thiết kế để tồn tại mà không có trung gian. Những nơi như Trung Quốc đã và đang tạo ra những hạn chế đối với việc khai thác, nhưng những người khai thác được cho là đang chuyển đến Kazakhstan - quốc gia giàu than và Texas - nơi có mạng lưới điện giá rẻ.
+
+Trong tương lai gần, mức tiêu thụ năng lượng của Bitcoin có thể sẽ còn biến động miễn là giá của nó vẫn lên xuống thất thường như vậy.
+
+Mặc dù khai thác Bitcoin có thể không liên quan đến cuốc chim và mũ cứng, nó cũng không phải là kỹ thuật số thuần túy: Nó được kết nối với thế giới vật lý qua nhiên liệu hóa thạch, lưới điện và khí thải cũng như cuộc khủng hoảng khí hậu mà chúng ta đang gặp phải ngày nay. Những gì được tưởng tượng như một loại tiền kỹ thuật số có tư duy tương lai đã tạo ra các tác động với thế giới thực và những thứ đó sẽ tiếp tục tăng lên.
+
 ## Từ vựng
 
 1. household (/ˈhaʊs.hoʊld/): hộ gia đình
