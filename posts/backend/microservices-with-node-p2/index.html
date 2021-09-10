@@ -1,0 +1,914 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices với NodeJS phần 2 - một mini-microservices app | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-with-node-p2/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices với NodeJS phần 2 - một mini-microservices app">
+<meta property="og:description" content="Ở bài trước thì chúng ta đã thấy một vài notes về cách chúng ta xử lý vấn đề giao tiếp giữa các microservices, bây giờ thì hãy bắt đầu viết một vài dòng code nào 😄.
+Giờ ta sẽ xem qua mock-up của app mà chúng ta sẽ build để có hiểu hơn về async communication. Dưới đây là một vài chú ý về project tiếp theo chúng ta sẽ build.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-with-node-p2/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-10T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-10T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices với NodeJS phần 2 - một mini-microservices app">
+<meta name=twitter:description content="Ở bài trước thì chúng ta đã thấy một vài notes về cách chúng ta xử lý vấn đề giao tiếp giữa các microservices, bây giờ thì hãy bắt đầu viết một vài dòng code nào 😄.
+Giờ ta sẽ xem qua mock-up của app mà chúng ta sẽ build để có hiểu hơn về async communication. Dưới đây là một vài chú ý về project tiếp theo chúng ta sẽ build.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/english/one-article-per-day/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p2%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app&description=%e1%bb%9e%20b%c3%a0i%20tr%c6%b0%e1%bb%9bc%20th%c3%ac%20ch%c3%bang%20ta%20%c4%91%c3%a3%20th%e1%ba%a5y%20m%e1%bb%99t%20v%c3%a0i%20notes%20v%e1%bb%81%20c%c3%a1ch%20ch%c3%bang%20ta%20x%e1%bb%ad%20l%c3%bd%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%20c%c3%a1c%20microservices%2c%20b%c3%a2y%20gi%e1%bb%9d%20th%c3%ac%20h%c3%a3y%20b%e1%ba%aft%20%c4%91%e1%ba%a7u%20vi%e1%ba%bft%20m%e1%bb%99t%20v%c3%a0i%20d%c3%b2ng%20code%20n%c3%a0o%20%f0%9f%98%84.%0aGi%e1%bb%9d%20ta%20s%e1%ba%bd%20xem%20qua%20mock-up%20c%e1%bb%a7a%20app%20m%c3%a0%20ch%c3%bang%20ta%20s%e1%ba%bd%20build%20%c4%91%e1%bb%83%20c%c3%b3%20hi%e1%bb%83u%20h%c6%a1n%20v%e1%bb%81%20async%20communication.%20D%c6%b0%e1%bb%9bi%20%c4%91%c3%a2y%20l%c3%a0%20m%e1%bb%99t%20v%c3%a0i%20ch%c3%ba%20%c3%bd%20v%e1%bb%81%20project%20ti%e1%ba%bfp%20theo%20ch%c3%bang%20ta%20s%e1%ba%bd%20build." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#app-overview>App Overview</a></li>
+<li><a href=#project-setup>Project setup</a></li>
+<li><a href=#posts-service>Posts Service</a></li>
+<li><a href=#comments-service>Comments Service</a></li>
+<li><a href=#client>Client</a></li>
+<li><a href=#event-bus-overview>Event Bus Overview</a></li>
+<li><a href=#implement-query-service>Implement query service</a></li>
+<li><a href=#tính-năng-mới-flag-comments>Tính năng mới, flag comments</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices với NodeJS phần 2 - một mini-microservices app
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-10 00:00:00 +0000 UTC" itemprop=datePublished>2021-09-10</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/nodejs rel=tag>nodejs</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p>Ở bài trước thì chúng ta đã thấy một vài notes về cách chúng ta xử lý vấn đề giao tiếp giữa các microservices, bây giờ thì hãy bắt đầu viết một vài dòng code nào 😄.</p>
+<p>Giờ ta sẽ xem qua mock-up của app mà chúng ta sẽ build để có hiểu hơn về async communication. Dưới đây là một vài chú ý về project tiếp theo chúng ta sẽ build.</p>
+<h2 id=app-overview>App Overview</h2>
+<p><img src=/images/microservices-dg-27.png alt=microservices-dg-27></p>
+<ul>
+<li>Mục tiêu đầu tiên của project là có cái nhìn qua về kiến trúc microservice. Ta sẽ build một project lớn hơn và toàn diện hơn sau, còn project thì chỉ với mục đích là làm quen với microservices.</li>
+<li>Mục tiêu thứ 2 là build mọi thứ từ đầu nhiều nhất có thể để hiểu được cách hoạt động của microservices.</li>
+<li>ℹ️ <em>Không nên sử dụng project này như một template nhé.</em></li>
+</ul>
+<p><img src=/images/microservices-dg-28.png alt=microservices-dg-28>
+Chúng ta sẽ build một web app đơn giản có tính năng như tạo post, và comment vào post. Post sẽ chỉ có title không có body, ảnh hay bất cứ thứ gì khác.</p>
+<p>Khi user mới vào app thì sẽ hiện 1 form để cho user nhập title, sau đó user submit thì sẽ hiển thị post ở dưới, mỗi post sẽ có 1 ô input để user có thể comment, sau khi submit thì post sẽ update số comment cũng như chi tiết về comment ở dưới.</p>
+<p>Nhìn qua thì có vẻ rất đơn giản đúng không, nhưng với microservices thì cũng không đơn giản cho lắm đâu 😄</p>
+<p>Đầu tiên thì chúng ta phải nghĩ là cần những service nào cho app này.
+<img src=/images/microservices-dg-29.png alt=microservices-dg-28>
+Với app này thì ta cần quản lý 2 resource đó là post và comment, trong một dự án thực tế thì không hẳn cứ phải tạo mỗi service riêng cho từng resource nhưng đối với project này thì ta sẽ làm như vậy để hiểu được cách giao tiếp giữa 2 services.
+<img src=/images/microservices-dg-30.png alt=microservices-dg-30>
+Ta sẽ tạo 2 services là postservice có chức năng là tạo post là list tất cả các post, commentservice có chức năng là tạo comment và list tất cả comment của post. Nhìn qua thì thấy postservice có vẻ đơn giản, nó chỉ cần 1 database lưu tất cả các post thế là ổn, còn commentservice thì có phức tạp hơn 1 xíu, lúc tạo 1 comment thì ta sẽ gắn comment đó với 1 post, vì vậy có depend với postservice nên chúng ta sẽ phải sử dụng 1 trong 2 cách giao tiếp đó là sync hoặc async, tương tự thì lúc list comment cũng thế, ta không thể list toàn bộ comment trong database ra cùng lúc mà ta sẽ chỉ trả comments tương ứng với từng post cụ thể.</p>
+<h2 id=project-setup>Project setup</h2>
+<p>Sau một đống lý thuyết thì cuối cùng cũng đến lúc được viết code rồi 😄</p>
+<p>Đầu tiên nhìn lại cấu trúc project mà chúng ta sẽ build nhé.
+<img src=/images/microservices-dg-31.png alt=microservices-dg-31>
+Phía client thì ta sẽ dựng 1 web app với react, browser sẽ gửi request về các services, các service này được build với expressjs, hiện tại thì ta sẽ không sử dụng database cho project, chúng ta sẽ giải quyết vấn đề về database sau, project này ta sẽ lưu tất cả data trong bộ nhớ.</p>
+<p><img src=/images/microservices-dg-32.png alt=microservices-dg-32></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>yarn</span> <span style=color:#a6e22e>create</span> <span style=color:#a6e22e>react</span><span style=color:#f92672>-</span><span style=color:#a6e22e>app</span> <span style=color:#a6e22e>client</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>mkdir</span> <span style=color:#a6e22e>posts</span>
+<span style=color:#a6e22e>yarn</span> <span style=color:#a6e22e>init</span> <span style=color:#f92672>-</span><span style=color:#a6e22e>y</span>
+<span style=color:#a6e22e>yarn</span> <span style=color:#a6e22e>add</span> <span style=color:#a6e22e>express</span> <span style=color:#a6e22e>cors</span> <span style=color:#a6e22e>axios</span> <span style=color:#a6e22e>nodemon</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#a6e22e>mkdir</span> <span style=color:#a6e22e>comments</span>
+<span style=color:#a6e22e>yarn</span> <span style=color:#a6e22e>init</span> <span style=color:#f92672>-</span><span style=color:#a6e22e>y</span>
+<span style=color:#a6e22e>yarn</span> <span style=color:#a6e22e>add</span> <span style=color:#a6e22e>express</span> <span style=color:#a6e22e>cors</span> <span style=color:#a6e22e>axios</span> <span style=color:#a6e22e>nodemon</span>
+</code></pre></div><h2 id=posts-service>Posts Service</h2>
+<p>Đầu tiên thì ta sẽ implement posts service cơ bản với expressjs để thực hiện các features của nó là tạo post và list posts, tạm chưa quan tâm tới microservices.
+<img src=/images/microservices-dg-33.png alt=microservices-dg-33>
+Vậy với post service thì ta sẽ tạo 1 route là /posts. Với method GET thì ta sẽ trả về tất cả các post và với method POST cùng với body chứa title thì ta sẽ tạo 1 post mới.</p>
+<p><img src=/images/microservices-dg-34.png alt=microservices-dg-34>
+Ở đây ta sẽ sử dụng biến <code>posts = {}</code> để lưu tất cả các posts, điểm trừ ở đây là mỗi khi reset lại service thì sẽ mất tất cả các posts. Ngoài ra thì chúng ta sử dụng randomBytes để tạo unique id cho từng post.</p>
+<p><img src=/images/microservices-dg-35.png alt=microservices-dg-35>
+Mình sử dụng <a href=https://insomnia.rest/>insomnia</a> để test lại 2 api vừa code. Response trả về statuscode 200 và body như mong muốn 😄</p>
+<h2 id=comments-service>Comments Service</h2>
+<p>Tiếp theo ta sẽ code comments service nhưng trước hết điểm qua requirements.
+<img src=/images/microservices-dg-36.png alt=microservices-dg-36>
+Comments serrvice cos 1 route là /posts/:id/comments/. Với method POST thì tạo 1 comment tương ứng với post id và với method GET thì trả về tất cả comments ứng với postid ấy.
+<img src=/images/microservices-dg-37.png alt=microservices-dg-37>
+Tương tự như posts service thì ta có comments service như trên. Test qua nào
+<img src=/images/microservices-dg-38.png alt=microservices-dg-38></p>
+<h2 id=client>Client</h2>
+<p><img src=/images/microservices-dg-39.png alt=microservices-dg-39>
+Trước khi implement client thì xem lại cấu trúc của phần này nhé. App sẽ có 2 component là PostList và PostCreate. PostCreate là form để user submit post và PostList là component chứa post title, CommnetList và form để user create comment</p>
+<p><img src=/images/microservices-dg-40.png alt=microservices-dg-40></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// PostCreate
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>useState</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;react&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>PostCreate</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>props</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>title</span>, <span style=color:#a6e22e>setTitle</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>(<span style=color:#e6db74>&#34;&#34;</span>);
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>onSubmit</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>e</span>) =&gt; {
+    <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>preventDefault</span>();
+
+    <span style=color:#a6e22e>fetch</span>(<span style=color:#e6db74>&#34;http://localhost:4000/posts&#34;</span>, {
+      <span style=color:#a6e22e>method</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;POST&#34;</span>,
+      <span style=color:#a6e22e>headers</span><span style=color:#f92672>:</span> { <span style=color:#e6db74>&#34;Content-Type&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;application/json&#34;</span> },
+      <span style=color:#a6e22e>body</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>stringify</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>title</span> }),
+    })
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>response</span>) =&gt; <span style=color:#a6e22e>response</span>.<span style=color:#a6e22e>json</span>())
+      .<span style=color:#a6e22e>then</span>((<span style=color:#ae81ff>_</span>) =&gt; {
+        <span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>setNumPost</span>(<span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>numPost</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>);
+        <span style=color:#a6e22e>setTitle</span>(<span style=color:#e6db74>&#34;&#34;</span>);
+      });
+  };
+  <span style=color:#66d9ef>return</span> (
+    <span style=color:#f92672>&lt;&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>h2</span><span style=color:#f92672>&gt;</span><span style=color:#a6e22e>PostCreate</span><span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/h2&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>form</span>
+        <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/posts&#34;</span>
+        <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;POST&#34;</span>
+        <span style=color:#a6e22e>onSubmit</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>onSubmit</span>}
+        <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span>{{ <span style=color:#a6e22e>borderBottom</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;1px solid black&#34;</span> }}
+      <span style=color:#f92672>&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>label</span> <span style=color:#a6e22e>htmlFor</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-input&#34;</span><span style=color:#f92672>&gt;</span>
+          <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>p</span><span style=color:#f92672>&gt;</span><span style=color:#a6e22e>Title</span><span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/p&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/label&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>input</span>
+          <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span>
+          <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-input&#34;</span>
+          <span style=color:#a6e22e>placeholder</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;post title&#34;</span>
+          <span style=color:#a6e22e>value</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>title</span>}
+          <span style=color:#a6e22e>onChange</span><span style=color:#f92672>=</span>{(<span style=color:#a6e22e>e</span>) =&gt; <span style=color:#a6e22e>setTitle</span>(<span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>target</span>.<span style=color:#a6e22e>value</span>)}
+          <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span>{{ <span style=color:#a6e22e>display</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;block&#34;</span> }}
+        <span style=color:#f92672>/&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>button</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span><span style=color:#f92672>&gt;</span><span style=color:#a6e22e>Submit</span><span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/button&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/form&gt;</span>
+    <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/&gt;</span>
+  );
+};
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>PostCreate</span>;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// PostList
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>useEffect</span>, <span style=color:#a6e22e>useState</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;react&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Post</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;../Post&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>PostList</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>props</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>posts</span>, <span style=color:#a6e22e>setPosts</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>([]);
+  <span style=color:#a6e22e>useEffect</span>(() =&gt; {
+    <span style=color:#a6e22e>fetch</span>(<span style=color:#e6db74>&#34;http://localhost:4000/posts&#34;</span>, {
+      <span style=color:#a6e22e>method</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;GET&#34;</span>,
+      <span style=color:#a6e22e>headers</span><span style=color:#f92672>:</span> { <span style=color:#e6db74>&#34;Content-Type&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;application/json&#34;</span> },
+    })
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>data</span>) =&gt; <span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>json</span>())
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>data</span>) =&gt; <span style=color:#a6e22e>setPosts</span>(<span style=color:#a6e22e>data</span>));
+  }, [<span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>numPost</span>]);
+
+  <span style=color:#66d9ef>return</span> (
+    <span style=color:#f92672>&lt;&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>div</span> <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span>{{ <span style=color:#a6e22e>display</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;flex&#34;</span> }}<span style=color:#f92672>&gt;</span>
+        {Object.<span style=color:#a6e22e>keys</span>(<span style=color:#a6e22e>posts</span>).<span style=color:#a6e22e>map</span>((<span style=color:#a6e22e>key</span>) =&gt; (
+          <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>Post</span> <span style=color:#a6e22e>key</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>key</span>} <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>key</span>].<span style=color:#a6e22e>id</span>} <span style=color:#a6e22e>title</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>key</span>].<span style=color:#a6e22e>title</span>} <span style=color:#f92672>/&gt;</span>
+        ))}
+      <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/div&gt;</span>
+    <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/&gt;</span>
+  );
+};
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>PostList</span>;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// Post
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>useState</span>, <span style=color:#a6e22e>useEffect</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;react&#34;</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Post</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>props</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>comments</span>, <span style=color:#a6e22e>setComments</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>([]);
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>comment</span>, <span style=color:#a6e22e>setComment</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>(<span style=color:#e6db74>&#34;&#34;</span>);
+  <span style=color:#a6e22e>useEffect</span>(() =&gt; {
+    <span style=color:#a6e22e>fetch</span>(<span style=color:#e6db74>`http://localhost:4001/posts/:</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>/comments`</span>, {
+      <span style=color:#a6e22e>method</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;GET&#34;</span>,
+      <span style=color:#a6e22e>headers</span><span style=color:#f92672>:</span> { <span style=color:#e6db74>&#34;Content-Type&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;application/json&#34;</span> },
+    })
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>data</span>) =&gt; <span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>json</span>())
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>data</span>) =&gt; {
+        <span style=color:#a6e22e>setComments</span>(<span style=color:#a6e22e>data</span>);
+      });
+  }, []);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>onSubmit</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>e</span>) =&gt; {
+    <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>preventDefault</span>();
+
+    <span style=color:#a6e22e>fetch</span>(<span style=color:#e6db74>`http://localhost:4001/posts/:</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>/comments`</span>, {
+      <span style=color:#a6e22e>method</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;POST&#34;</span>,
+      <span style=color:#a6e22e>headers</span><span style=color:#f92672>:</span> { <span style=color:#e6db74>&#34;Content-Type&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;application/json&#34;</span> },
+      <span style=color:#a6e22e>body</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>stringify</span>({ <span style=color:#a6e22e>content</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>comment</span> }),
+    })
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>response</span>) =&gt; <span style=color:#a6e22e>response</span>.<span style=color:#a6e22e>json</span>())
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>data</span>) =&gt; {
+        <span style=color:#a6e22e>setComments</span>(<span style=color:#a6e22e>data</span>);
+      });
+  };
+  <span style=color:#66d9ef>return</span> (
+    <span style=color:#f92672>&lt;&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>div</span>
+        <span style=color:#a6e22e>className</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;comment&#34;</span>
+        <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span>{{ <span style=color:#a6e22e>margin</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;2px&#34;</span>, <span style=color:#a6e22e>backgroundColor</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;#c4ffff&#34;</span>, <span style=color:#a6e22e>padding</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;10px&#34;</span> }}
+      <span style=color:#f92672>&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>p</span><span style=color:#f92672>&gt;</span>{<span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>title</span>}<span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/p&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>span</span> <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span>{{ <span style=color:#a6e22e>fontStyle</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;italic&#34;</span> }}<span style=color:#f92672>&gt;</span>{<span style=color:#a6e22e>comments</span>.<span style=color:#a6e22e>length</span>} <span style=color:#a6e22e>comments</span><span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/span&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>ul</span><span style=color:#f92672>&gt;</span>
+          {<span style=color:#a6e22e>comments</span>.<span style=color:#a6e22e>map</span>((<span style=color:#a6e22e>c</span>) =&gt; (
+            <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>li</span> <span style=color:#a6e22e>key</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>id</span>}<span style=color:#f92672>&gt;</span>{<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>content</span>}<span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/li&gt;</span>
+          ))}
+        <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/ul&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>p</span><span style=color:#f92672>&gt;</span><span style=color:#a6e22e>Comment</span><span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/p&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>form</span>
+          <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span>{<span style=color:#e6db74>`http://localhost:4001/posts/:</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>/comments`</span>}
+          <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;POST&#34;</span>
+        <span style=color:#f92672>&gt;</span>
+          <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>input</span> <span style=color:#a6e22e>value</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>comment</span>} <span style=color:#a6e22e>onChange</span><span style=color:#f92672>=</span>{(<span style=color:#a6e22e>e</span>) =&gt; <span style=color:#a6e22e>setComment</span>(<span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>target</span>.<span style=color:#a6e22e>value</span>)} <span style=color:#f92672>/&gt;</span>
+          <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>button</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span> <span style=color:#a6e22e>onClick</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>onSubmit</span>}<span style=color:#f92672>&gt;</span>
+            <span style=color:#a6e22e>Submit</span>
+          <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/button&gt;</span>
+        <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/form&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/div&gt;</span>
+    <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/&gt;</span>
+  );
+};
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>Post</span>;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// App.js
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>useState</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;react/cjs/react.development&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>PostCreate</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;./components/PostCreate&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>PostList</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;./components/PostList&#34;</span>;
+
+<span style=color:#66d9ef>function</span> <span style=color:#a6e22e>App</span>() {
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>numPost</span>, <span style=color:#a6e22e>setNumPost</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>(<span style=color:#ae81ff>0</span>);
+  <span style=color:#66d9ef>return</span> (
+    <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>div</span> <span style=color:#a6e22e>className</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;App&#34;</span><span style=color:#f92672>&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>PostCreate</span> <span style=color:#a6e22e>setNumPost</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>setNumPost</span>} <span style=color:#a6e22e>numPost</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>numPost</span>} <span style=color:#f92672>/&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>PostList</span> <span style=color:#a6e22e>numPost</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>numPost</span>} <span style=color:#f92672>/&gt;</span>
+    <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/div&gt;</span>
+  );
+}
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>App</span>;
+</code></pre></div><p><img src=/images/microservices-dg-41.png alt=microservices-dg-41>
+Hiện tại thì app của chúng ta đã chạy như mong muốn, nhưng có một vấn đề là sau khi query posts, chúng ta có tất cả các posts nhưng để có cả comments thì mỗi post ta lại phải query một lần nữa để lấy tất cả comment. Điều này thực sự không hiệu quả chút nào.</p>
+<p>Vậy làm sao ta có thể chỉ với 1 request mà query được toàn bộ posts cũng như comments ? Ta có thể bổ sung thêm trong posts service với get posts api ta sẽ requests đến commentservice để lấy data về comment và trả về comments theo posts luôn. Nhưng như vậy thì số request được gọi vẫn không đổi, ta chỉ đổi từ gọi ở client sang gọi ở server, hơn nữa việc request từ postservice tới commentservice sẽ tạo dependency giữa các services - là vấn đề của sync communication. Và đây cũng chính là lúc ta sẽ sử dụng async communication để giải quyết vấn đề này.
+<img src=/images/microservices-dg-42.png alt=microservices-dg-42></p>
+<p>Trước khi đi vào implement query service cũng như code lại các service khác để chúng sử dụng event bus thì có thể bạn sẽ có một vài thắc mắc sau đây:
+<img src=/images/microservices-dg-43.png alt=microservices-dg-43></p>
+<ol>
+<li>Chúng ta có thực sự cần tạo thêm service mới mỗi khi cần join data hay không ?</li>
+</ol>
+<ul>
+<li>Không. Trên thực tế thì có thể posts và comments có thể cùng chung 1 service.</li>
+</ul>
+<ol start=2>
+<li>Sao lại cần quan tâm việc các service độc lập với nhau, cần gì phải dùng async communication làm quái gì cho lằng nhằng ?</li>
+</ol>
+<ul>
+<li>Một trong những lý do chính để sử dụng microservices là tính độc lập giữa các services giúp ứng dụng của bạn không dễ dàng crash hoàn như monolith.</li>
+</ul>
+<ol start=3>
+<li>Sử dụng cấu trúc phức tạp như vậy chỉ để có chút lợi ích như vậy ?</li>
+</ol>
+<ul>
+<li>Với app hiện tại thì có vẻ như vậy, nhưng khi app bắt đầu lớn lên dần thì sử dụng kiến trúc như này sẽ giúp bạn thấy dễ dàng hơn trong quá trình develope kể cả so với monolith.</li>
+</ul>
+<ol start=4>
+<li>Hệ thống thiết kế theo dạng event bus có thể sẽ không hoạt động chính xác trong trường hợp như này,&mldr; như kia,&mldr;</li>
+</ol>
+<ul>
+<li>Như đầu bài mình có nói thì không nên sử dụng app này như 1 template vì app này mục đích chỉ giúp bạn có cái nhìn tổng quan về microservices, project tiếp theo chúng ta sẽ đi sâu vào từng chi tiết hơn cũng như implement lại code một cách chuyên nghiệp hơn và có thể sử dụng để làm production được.</li>
+</ul>
+<h2 id=event-bus-overview>Event Bus Overview</h2>
+<p><img src=/images/microservices-dg-44.png alt=microservices-dg-44></p>
+<ul>
+<li>Có nhiều cách triển khai Event Bus khác nhau: RabbitMQ, Kafka, NATS,&mldr; bạn có thể download và tự host để sử dụng hoặc có thể sủ dụng qua các dịch vụ cung cấp sẵn.</li>
+<li>Event Bus dùng để nhận events và publishes events tới listeners. Events ở đây là một dạng thông tin có thể là JSON, có thể là raw bytes cũng có thể là string, nó có thể là bất cứ thứ gì bạn muốn share với các services khác.</li>
+<li>Có nhiều tính năng khiến việc async communication dễ hơn nhiều hoặc khó hơn. Chúng ta sẽ tìm hiểu thêm ở project tiếp theo.</li>
+<li>Chúng ta sẽ sử dụng Expresjs để build event bus, như đã nói thì project này chỉ giúp bạn hiểu được cơ chế hoạt động của microservices nên event bus này cũng vậy, nó thiếu rất nhiều tính năng mà một bus có.</li>
+<li>Project tiếp theo chúng ta sẽ sử dụng event bus được sử dụng trong các project thực tế.</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// events bus
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>axios</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;axios&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>cors</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;cors&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>bodyParser</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;body-parser&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>express</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;express&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>app</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>();
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>cors</span>());
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>bodyParser</span>.<span style=color:#a6e22e>json</span>());
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4002/events&#34;</span>, <span style=color:#a6e22e>event</span>).<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+  });
+
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>listen</span>(<span style=color:#ae81ff>4005</span>, () =&gt; {
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Listening on port 4005&#34;</span>);
+});
+</code></pre></div><p>Ở đây chỉ có query service cần lắng nghe tới event PostCreated và CommentCreated.</p>
+<h2 id=implement-query-service>Implement query service</h2>
+<p>Emit event từ post service</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// post service
+</span><span style=color:#75715e></span><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/posts&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>randomBytes</span>(<span style=color:#ae81ff>4</span>).<span style=color:#a6e22e>toString</span>(<span style=color:#e6db74>&#34;hex&#34;</span>);
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>title</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+
+  <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>id</span>] <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>id</span>,
+    <span style=color:#a6e22e>title</span>,
+  };
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4005/events&#34;</span>, {
+      <span style=color:#a6e22e>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;PostCreated&#34;</span>,
+      <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> {
+        <span style=color:#a6e22e>id</span>,
+        <span style=color:#a6e22e>title</span>,
+      },
+    })
+    .<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+      <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+    });
+
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>status</span>(<span style=color:#ae81ff>200</span>).<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>id</span>]);
+});
+</code></pre></div><p>Emit event từ comment service</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// comment service
+</span><span style=color:#75715e></span><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/posts/:id/comments&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>randomBytes</span>(<span style=color:#ae81ff>4</span>).<span style=color:#a6e22e>toString</span>(<span style=color:#e6db74>&#34;hex&#34;</span>);
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>content</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>postId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>params</span>.<span style=color:#a6e22e>id</span>.<span style=color:#a6e22e>slice</span>(<span style=color:#ae81ff>1</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>postComments</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>comments</span>[<span style=color:#a6e22e>postId</span>] <span style=color:#f92672>||</span> [];
+  <span style=color:#a6e22e>postComments</span>.<span style=color:#a6e22e>push</span>({ <span style=color:#a6e22e>id</span>, <span style=color:#a6e22e>content</span> });
+
+  <span style=color:#a6e22e>comments</span>[<span style=color:#a6e22e>postId</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>postComments</span>;
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4005/events&#34;</span>, {
+      <span style=color:#a6e22e>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;CommentCreated&#34;</span>,
+      <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> {
+        <span style=color:#a6e22e>postId</span>,
+        <span style=color:#a6e22e>id</span>,
+        <span style=color:#a6e22e>content</span>,
+      },
+    })
+    .<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+      <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+    });
+
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>status</span>(<span style=color:#ae81ff>200</span>).<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>postComments</span>);
+});
+</code></pre></div><p>Lắng nghe event từ query service</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// query service
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>cors</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;cors&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>express</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;express&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>bodyParser</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;body-parser&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>posts</span> <span style=color:#f92672>=</span> {};
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>app</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>();
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>bodyParser</span>.<span style=color:#a6e22e>json</span>());
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>cors</span>());
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#34;/posts&#34;</span>, (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>posts</span>);
+});
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+
+  <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>type</span>) {
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;PostCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>;
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>comments</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span> <span style=color:#f92672>||</span> [];
+      <span style=color:#a6e22e>comments</span>.<span style=color:#a6e22e>push</span>({ <span style=color:#a6e22e>id</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>, <span style=color:#a6e22e>content</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>content</span> });
+      <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>comments</span>;
+    <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>break</span>;
+  }
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>listen</span>(<span style=color:#ae81ff>4002</span>, () =&gt; {
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Listening on port 4002&#34;</span>);
+});
+</code></pre></div><p>Bây giờ thì ta có thể update api endpoint cho client được rồi 😄</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// PostList
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>useEffect</span>, <span style=color:#a6e22e>useState</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;react&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Post</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;../Post&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>PostList</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>props</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>posts</span>, <span style=color:#a6e22e>setPosts</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>([]);
+  <span style=color:#a6e22e>useEffect</span>(() =&gt; {
+    <span style=color:#a6e22e>fetch</span>(<span style=color:#e6db74>&#34;http://localhost:4002/posts&#34;</span>, {
+      <span style=color:#a6e22e>method</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;GET&#34;</span>,
+      <span style=color:#a6e22e>headers</span><span style=color:#f92672>:</span> { <span style=color:#e6db74>&#34;Content-Type&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;application/json&#34;</span> },
+    })
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>data</span>) =&gt; <span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>json</span>())
+      .<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>data</span>) =&gt; <span style=color:#a6e22e>setPosts</span>(<span style=color:#a6e22e>data</span>));
+  }, [<span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>numPost</span>]);
+
+  <span style=color:#66d9ef>return</span> (
+    <span style=color:#f92672>&lt;&gt;</span>
+      <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>div</span> <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span>{{ <span style=color:#a6e22e>display</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;flex&#34;</span> }}<span style=color:#f92672>&gt;</span>
+        {Object.<span style=color:#a6e22e>keys</span>(<span style=color:#a6e22e>posts</span>).<span style=color:#a6e22e>map</span>((<span style=color:#a6e22e>key</span>) =&gt; (
+          <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>Post</span>
+            <span style=color:#a6e22e>key</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>key</span>}
+            <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>key</span>].<span style=color:#a6e22e>id</span>}
+            <span style=color:#a6e22e>title</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>key</span>].<span style=color:#a6e22e>title</span>}
+            <span style=color:#a6e22e>comments</span><span style=color:#f92672>=</span>{<span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>key</span>].<span style=color:#a6e22e>comments</span>}
+          <span style=color:#f92672>/&gt;</span>
+        ))}
+      <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/div&gt;</span>
+    <span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/&gt;</span>
+  );
+};
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>PostList</span>;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// Post
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>useState</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;react&#34;</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Post</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>props</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>comments</span>, <span style=color:#a6e22e>setComments</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>(<span style=color:#a6e22e>props</span>.<span style=color:#a6e22e>comments</span> <span style=color:#f92672>||</span> []);
+  <span style=color:#66d9ef>const</span> [<span style=color:#a6e22e>comment</span>, <span style=color:#a6e22e>setComment</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>useState</span>(<span style=color:#e6db74>&#34;&#34;</span>);
+  <span style=color:#75715e>// useEffect(() =&gt; {
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//   fetch(`http://localhost:4001/posts/:${props.id}/comments`, {
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//     method: &#34;GET&#34;,
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//     headers: { &#34;Content-Type&#34;: &#34;application/json&#34; },
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//   })
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//     .then((data) =&gt; data.json())
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//     .then((data) =&gt; {
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//       setComments(data);
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//     });
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// }, []);
+</span><span style=color:#75715e></span>  ....
+};
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>Post</span>;
+</code></pre></div><h2 id=tính-năng-mới-flag-comments>Tính năng mới, flag comments</h2>
+<p><img src=/images/microservices-dg-45.png alt=microservices-dg-45></p>
+<p>Yêu cầu về tính năng mới: đánh dấu 1 comment nếu nó chứa từ &lsquo;orange&rsquo;</p>
+<p><img src=/images/microservices-dg-46.png alt=microservices-dg-46></p>
+<ul>
+<li>Thực tế thì tính năng này cực kỳ dễ làm trên react, chỉ cần hard code check là xong, tuy nhiên nếu từ khóa này thay đổi nhiều lần thì sẽ không phù hợp nếu ta deploy lại react app liên tục.</li>
+<li>Tính năng này cũng dễ nếu implement luôn trên comments service hiện tại tuy nhiên vì mục đích nêu lên được vấn đề về event bus nên ta sẽ sử dụng 1 service mới.</li>
+<li>Cũng tương tự như trên thì ta sẽ giả sử service mới này mất nhiều thời gian để đánh giá cũng như chỉnh sửa comment.</li>
+</ul>
+<p><img src=/images/microservices-dg-47.png alt=microservices-dg-47></p>
+<p>Yêu cầu của tính năng này là sau khi comment, nếu service mới - <code>moderate service</code> chưa xử lý xong comment thì user phải nhận được trạng thái của comment là <code>awaiting</code> chứ không phải không thấy comment, sau khi xử lý xong thì nếu được approve comment sẽ hiển thị bình thường còn không sẽ hiển thị bị rejected.</p>
+<p><img src=/images/microservices-dg-48.png alt=microservices-dg-48>
+Để user biết được trạng thái của comment thì react app phải biết được sự khác nhau giữa các trạng thái.</p>
+<p><img src=/images/microservices-dg-49.png alt=microservices-dg-49>
+Cách tiếp cận đầu tiên mà ta nghĩ đến là: Sau khi user summit comment, comment service sẽ tạo 1 event, event này sẽ được lắng nghe bởi moderation service, moderation service sẽ đánh giá comment và update trạng thái của comment sau đó tạo 1 event mới, query service lắng nghe event này và update lại comment trong db của mình.</p>
+<p>Như đã giả sử ở trên thì moderation service này có thể mất nhiều thời gian để xử lý comment mới được tạo, ví dụ như cần xử lý ngôn ngữ tự nhiên chẳng hạn hoặc cần liên quan đến hệ thống recommendation, nếu sử dụng cách tiếp cận trên thì user sẽ phải chờ 1 lúc để moderation handle xong mới thấy comment của mình được hiển thị.
+<img src=/images/microservices-dg-50.png alt=microservices-dg-50></p>
+<p>Để giải quyết vấn đề của cách tiếp cận đầu tiên thì ta có thể nghĩ đến ngay là ngay khi có event CommentCreated từ commentservice thì đồng thời queryservice cũng lắng nghe event này và update vào db với status là pending, sau khi moderation kiểm tra comment xong thì sẽ emit event với type là CommentModerated, queryservice lại nhận được event này và update status mới cho queryservice.</p>
+<p><img src=/images/microservices-dg-51.png alt=microservices-dg-51>
+Chúng ta đã giải quyết được vấn đề user sẽ không thấy gì xảy ra sau khi comment bằng cách trên vì phải chờ moderation xử lý bằng cách trên nhưng liệu nó có ổn với 1 app lớn với 1 hệ thống comment phức tạp ?</p>
+<p>QueryService được tạo ra với mục đích là lấy dữ liệu, nó không nên quan tâm tới bất cứ thứ gì khác như buniness,&mldr; Nếu chỉ với 1 type là Moderated thì sẽ ổn nhưng với nhiều type như vậy và nhiều xử lý khác nhau như vậy thì ta nên chúng ở một service khác chuyên biệt về comment hơn như CommentService.
+<img src=/images/microservices-dg-52.png alt=microservices-dg-52>
+Đầu tiên tạo moderation service lắng nghe CommentCreated event.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// moderation service
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>cors</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;cors&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>express</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;express&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>bodyParser</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;body-parser&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>axios</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;axios&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>app</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>();
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>bodyParser</span>.<span style=color:#a6e22e>json</span>());
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>cors</span>());
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+
+  <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>type</span>) {
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>content</span>.<span style=color:#a6e22e>includes</span>(<span style=color:#e6db74>&#34;orange&#34;</span>)
+        <span style=color:#f92672>?</span> <span style=color:#e6db74>&#34;rejected&#34;</span>
+        <span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;approved&#34;</span>;
+      <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>
+        .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4005/events&#34;</span>, {
+          <span style=color:#a6e22e>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;CommentModerated&#34;</span>,
+          <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>,
+        })
+        .<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+          <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+        });
+    <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>break</span>;
+  }
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>listen</span>(<span style=color:#ae81ff>4003</span>, () =&gt; {
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Listening on port 4003&#34;</span>);
+});
+</code></pre></div><p>EventBus sẽ gửi event đến comment service khi comment được moderated.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// event service
+</span><span style=color:#75715e></span><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+  <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>type</span>) {
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentCreated&#34;</span><span style=color:#f92672>:</span>
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;PostCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>await</span> Promise.<span style=color:#a6e22e>all</span>([
+        <span style=color:#a6e22e>axios</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4002/events&#34;</span>, <span style=color:#a6e22e>event</span>),
+        <span style=color:#a6e22e>axios</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4003/events&#34;</span>, <span style=color:#a6e22e>event</span>),
+      ]).<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+        <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+      });
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentModerated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4001/events&#34;</span>, <span style=color:#a6e22e>event</span>).<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+        <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+      });
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentUpdated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4002/events&#34;</span>, <span style=color:#a6e22e>event</span>).<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+        <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+      });
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>break</span>;
+  }
+
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+</code></pre></div><p>CommentService nhận thấy comment được moderated và update lại db đồng thời emit 1 event báo cho query service rằng comment vừa được update</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// comment service
+</span><span style=color:#75715e></span><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+
+  <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>type</span>) {
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentModerated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>comment</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>comments</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>find</span>(
+        (<span style=color:#a6e22e>c</span>) =&gt; <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>id</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>
+      );
+      <span style=color:#a6e22e>comment</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>status</span>;
+      <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>
+        .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4005/events&#34;</span>, {
+          <span style=color:#a6e22e>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;CommentUpdated&#34;</span>,
+          <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>,
+        })
+        .<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+          <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+        });
+    <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>break</span>;
+  }
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+</code></pre></div><p>QueryService nhận được event rằng comment được update nên update lại comment,</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// query service
+</span><span style=color:#75715e></span><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+
+  <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>type</span>) {
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;PostCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>;
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>comments</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span> <span style=color:#f92672>||</span> [];
+      <span style=color:#a6e22e>comments</span>.<span style=color:#a6e22e>push</span>({
+        <span style=color:#a6e22e>id</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>,
+        <span style=color:#a6e22e>content</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>content</span>,
+        <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>status</span>,
+      });
+      <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>comments</span>;
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentUpdated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>comment</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span>.<span style=color:#a6e22e>find</span>(
+        (<span style=color:#a6e22e>c</span>) =&gt; <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>id</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>
+      );
+      <span style=color:#a6e22e>comment</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>status</span>;
+    <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>break</span>;
+  }
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+</code></pre></div><p><img src=/images/microservices-dg-53.png alt=microservices-dg-53>
+Vậy là mọi thứ có vẻ đã hoàn hảo, comment của user sẽ được xử lý ngay lập tức và được update lại sau khi moderation service xử lý xong.</p>
+<p><img src=/images/microservices-dg-54.png alt=microservices-dg-54></p>
+<p>Tuy nhiên nhìn kết quả phía trên, comment thứ 3 ta thấy lúc moderation service bị crash thì sẽ xảy ra hiện tượng missing event, moderation service đã miss 1 event CommentCreated dẫn tới không check được comment content đồng thời update lại status của comment.</p>
+<p><img src=/images/microservices-dg-55.png alt=microservices-dg-55>
+Bất kỳ service nào bị crash cũng sẽ gây ảnh hưởng toàn bộ đến app. Vậy có cách giải quyết nào không.
+<img src=/images/microservices-dg-56.png alt=microservices-dg-56></p>
+<p>Có thể bạn không tin nhưng đúng rồi đấy, trên thực tế thì người ta sẽ lưu trữ các event lại để tránh trường hợp bị missing event. Service bị crash sau khi start lại sẽ query để tìm những event cần được thực thi và thực thi chúng.</p>
+<p>Ta sẽ lưu lại event</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// event service
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>events</span> <span style=color:#f92672>=</span> [];
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+  <span style=color:#a6e22e>events</span>.<span style=color:#a6e22e>push</span>(<span style=color:#a6e22e>event</span>);
+...
+</code></pre></div><p>Query event</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// event service
+</span><span style=color:#75715e></span><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>events</span>);
+});
+</code></pre></div><p>Query events mỗi khi start</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// query service
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>handleEvent</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>event</span>) =&gt; {
+  <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>type</span>) {
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;PostCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>;
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>comments</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span> <span style=color:#f92672>||</span> [];
+      <span style=color:#a6e22e>comments</span>.<span style=color:#a6e22e>push</span>({
+        <span style=color:#a6e22e>id</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>,
+        <span style=color:#a6e22e>content</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>content</span>,
+        <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>status</span>,
+      });
+      <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>comments</span>;
+      <span style=color:#66d9ef>break</span>;
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentUpdated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>comment</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>posts</span>[<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>postId</span>].<span style=color:#a6e22e>comments</span>.<span style=color:#a6e22e>find</span>(
+        (<span style=color:#a6e22e>c</span>) =&gt; <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>id</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>
+      );
+      <span style=color:#a6e22e>comment</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>status</span>;
+    <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>break</span>;
+  }
+};
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+  <span style=color:#a6e22e>handleEvent</span>(<span style=color:#a6e22e>event</span>);
+
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>listen</span>(<span style=color:#ae81ff>4002</span>, <span style=color:#66d9ef>async</span> () =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>.<span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#34;http://localhost:4005/events&#34;</span>);
+
+  <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>event</span> <span style=color:#66d9ef>of</span> <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>data</span>) {
+    <span style=color:#a6e22e>handleEvent</span>(<span style=color:#a6e22e>event</span>);
+  }
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Listening on port 4002&#34;</span>);
+});
+</code></pre></div><p>Vậy là ta đã xử lý xong trường hợp missing event cho query service, thử áp dụng vào moderation service nhé.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// moderation service
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>handleEvent</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>event</span>) =&gt; {
+  <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>type</span>) {
+    <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;CommentCreated&#34;</span><span style=color:#f92672>:</span>
+      <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>content</span>.<span style=color:#a6e22e>includes</span>(<span style=color:#e6db74>&#34;orange&#34;</span>)
+        <span style=color:#f92672>?</span> <span style=color:#e6db74>&#34;rejected&#34;</span>
+        <span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;approved&#34;</span>;
+      <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>
+        .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;http://localhost:4005/events&#34;</span>, {
+          <span style=color:#a6e22e>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;CommentModerated&#34;</span>,
+          <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>,
+        })
+        .<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+          <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+        });
+    <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+      <span style=color:#66d9ef>break</span>;
+  }
+};
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/events&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>, <span style=color:#a6e22e>res</span>) =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>handleEvent</span>(<span style=color:#a6e22e>event</span>);
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;OK&#34;</span> });
+});
+
+<span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>listen</span>(<span style=color:#ae81ff>4003</span>, <span style=color:#66d9ef>async</span> () =&gt; {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>axios</span>.<span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#34;http://localhost:4005/events&#34;</span>);
+
+  <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>event</span> <span style=color:#66d9ef>of</span> <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>data</span>) {
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>handleEvent</span>(<span style=color:#a6e22e>event</span>);
+  }
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Listening on port 4003&#34;</span>);
+});
+</code></pre></div><p>Vậy là chúng ta đã hoàn thành được 1 mini microservice app, nắm được các khái niệm cơ bản về microservice. Bài tiếp theo chúng ta sẽ sử dụng docker để deploy chạy các services trên. Các bạn nhớ đón xem nhé 😄</p>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#app-overview>App Overview</a></li>
+<li><a href=#project-setup>Project setup</a></li>
+<li><a href=#posts-service>Posts Service</a></li>
+<li><a href=#comments-service>Comments Service</a></li>
+<li><a href=#client>Client</a></li>
+<li><a href=#event-bus-overview>Event Bus Overview</a></li>
+<li><a href=#implement-query-service>Implement query service</a></li>
+<li><a href=#tính-năng-mới-flag-comments>Tính năng mới, flag comments</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p2%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app&description=%e1%bb%9e%20b%c3%a0i%20tr%c6%b0%e1%bb%9bc%20th%c3%ac%20ch%c3%bang%20ta%20%c4%91%c3%a3%20th%e1%ba%a5y%20m%e1%bb%99t%20v%c3%a0i%20notes%20v%e1%bb%81%20c%c3%a1ch%20ch%c3%bang%20ta%20x%e1%bb%ad%20l%c3%bd%20v%e1%ba%a5n%20%c4%91%e1%bb%81%20giao%20ti%e1%ba%bfp%20gi%e1%bb%afa%20c%c3%a1c%20microservices%2c%20b%c3%a2y%20gi%e1%bb%9d%20th%c3%ac%20h%c3%a3y%20b%e1%ba%aft%20%c4%91%e1%ba%a7u%20vi%e1%ba%bft%20m%e1%bb%99t%20v%c3%a0i%20d%c3%b2ng%20code%20n%c3%a0o%20%f0%9f%98%84.%0aGi%e1%bb%9d%20ta%20s%e1%ba%bd%20xem%20qua%20mock-up%20c%e1%bb%a7a%20app%20m%c3%a0%20ch%c3%bang%20ta%20s%e1%ba%bd%20build%20%c4%91%e1%bb%83%20c%c3%b3%20hi%e1%bb%83u%20h%c6%a1n%20v%e1%bb%81%20async%20communication.%20D%c6%b0%e1%bb%9bi%20%c4%91%c3%a2y%20l%c3%a0%20m%e1%bb%99t%20v%c3%a0i%20ch%c3%ba%20%c3%bd%20v%e1%bb%81%20project%20ti%e1%ba%bfp%20theo%20ch%c3%bang%20ta%20s%e1%ba%bd%20build." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p2%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%202%20-%20m%e1%bb%99t%20mini-microservices%20app" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
