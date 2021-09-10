@@ -478,12 +478,17 @@ Yêu cầu về tính năng mới: đánh dấu 1 comment nếu nó chứa từ 
 
 ![microservices-dg-47](/images/microservices-dg-47.png)
 
+### Yêu cầu
+
 Yêu cầu của tính năng này là sau khi comment, nếu service mới - `moderate service` chưa xử lý xong comment thì user phải nhận được trạng thái của comment là `awaiting` chứ không phải không thấy comment, sau khi xử lý xong thì nếu được approve comment sẽ hiển thị bình thường còn không sẽ hiển thị bị rejected.
 
 ![microservices-dg-48](/images/microservices-dg-48.png)
 Để user biết được trạng thái của comment thì react app phải biết được sự khác nhau giữa các trạng thái.
 
 ![microservices-dg-49](/images/microservices-dg-49.png)
+
+### Solution
+
 Cách tiếp cận đầu tiên mà ta nghĩ đến là: Sau khi user summit comment, comment service sẽ tạo 1 event, event này sẽ được lắng nghe bởi moderation service, moderation service sẽ đánh giá comment và update trạng thái của comment sau đó tạo 1 event mới, query service lắng nghe event này và update lại comment trong db của mình.
 
 Như đã giả sử ở trên thì moderation service này có thể mất nhiều thời gian để xử lý comment mới được tạo, ví dụ như cần xử lý ngôn ngữ tự nhiên chẳng hạn hoặc cần liên quan đến hệ thống recommendation, nếu sử dụng cách tiếp cận trên thì user sẽ phải chờ 1 lúc để moderation handle xong mới thấy comment của mình được hiển thị.
@@ -496,6 +501,9 @@ Chúng ta đã giải quyết được vấn đề user sẽ không thấy gì x
 
 QueryService được tạo ra với mục đích là lấy dữ liệu, nó không nên quan tâm tới bất cứ thứ gì khác như buniness,... Nếu chỉ với 1 type là Moderated thì sẽ ổn nhưng với nhiều type như vậy và nhiều xử lý khác nhau như vậy thì ta nên chúng ở một service khác chuyên biệt về comment hơn như CommentService.
 ![microservices-dg-52](/images/microservices-dg-52.png)
+
+### Tạo Moderation Service
+
 Đầu tiên tạo moderation service lắng nghe CommentCreated event.
 
 ```javascript
@@ -536,6 +544,8 @@ app.listen(4003, () => {
 });
 ```
 
+### Send CommentModerated Event To CommentService
+
 EventBus sẽ gửi event đến comment service khi comment được moderated.
 
 ```javascript
@@ -570,6 +580,8 @@ app.post("/events", async (req, res) => {
 });
 ```
 
+### Handle CommentModerated Event
+
 CommentService nhận thấy comment được moderated và update lại db đồng thời emit 1 event báo cho query service rằng comment vừa được update
 
 ```javascript
@@ -597,6 +609,8 @@ app.post("/events", async (req, res) => {
   res.send({ status: "OK" });
 });
 ```
+
+### Handle CommentUpdated Event
 
 QueryService nhận được event rằng comment được update nên update lại comment,
 
@@ -630,6 +644,8 @@ app.post("/events", (req, res) => {
 });
 ```
 
+### Missing Event
+
 ![microservices-dg-53](/images/microservices-dg-53.png)
 Vậy là mọi thứ có vẻ đã hoàn hảo, comment của user sẽ được xử lý ngay lập tức và được update lại sau khi moderation service xử lý xong.
 
@@ -639,6 +655,9 @@ Tuy nhiên nhìn kết quả phía trên, comment thứ 3 ta thấy lúc moderat
 
 ![microservices-dg-55](/images/microservices-dg-55.png)
 Bất kỳ service nào bị crash cũng sẽ gây ảnh hưởng toàn bộ đến app. Vậy có cách giải quyết nào không.
+
+### Missing Event Solution
+
 ![microservices-dg-56](/images/microservices-dg-56.png)
 
 Có thể bạn không tin nhưng đúng rồi đấy, trên thực tế thì người ta sẽ lưu trữ các event lại để tránh trường hợp bị missing event. Service bị crash sau khi start lại sẽ query để tìm những event cần được thực thi và thực thi chúng.
@@ -709,6 +728,8 @@ app.listen(4002, async () => {
 ```
 
 Vậy là ta đã xử lý xong trường hợp missing event cho query service, thử áp dụng vào moderation service nhé.
+
+### Query Missing Event For Moderation Service
 
 ```javascript
 // moderation service
