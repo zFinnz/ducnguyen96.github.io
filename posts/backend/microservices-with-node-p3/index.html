@@ -1,0 +1,352 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices với NodeJS phần 3 - Running Services With Docker | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-with-node-p3/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices với NodeJS phần 3 - Running Services With Docker">
+<meta property="og:description" content="Vậy là mini app của chúng ta đã hoàn tất, bây giờ chúng ta bắt đầu nghĩ đến việc deploy nó online để người khác có thể truy cập vào.
+Trước tên hay xem lại app của chúng ta đang được thực thi như thế nào trên local. Hiện tại thì mỗi service đều chạy trên 1 port cụ thể và có thể giao tiếp với nhau qua axios. Vậy làm sao ta có thể thay đổi 1 chút và deploy toàn bộ app này?">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-with-node-p3/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-11T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-11T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices với NodeJS phần 3 - Running Services With Docker">
+<meta name=twitter:description content="Vậy là mini app của chúng ta đã hoàn tất, bây giờ chúng ta bắt đầu nghĩ đến việc deploy nó online để người khác có thể truy cập vào.
+Trước tên hay xem lại app của chúng ta đang được thực thi như thế nào trên local. Hiện tại thì mỗi service đều chạy trên 1 port cụ thể và có thể giao tiếp với nhau qua axios. Vậy làm sao ta có thể thay đổi 1 chút và deploy toàn bộ app này?">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p2/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p3%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker&description=V%e1%ba%ady%20l%c3%a0%20mini%20app%20c%e1%bb%a7a%20ch%c3%bang%20ta%20%c4%91%c3%a3%20ho%c3%a0n%20t%e1%ba%a5t%2c%20b%c3%a2y%20gi%e1%bb%9d%20ch%c3%bang%20ta%20b%e1%ba%aft%20%c4%91%e1%ba%a7u%20ngh%c4%a9%20%c4%91%e1%ba%bfn%20vi%e1%bb%87c%20deploy%20n%c3%b3%20online%20%c4%91%e1%bb%83%20ng%c6%b0%e1%bb%9di%20kh%c3%a1c%20c%c3%b3%20th%e1%bb%83%20truy%20c%e1%ba%adp%20v%c3%a0o.%0aTr%c6%b0%e1%bb%9bc%20t%c3%aan%20hay%20xem%20l%e1%ba%a1i%20app%20c%e1%bb%a7a%20ch%c3%bang%20ta%20%c4%91ang%20%c4%91%c6%b0%e1%bb%a3c%20th%e1%bb%b1c%20thi%20nh%c6%b0%20th%e1%ba%bf%20n%c3%a0o%20tr%c3%aan%20local.%20Hi%e1%bb%87n%20t%e1%ba%a1i%20th%c3%ac%20m%e1%bb%97i%20service%20%c4%91%e1%bb%81u%20ch%e1%ba%a1y%20tr%c3%aan%201%20port%20c%e1%bb%a5%20th%e1%bb%83%20v%c3%a0%20c%c3%b3%20th%e1%bb%83%20giao%20ti%e1%ba%bfp%20v%e1%bb%9bi%20nhau%20qua%20axios.%20V%e1%ba%ady%20l%c3%a0m%20sao%20ta%20c%c3%b3%20th%e1%bb%83%20thay%20%c4%91%e1%bb%95i%201%20ch%c3%bat%20v%c3%a0%20deploy%20to%c3%a0n%20b%e1%bb%99%20app%20n%c3%a0y%3f" aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#deployment-issues>Deployment Issues</a>
+<ul>
+<li><a href=#issues>Issues</a></li>
+<li><a href=#conclusion>Conclusion</a></li>
+</ul>
+</li>
+<li><a href=#why-docker->Why Docker ?</a></li>
+<li><a href=#dockerizing-posts-service>Dockerizing Posts Service</a></li>
+<li><a href=#review-some-basic-commands>Review Some Basic Commands</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices với NodeJS phần 3 - Running Services With Docker
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-11 00:00:00 +0000 UTC" itemprop=datePublished>2021-09-11</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/nodejs rel=tag>nodejs</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p>Vậy là mini app của chúng ta đã hoàn tất, bây giờ chúng ta bắt đầu nghĩ đến việc deploy nó online để người khác có thể truy cập vào.</p>
+<p>Trước tên hay xem lại app của chúng ta đang được thực thi như thế nào trên local.
+<img src=/images/microservices-dg-57.png alt=microservices-dg-57></p>
+<p>Hiện tại thì mỗi service đều chạy trên 1 port cụ thể và có thể giao tiếp với nhau qua axios. Vậy làm sao ta có thể thay đổi 1 chút và deploy toàn bộ app này? Cách dễ nhất là lên aws thuê 1 instance EC2 sau đó clone toàn bộ project về chạy từng service một như chạy trên local. Cách này thì hoàn toàn giúp chúng ta deploy và user có thể truy cập được nhưng hãy thử nghĩ xem nếu app có nhiều lượng truy cập thì sẽ như thế nao ?</p>
+<h2 id=deployment-issues>Deployment Issues</h2>
+<p>Lấy ví dụ chẳng hạn sẽ có 1 lượng lớn user tạo comment, lúc này chúng ta cần phải tạo thêm instance cho comments để có thể handle lượng requests và cách đơn giản nhất là tạo thêm 2 comment service nữa chẳng hạn ở port 4006 và 4007. Vậy ta có 3 comment service ở port 4001, 4006 và 4007, lúc user tạo comment mới ta sẽ cân bằng tải 3 service này (cân bằng lượng request đến 3 service, điều chỉnh xem request mới nên gửi tới service nào cho cân bằng).</p>
+<h3 id=issues>Issues</h3>
+<p>Có một vài thách thức với cách tiếp cận trên:
+<img src=/images/microservices-dg-58.png alt=microservices-dg-58></p>
+<ul>
+<li>
+<p>Mỗi service mới sẽ được gắn 1 port mới. Và nhớ là eventbus cần biết được chính xác port của service để gửi event, nên nếu chúng ta muốn update port hoặc tăng giảm số lượng instance của service thì phải thay đổi trực tiếp vào code và deploy lại.
+<img src=/images/microservices-dg-59.png alt=microservices-dg-59></p>
+</li>
+<li>
+<p>Trường hợp xấu hơn khi số lượng service tăng nhiều và máy ảo bạn thuê không còn đủ đáp ứng nữa, bạn sẽ phải thuê thêm 1 máy ảo và phân bố bớt lượng service sang máy ảo mới. Lúc này EventBus không chỉ phải theo dõi port của service mới mà còn phải biết cách giao tiếp với máy ảo thứ 2, tức là bạn phải update địa chỉ ip của máy ảo thứ 2 đó trong code và việc này rất là phiền phức.</p>
+</li>
+<li>
+<p>Một trường hợp nữa là chẳng hạn vào ban ngày lượng user vào app của bạn cực kỳ nhiều và bạn thuê thêm máy ảo, nhưng lúc về đêm thì user giảm sâu, lúc này bạn muốn tiếp kiệm chi phí nên tạm thời ngừng thuê máy ảo mới, bạn sẽ phải thêm điều kiện check thời gian cho phần code gửi request đến máy ảo mới.</p>
+</li>
+</ul>
+<h3 id=conclusion>Conclusion</h3>
+<ul>
+<li>Kết luận là cách tiếp cận trên chưa biết có sử dụng tốt hay không nhưng thực sự là quá phức tạp và rắc rối, chúng ta cần giải pháp thay thế tốt hơn.</li>
+<li>Chúng ta cần một giải pháp có thể theo dõi toàn bộ các services chạy trong app, có khả năng tạo copies của 1 service lúc cần thiết,&mldr; và docker, kubernetes có thể giúp bạn điều này.</li>
+</ul>
+<h2 id=why-docker->Why Docker ?</h2>
+<p>📔 Bạn đọc có thể tham khảo thêm <a href=/posts/backend/docker-fundamentals/>ở đây</a>
+<img src=/images/microservices-dg-60.png alt=microservices-dg-60>
+Sử dụng docker ta sẽ đóng gói các services lại thành các containers.</p>
+<p><strong>Tại sao lại sử dụng docker ?</strong></p>
+<ul>
+<li>Hiện tại cách chạy app của chúng ta thì ta đang giả định là môi trường chạy app sẽ giống với môi trường local. Chẳng hạn với <code>yarn start</code> thì ta đang giả định là môi trường production của app cũng đã cài đặt yarn và nodejs.</li>
+<li>Thứ 2 là chúng ta cũng cần biết câu lệnh chính xác để có thể chạy app của mình (yarn start)</li>
+<li>Docker giải quyết cả 2 vấn đề trên, nó đóng gói toàn bộ package cùng code mà app cần để chạy, nó cũng cung cấp cho ta config cách run ứng dụng.</li>
+</ul>
+<p><strong>Tại sao lại sử dụng kubernetes ?</strong>
+Đầu tiên kubernetes là gì ?
+<img src=/images/microservices-dg-61.png alt=microservices-dg-61></p>
+<ul>
+<li>Nói một cách đơn giản, kubernetes là một công cụ để chạy các containers một cách đơn giản và dễ hiểu.</li>
+<li>Ta cung cấp cho nó 1 config file miêu tả cách ta muốn containers chạy và tương tác với nhau.</li>
+</ul>
+<p><img src=/images/microservices-dg-62.png alt=microservices-dg-62>
+Sử dụng Kubernetes ta sẽ tạo 1 Kubernetes Cluster - một bộ các máy ảo khác nhau, có thể là một hoặc hàng trăm ngàn máy. Mỗi máy thì được xem là 1 <code>Node</code> và được quản lý bởi Master - là chương trình sẽ quản lý tất cả mọi thứ trong cluster.</p>
+<p>Ta sẽ sử dụng Kubernetes để chạy ứng dụng, ứng dụng của chúng ta được đóng gói thành container sau đó thì được cân bằng tải assign vào 1 trong các node. Cụ thể như sau:</p>
+<p><img src=/images/microservices-dg-63.png alt=microservices-dg-63>
+Ta sẽ tạo ra một số config files cung cấp những chi tiết cụ thể mà ta muốn Kubernetes thực hiện. Chẳng hạn như chạy 2 copies của PostService và cho phép truy cập vào 2 copies đấy. Master sẽ đọc config files và implement tất cả các bước mà ta viết trong đấy.</p>
+<p>Issue về vấn đề giao tiếp giữa các service khi mỗi service có nhiều copies cũng được giải quyết bởi Kubernetes, lúc này Event Bus chỉ việc gửi request đến kênh giao tiếp chung và chúng sẽ được forwarded đến service cần thiết.</p>
+<h2 id=dockerizing-posts-service>Dockerizing Posts Service</h2>
+<p><img src=/images/microservices-dg-64.png alt=microservices-dg-64></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Dockerfile data-lang=Dockerfile><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> node:alpine</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>WORKDIR</span><span style=color:#e6db74> /app</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> package.json ./<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> npm install<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> . .<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>CMD</span> [<span style=color:#e6db74>&#34;npm&#34;</span>, <span style=color:#e6db74>&#34;start&#34;</span>]<span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>Build image</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker build -t ducnguyen96/mini-microservice-postservice:0.0.1 .
+</code></pre></div><p>Run container</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker run -it --name mini-microservice-postservice -p 4000:4000 ducnguyen96/mini-microservice-postservice:0.0.1
+</code></pre></div><h2 id=review-some-basic-commands>Review Some Basic Commands</h2>
+<p><img src=/images/microservices-dg-65.png alt=microservices-dg-65></p>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#deployment-issues>Deployment Issues</a>
+<ul>
+<li><a href=#issues>Issues</a></li>
+<li><a href=#conclusion>Conclusion</a></li>
+</ul>
+</li>
+<li><a href=#why-docker->Why Docker ?</a></li>
+<li><a href=#dockerizing-posts-service>Dockerizing Posts Service</a></li>
+<li><a href=#review-some-basic-commands>Review Some Basic Commands</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p3%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker&description=V%e1%ba%ady%20l%c3%a0%20mini%20app%20c%e1%bb%a7a%20ch%c3%bang%20ta%20%c4%91%c3%a3%20ho%c3%a0n%20t%e1%ba%a5t%2c%20b%c3%a2y%20gi%e1%bb%9d%20ch%c3%bang%20ta%20b%e1%ba%aft%20%c4%91%e1%ba%a7u%20ngh%c4%a9%20%c4%91%e1%ba%bfn%20vi%e1%bb%87c%20deploy%20n%c3%b3%20online%20%c4%91%e1%bb%83%20ng%c6%b0%e1%bb%9di%20kh%c3%a1c%20c%c3%b3%20th%e1%bb%83%20truy%20c%e1%ba%adp%20v%c3%a0o.%0aTr%c6%b0%e1%bb%9bc%20t%c3%aan%20hay%20xem%20l%e1%ba%a1i%20app%20c%e1%bb%a7a%20ch%c3%bang%20ta%20%c4%91ang%20%c4%91%c6%b0%e1%bb%a3c%20th%e1%bb%b1c%20thi%20nh%c6%b0%20th%e1%ba%bf%20n%c3%a0o%20tr%c3%aan%20local.%20Hi%e1%bb%87n%20t%e1%ba%a1i%20th%c3%ac%20m%e1%bb%97i%20service%20%c4%91%e1%bb%81u%20ch%e1%ba%a1y%20tr%c3%aan%201%20port%20c%e1%bb%a5%20th%e1%bb%83%20v%c3%a0%20c%c3%b3%20th%e1%bb%83%20giao%20ti%e1%ba%bfp%20v%e1%bb%9bi%20nhau%20qua%20axios.%20V%e1%ba%ady%20l%c3%a0m%20sao%20ta%20c%c3%b3%20th%e1%bb%83%20thay%20%c4%91%e1%bb%95i%201%20ch%c3%bat%20v%c3%a0%20deploy%20to%c3%a0n%20b%e1%bb%99%20app%20n%c3%a0y%3f" aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p3%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%203%20-%20Running%20Services%20With%20Docker" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
