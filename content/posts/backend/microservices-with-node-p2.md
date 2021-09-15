@@ -1,6 +1,6 @@
 ---
 title: "Microservices với NodeJS phần 2 - một mini-microservices app"
-date: 2021-09-10
+date: 2021-09-07
 draft: false
 categories: [backend, devops]
 categories_weight: 4

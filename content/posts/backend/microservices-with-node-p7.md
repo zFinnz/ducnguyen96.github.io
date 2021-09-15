@@ -1,6 +1,6 @@
 ---
 title: "Microservices với NodeJS phần 7 - Database Management and Modeling"
-date: 2021-09-15
+date: 2021-09-12
 draft: false
 categories: [backend, devops]
 categories_weight: 4

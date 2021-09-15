@@ -1,6 +1,6 @@
 ---
 title: "Microservices với NodeJS phần 4 - Điều phối services với Kubernetes"
-date: 2021-09-12
+date: 2021-09-09
 draft: false
 categories: [backend, devops]
 categories_weight: 4

@@ -1,6 +1,6 @@
 ---
 title: "Microservices với NodeJS phần 5 - Architecture of Multi-Service Apps"
-date: 2021-09-13
+date: 2021-09-10
 draft: false
 categories: [backend, devops]
 categories_weight: 4
