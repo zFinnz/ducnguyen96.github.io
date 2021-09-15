@@ -51,6 +51,11 @@
 </a>
 </li>
 <li>
+<a class=icon href=/posts/backend/microservices-with-node-p7/ aria-label=Next>
+<i class="fas fa-chevron-right" aria-hidden=true onmouseover="$('#i-next').toggle()" onmouseout="$('#i-next').toggle()"></i>
+</a>
+</li>
+<li>
 <a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
 <i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
 </a>
@@ -351,8 +356,8 @@ Các framework có thể trả về result khác nhau cho client, và ta không 
 </span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CustomError</span> <span style=color:#66d9ef>extends</span> Error {
   <span style=color:#66d9ef>abstract</span> <span style=color:#a6e22e>statusCode</span>: <span style=color:#66d9ef>number</span>;
 
-  <span style=color:#66d9ef>constructor</span>() {
-    <span style=color:#66d9ef>super</span>();
+  <span style=color:#66d9ef>constructor</span>(<span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>string</span>) {
+    <span style=color:#66d9ef>super</span>(<span style=color:#a6e22e>message</span>);
 
     Object.<span style=color:#a6e22e>setPrototypeOf</span>(<span style=color:#66d9ef>this</span>, <span style=color:#a6e22e>CustomError</span>.<span style=color:#a6e22e>prototype</span>);
   }
@@ -360,10 +365,33 @@ Các framework có thể trả về result khác nhau cho client, và ta không 
   <span style=color:#66d9ef>abstract</span> <span style=color:#a6e22e>serializeErrors</span>()<span style=color:#f92672>:</span> { <span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>string</span>; <span style=color:#a6e22e>field?</span>: <span style=color:#66d9ef>string</span> };
 }
 </code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// database-connection-error.ts
-</span><span style=color:#75715e></span><span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>CustomError</span>
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DatabaseConnectionError</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>CustomError</span> {
+  <span style=color:#a6e22e>statusCode</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>500</span>;
+  <span style=color:#a6e22e>reason</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Error connecting to database&#34;</span>;
+  <span style=color:#66d9ef>constructor</span>() {
+    <span style=color:#66d9ef>super</span>(<span style=color:#e6db74>&#34;Error connecting to database&#34;</span>);
+
+    <span style=color:#75715e>// Only because we are extending a built in class
+</span><span style=color:#75715e></span>    Object.<span style=color:#a6e22e>setPrototypeOf</span>(<span style=color:#66d9ef>this</span>, <span style=color:#a6e22e>DatabaseConnectionError</span>.<span style=color:#a6e22e>prototype</span>);
+  }
+  <span style=color:#a6e22e>serializeErrors() {</span>
+    <span style=color:#66d9ef>return</span> [{ <span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>this.reason</span> }];
+  }
+}
 
 <span style=color:#75715e>// request-validation-error.ts
-</span><span style=color:#75715e></span><span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>CustomError</span>
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>RequestValidationError</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>CustomError</span> {
+  <span style=color:#a6e22e>statusCode</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>400</span>;
+  <span style=color:#66d9ef>constructor</span>(<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>errors</span>: <span style=color:#66d9ef>ValidationError</span>[]) {
+    <span style=color:#66d9ef>super</span>(<span style=color:#e6db74>&#34;Request Validation Error&#34;</span>);
+
+    <span style=color:#75715e>// Only because we are extending a built in class
+</span><span style=color:#75715e></span>    Object.<span style=color:#a6e22e>setPrototypeOf</span>(<span style=color:#66d9ef>this</span>, <span style=color:#a6e22e>RequestValidationError</span>.<span style=color:#a6e22e>prototype</span>);
+  }
+  <span style=color:#a6e22e>serializeErrors() {</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>errors</span>.<span style=color:#a6e22e>map</span>((<span style=color:#a6e22e>err</span>) <span style=color:#f92672>=&gt;</span> ({ <span style=color:#a6e22e>message</span>: <span style=color:#66d9ef>err.msg</span>, <span style=color:#a6e22e>field</span>: <span style=color:#66d9ef>err.param</span> }));
+  }
+}
 </code></pre></div><h2 id=define-new-custom-errors>Define New Custom Errors</h2>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// not-found-error.ts
 </span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>NotFoundEror</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>CustomError</span> {
