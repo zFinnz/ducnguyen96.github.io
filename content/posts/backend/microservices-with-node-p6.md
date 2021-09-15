@@ -262,8 +262,8 @@ if (
 export abstract class CustomError extends Error {
   abstract statusCode: number;
 
-  constructor() {
-    super();
+  constructor(message: string) {
+    super(message);
 
     Object.setPrototypeOf(this, CustomError.prototype);
   }
@@ -274,10 +274,33 @@ export abstract class CustomError extends Error {
 
 ```ts
 // database-connection-error.ts
-extends CustomError
+export class DatabaseConnectionError extends CustomError {
+  statusCode = 500;
+  reason = "Error connecting to database";
+  constructor() {
+    super("Error connecting to database");
+
+    // Only because we are extending a built in class
+    Object.setPrototypeOf(this, DatabaseConnectionError.prototype);
+  }
+  serializeErrors() {
+    return [{ message: this.reason }];
+  }
+}
 
 // request-validation-error.ts
-extends CustomError
+export class RequestValidationError extends CustomError {
+  statusCode = 400;
+  constructor(public errors: ValidationError[]) {
+    super("Request Validation Error");
+
+    // Only because we are extending a built in class
+    Object.setPrototypeOf(this, RequestValidationError.prototype);
+  }
+  serializeErrors() {
+    return this.errors.map((err) => ({ message: err.msg, field: err.param }));
+  }
+}
 ```
 
 ## Define New Custom Errors
