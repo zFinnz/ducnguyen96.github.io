@@ -1,0 +1,936 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices với NodeJS phần 12 - CRUD Server Setup | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-with-node-p12/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices với NodeJS phần 12 - CRUD Server Setup">
+<meta property="og:description" content="Ticketing Service Project Setup Với tickets service thì ta sẽ copy từ auth service để tiết kiệm thời gian
+1. make service folder mkdir tickets 2. copy same config Copy .dockerignore, Dockerfile, package-lock.json, package.json, tsconfig.json vào tickets
+3. copy same code Copy src/test/*, src/app.ts, src/index.ts
+4. update package name Updae package name in package.json
+5. update code Update lại code vừa copy.
+6. install dependencies npm install 7. Build image eval $(minikube docker-env) docker build -t ducnguyen96/ticketing-tickets .">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-with-node-p12/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-16T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-16T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices với NodeJS phần 12 - CRUD Server Setup">
+<meta name=twitter:description content="Ticketing Service Project Setup Với tickets service thì ta sẽ copy từ auth service để tiết kiệm thời gian
+1. make service folder mkdir tickets 2. copy same config Copy .dockerignore, Dockerfile, package-lock.json, package.json, tsconfig.json vào tickets
+3. copy same code Copy src/test/*, src/app.ts, src/index.ts
+4. update package name Updae package name in package.json
+5. update code Update lại code vừa copy.
+6. install dependencies npm install 7. Build image eval $(minikube docker-env) docker build -t ducnguyen96/ticketing-tickets .">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p10/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p11/ aria-label=Next>
+<i class="fas fa-chevron-right" aria-hidden=true onmouseover="$('#i-next').toggle()" onmouseout="$('#i-next').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p12%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup&description=Ticketing%20Service%20Project%20Setup%20V%e1%bb%9bi%20tickets%20service%20th%c3%ac%20ta%20s%e1%ba%bd%20copy%20t%e1%bb%ab%20auth%20service%20%c4%91%e1%bb%83%20ti%e1%ba%bft%20ki%e1%bb%87m%20th%e1%bb%9di%20gian%0a1.%20make%20service%20folder%20mkdir%20tickets%202.%20copy%20same%20config%20Copy%20.dockerignore%2c%20Dockerfile%2c%20package-lock.json%2c%20package.json%2c%20tsconfig.json%20v%c3%a0o%20tickets%0a3.%20copy%20same%20code%20Copy%20src%2ftest%2f%2a%2c%20src%2fapp.ts%2c%20src%2findex.ts%0a4.%20update%20package%20name%20Updae%20package%20name%20in%20package.json%0a5.%20update%20code%20Update%20l%e1%ba%a1i%20code%20v%e1%bb%aba%20copy.%0a6.%20install%20dependencies%20npm%20install%207.%20Build%20image%20eval%20%24%28minikube%20docker-env%29%20docker%20build%20-t%20ducnguyen96%2fticketing-tickets%20." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#ticketing-service-project-setup>Ticketing Service Project Setup</a>
+<ul>
+<li><a href=#1-make-service-folder>1. make service folder</a></li>
+<li><a href=#2-copy-same-config>2. copy same config</a></li>
+<li><a href=#3-copy-same-code>3. copy same code</a></li>
+<li><a href=#4-update-package-name>4. update package name</a></li>
+<li><a href=#5-update-code>5. update code</a></li>
+<li><a href=#6-install-dependencies>6. install dependencies</a></li>
+<li><a href=#7-build-image>7. Build image</a></li>
+<li><a href=#8-write-k8s-config-file>8. Write k8s config file</a></li>
+<li><a href=#9-update-skaffoldyml>9. Update skaffold.yml</a></li>
+<li><a href=#10-write-tickets-mongo-deplyml>10. Write tickets-mongo-depl.yml</a></li>
+</ul>
+</li>
+<li><a href=#mongo-connection-uri>Mongo Connection URI</a></li>
+<li><a href=#test-first-approach>Test-First Approach</a></li>
+<li><a href=#creating-the-router>Creating the Router</a></li>
+<li><a href=#adding-auth-protection>Adding Auth Protection</a></li>
+<li><a href=#faking-authentication-during-tests>Faking Authentication During Tests</a></li>
+<li><a href=#validate-title-and-price>Validate Title and Price</a></li>
+<li><a href=#defining-the-ticket-model>Defining the Ticket Model</a></li>
+<li><a href=#creation-via-route-handler>Creation via Route Handler</a></li>
+<li><a href=#testing-show-routes>Testing Show Routes</a></li>
+<li><a href=#unexpected-failure>Unexpected Failure</a></li>
+<li><a href=#better-error-logging>Better Error Logging</a></li>
+<li><a href=#complete-read-route-implementation>Complete Read Route Implementation</a></li>
+<li><a href=#ticket-updating>Ticket Updating</a></li>
+<li><a href=#handling-updates>Handling Updates</a></li>
+<li><a href=#permission-checking>Permission Checking</a></li>
+<li><a href=#update-ingress>Update Ingress</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices với NodeJS phần 12 - CRUD Server Setup
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-16 00:00:00 +0000 UTC" itemprop=datePublished>2021-09-16</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/nodejs rel=tag>nodejs</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+,
+<a class=tag-link href=/tags/test rel=tag>test</a>
+,
+<a class=tag-link href=/tags/jest rel=tag>jest</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<h2 id=ticketing-service-project-setup>Ticketing Service Project Setup</h2>
+<p><img src=/images/microservices-dg-144.png alt=microservice-dg-144>
+<img src=/images/microservices-dg-145.png alt=microservice-dg-145>
+Với tickets service thì ta sẽ copy từ auth service để tiết kiệm thời gian</p>
+<h3 id=1-make-service-folder>1. make service folder</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>mkdir tickets
+</code></pre></div><h3 id=2-copy-same-config>2. copy same config</h3>
+<p>Copy <code>.dockerignore</code>, <code>Dockerfile</code>, <code>package-lock.json</code>, <code>package.json</code>, <code>tsconfig.json</code> vào <code>tickets</code></p>
+<h3 id=3-copy-same-code>3. copy same code</h3>
+<p>Copy <code>src/test/*</code>, <code>src/app.ts</code>, <code>src/index.ts</code></p>
+<h3 id=4-update-package-name>4. update package name</h3>
+<p>Updae package name in <code>package.json</code></p>
+<h3 id=5-update-code>5. update code</h3>
+<p>Update lại code vừa copy.</p>
+<h3 id=6-install-dependencies>6. install dependencies</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm install
+</code></pre></div><h3 id=7-build-image>7. Build image</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>eval <span style=color:#66d9ef>$(</span>minikube docker-env<span style=color:#66d9ef>)</span>
+docker build -t ducnguyen96/ticketing-tickets .
+</code></pre></div><h3 id=8-write-k8s-config-file>8. Write k8s config file</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets-depl</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>matchLabels</span>:
+      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>tickets</span>
+  <span style=color:#f92672>template</span>:
+    <span style=color:#f92672>metadata</span>:
+      <span style=color:#f92672>labels</span>:
+        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>tickets</span>
+    <span style=color:#f92672>spec</span>:
+      <span style=color:#f92672>containers</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets</span>
+          <span style=color:#f92672>image</span>: <span style=color:#ae81ff>ducnguyen96/ticketing-tickets</span>
+          <span style=color:#f92672>env</span>:
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>JWT_KEY</span>
+              <span style=color:#f92672>valueFrom</span>:
+                <span style=color:#f92672>secretKeyRef</span>:
+                  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>jwt-secret</span>
+                  <span style=color:#f92672>key</span>: <span style=color:#ae81ff>JWT_KEY</span>
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets-srv</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>tickets</span>
+  <span style=color:#f92672>ports</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets</span>
+      <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+      <span style=color:#f92672>port</span>: <span style=color:#ae81ff>3000</span>
+      <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>3000</span>
+</code></pre></div><h3 id=9-update-skaffoldyml>9. Update skaffold.yml</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>skaffold/v2beta21</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Config</span>
+<span style=color:#f92672>deploy</span>:
+  <span style=color:#f92672>kubectl</span>:
+    <span style=color:#f92672>manifests</span>:
+      - <span style=color:#ae81ff>./infra/k8s/*</span>
+<span style=color:#f92672>build</span>:
+  <span style=color:#f92672>local</span>:
+    <span style=color:#f92672>push</span>: <span style=color:#66d9ef>false</span>
+  <span style=color:#f92672>artifacts</span>:
+    - <span style=color:#f92672>image</span>: <span style=color:#ae81ff>ducnguyen96/ticketing-auth</span>
+      <span style=color:#f92672>context</span>: <span style=color:#ae81ff>auth</span>
+      <span style=color:#f92672>docker</span>:
+        <span style=color:#f92672>dockerfile</span>: <span style=color:#ae81ff>Dockerfile</span>
+      <span style=color:#f92672>sync</span>:
+        <span style=color:#f92672>manual</span>:
+          - <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;src/**/*.ts&#34;</span>
+            <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>.</span>
+    - <span style=color:#f92672>image</span>: <span style=color:#ae81ff>ducnguyen96/ticketing-client</span>
+      <span style=color:#f92672>context</span>: <span style=color:#ae81ff>client</span>
+      <span style=color:#f92672>docker</span>:
+        <span style=color:#f92672>dockerfile</span>: <span style=color:#ae81ff>Dockerfile</span>
+      <span style=color:#f92672>sync</span>:
+        <span style=color:#f92672>manual</span>:
+          - <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;**/*.js&#34;</span>
+            <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>.</span>
+    - <span style=color:#f92672>image</span>: <span style=color:#ae81ff>ducnguyen96/ticketing-tickets</span>
+      <span style=color:#f92672>context</span>: <span style=color:#ae81ff>tickets</span>
+      <span style=color:#f92672>docker</span>:
+        <span style=color:#f92672>dockerfile</span>: <span style=color:#ae81ff>Dockerfile</span>
+      <span style=color:#f92672>sync</span>:
+        <span style=color:#f92672>manual</span>:
+          - <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;src/**/*.ts&#34;</span>
+            <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>.</span>
+</code></pre></div><h3 id=10-write-tickets-mongo-deplyml>10. Write tickets-mongo-depl.yml</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets-mongo-depl</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>matchLabels</span>:
+      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>tickets-mongo</span>
+  <span style=color:#f92672>template</span>:
+    <span style=color:#f92672>metadata</span>:
+      <span style=color:#f92672>labels</span>:
+        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>tickets-mongo</span>
+    <span style=color:#f92672>spec</span>:
+      <span style=color:#f92672>containers</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets-mongo</span>
+          <span style=color:#f92672>image</span>: <span style=color:#ae81ff>mongo</span>
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets-mongo-srv</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>tickets-mongo</span>
+  <span style=color:#f92672>ports</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>db</span>
+      <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+      <span style=color:#f92672>port</span>: <span style=color:#ae81ff>27017</span>
+      <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>27017</span>
+</code></pre></div><h2 id=mongo-connection-uri>Mongo Connection URI</h2>
+<p>Ta sẽ sử dụng <code>env</code> trong kubernetes config file để lưu mongo uri.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml>- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets</span>
+  <span style=color:#f92672>image</span>: <span style=color:#ae81ff>ducnguyen96/ticketing-tickets</span>
+  <span style=color:#f92672>env</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>JWT_KEY</span>
+      <span style=color:#f92672>valueFrom</span>:
+        <span style=color:#f92672>secretKeyRef</span>:
+          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>jwt-secret</span>
+          <span style=color:#f92672>key</span>: <span style=color:#ae81ff>JWT_KEY</span>
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>MONGO_URI</span>
+      <span style=color:#f92672>value</span>: <span style=color:#e6db74>&#34;mongodb://auth-mongo-srv:27017/auth&#34;</span>
+</code></pre></div><p>Tương tự thì ta update lại cho auth service.</p>
+<h2 id=test-first-approach>Test-First Approach</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/__test__/create.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>request</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;supertest&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>app</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../app&#34;</span>;
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;has a route handler listening to /api/tickets for post requests&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>).<span style=color:#a6e22e>send</span>({});
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>status</span>).<span style=color:#a6e22e>not</span>.<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>404</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;can only be accessed if the user is signed in&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>).<span style=color:#a6e22e>send</span>({}).<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>401</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns a status other than 401 if the user is signed in&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({});
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>status</span>).<span style=color:#a6e22e>not</span>.<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>401</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns an error if an invalid title is provided&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>).<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>()).<span style=color:#a6e22e>send</span>({
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>10</span>,
+  });
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>400</span>);
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>).<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>()).<span style=color:#a6e22e>send</span>({
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>10</span>,
+  });
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>400</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns an error if an invalid price is provided&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>).<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>()).<span style=color:#a6e22e>send</span>({
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>,
+    <span style=color:#a6e22e>price</span><span style=color:#f92672>:</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>10</span>,
+  });
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>400</span>);
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>).<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>()).<span style=color:#a6e22e>send</span>({
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>,
+  });
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>400</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;creates a ticket with valid inputs&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>tickets</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>find</span>({});
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>tickets</span>.<span style=color:#a6e22e>length</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>0</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>title</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>;
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>price</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>20</span>;
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({
+      <span style=color:#a6e22e>title</span>,
+      <span style=color:#a6e22e>price</span>,
+    })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+
+  <span style=color:#a6e22e>tickets</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>find</span>({});
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>tickets</span>.<span style=color:#a6e22e>length</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>1</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>tickets</span>[<span style=color:#ae81ff>0</span>].<span style=color:#a6e22e>price</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>price</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>tickets</span>[<span style=color:#ae81ff>0</span>].<span style=color:#a6e22e>title</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>title</span>);
+});
+</code></pre></div><h2 id=creating-the-router>Creating the Router</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// create.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>express</span>, { <span style=color:#a6e22e>Request</span>, <span style=color:#a6e22e>Response</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;express&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>router</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>.<span style=color:#a6e22e>Router</span>();
+
+<span style=color:#a6e22e>router</span>.<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>sendStatus</span>(<span style=color:#ae81ff>200</span>);
+});
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>router</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>createTicketRouter</span> };
+</code></pre></div><h2 id=adding-auth-protection>Adding Auth Protection</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// app.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>app</span>.<span style=color:#a6e22e>use</span>(<span style=color:#a6e22e>currentUser</span>);
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// create.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>router</span>.<span style=color:#a6e22e>post</span>(
+  <span style=color:#e6db74>&#34;/api/tickets&#34;</span>,
+  <span style=color:#a6e22e>requireAuth</span>,
+  <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>sendStatus</span>(<span style=color:#ae81ff>200</span>);
+  }
+);
+</code></pre></div><h2 id=faking-authentication-during-tests>Faking Authentication During Tests</h2>
+<p>Ở auth service ta đã có 1 hàm login để lấy cookie, tickets service không có cơ chế login nên ta chỉ việc tạo hoặc copy cookie.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// setup.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span> <span style=color:#f92672>=</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// Build a JWT payload, { id, email }
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>payload</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>id</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;dkfg34fjv0f3&#34;</span>,
+    <span style=color:#a6e22e>email</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;test@test.com&#34;</span>,
+  };
+
+  <span style=color:#75715e>// Create the JWT
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>token</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>jwt</span>.<span style=color:#a6e22e>sign</span>(<span style=color:#a6e22e>payload</span>, <span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>env</span>.<span style=color:#a6e22e>JWT_KEY</span><span style=color:#f92672>!</span>);
+
+  <span style=color:#75715e>// Build session Object { jwt: MY_JWT }
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>session</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>jwt</span>: <span style=color:#66d9ef>token</span> };
+
+  <span style=color:#75715e>// Turn that session into JSON
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>sessionJSON</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>stringify</span>(<span style=color:#a6e22e>session</span>);
+
+  <span style=color:#75715e>// Take JSON and encode it as base64
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>base64</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Buffer</span>.<span style=color:#66d9ef>from</span>(<span style=color:#a6e22e>sessionJSON</span>).<span style=color:#a6e22e>toString</span>(<span style=color:#e6db74>&#34;base64&#34;</span>);
+
+  <span style=color:#75715e>// return a string thats the cookie with the encoded data
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>return</span> <span style=color:#e6db74>`express:sess=</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>base64</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>;
+};
+</code></pre></div><h2 id=validate-title-and-price>Validate Title and Price</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// create.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>router</span>.<span style=color:#a6e22e>post</span>(
+  <span style=color:#e6db74>&#34;/api/tickets&#34;</span>,
+  <span style=color:#a6e22e>requireAuth</span>,
+  [
+    <span style=color:#a6e22e>body</span>(<span style=color:#e6db74>&#34;title&#34;</span>).<span style=color:#a6e22e>not</span>().<span style=color:#a6e22e>isEmpty</span>().<span style=color:#a6e22e>withMessage</span>(<span style=color:#e6db74>&#34;Title is required&#34;</span>),
+    <span style=color:#a6e22e>body</span>(<span style=color:#e6db74>&#34;price&#34;</span>)
+      .<span style=color:#a6e22e>isFloat</span>({ <span style=color:#a6e22e>gt</span>: <span style=color:#66d9ef>0</span> })
+      .<span style=color:#a6e22e>withMessage</span>(<span style=color:#e6db74>&#34;Price must be greater than 0&#34;</span>),
+  ],
+  <span style=color:#a6e22e>validateRequest</span>,
+  <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>sendStatus</span>(<span style=color:#ae81ff>200</span>);
+  }
+);
+</code></pre></div><h2 id=defining-the-ticket-model>Defining the Ticket Model</h2>
+<p><img src=/images/microservices-dg-147.png alt=microservice-dg-147></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/models/ticket.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;mongoose&#34;</span>;
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketAttrs</span> {
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>number</span>;
+  <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>string</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketDoc</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Document</span> {
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>number</span>;
+  <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>string</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketModel</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Model</span>&lt;<span style=color:#f92672>TicketDoc</span>&gt; {
+  <span style=color:#a6e22e>build</span>(<span style=color:#a6e22e>attrs</span>: <span style=color:#66d9ef>TicketAttrs</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>TicketDoc</span>;
+}
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketSchema</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Schema</span>(
+  {
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> String,
+      <span style=color:#a6e22e>required</span>: <span style=color:#66d9ef>true</span>,
+    },
+    <span style=color:#a6e22e>price</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> Number,
+      <span style=color:#a6e22e>required</span>: <span style=color:#66d9ef>true</span>,
+    },
+    <span style=color:#a6e22e>userId</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> String,
+      <span style=color:#a6e22e>required</span>: <span style=color:#66d9ef>true</span>,
+    },
+  },
+  {
+    <span style=color:#a6e22e>toJSON</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>transform</span>(<span style=color:#a6e22e>doc</span>, <span style=color:#a6e22e>ret</span>) {
+        <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>_id</span>;
+        <span style=color:#66d9ef>delete</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>_id</span>;
+      },
+    },
+  }
+);
+
+<span style=color:#a6e22e>ticketSchema</span>.<span style=color:#a6e22e>statics</span>.<span style=color:#a6e22e>build</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>attr</span>: <span style=color:#66d9ef>TicketAttrs</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Ticket</span>(<span style=color:#a6e22e>attrs</span>);
+};
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>model</span>&lt;<span style=color:#f92672>TicketDoc</span><span style=color:#960050;background-color:#1e0010>,</span> <span style=color:#a6e22e>TicketModel</span>&gt;(<span style=color:#e6db74>&#34;Ticket&#34;</span>, <span style=color:#a6e22e>ticketSchema</span>);
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>Ticket</span> };
+</code></pre></div><h2 id=creation-via-route-handler>Creation via Route Handler</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// create.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>title</span>, <span style=color:#a6e22e>price</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+  <span style=color:#a6e22e>title</span>,
+  <span style=color:#a6e22e>price</span>,
+  <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>req.currentUser</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>id</span>,
+});
+
+<span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+<span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>status</span>(<span style=color:#ae81ff>201</span>).<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>ticket</span>);
+</code></pre></div><h2 id=testing-show-routes>Testing Show Routes</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/__test__/read.test.s
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>request</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;supertest&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>app</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../app&#34;</span>;
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns a 404 if the ticket is not found&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/api/tickets/vefgw4fwfh&#34;</span>)
+    .<span style=color:#a6e22e>send</span>({})
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>404</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns the ticket if the ticket is found&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>title</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>;
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>price</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>20</span>;
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({
+      <span style=color:#a6e22e>title</span>,
+      <span style=color:#a6e22e>price</span>,
+    })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketRes</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#a6e22e>send</span>()
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>200</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticketRes</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>title</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>title</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticketRes</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>price</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>price</span>);
+});
+</code></pre></div><h2 id=unexpected-failure>Unexpected Failure</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// read.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>express</span>, { <span style=color:#a6e22e>Request</span>, <span style=color:#a6e22e>Response</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;express&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>router</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>.<span style=color:#a6e22e>Router</span>();
+
+<span style=color:#a6e22e>router</span>.<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/api/tickets/:id&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>param</span>.<span style=color:#a6e22e>id</span>);
+
+  <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>ticket</span>) {
+    <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotFoundError</span>();
+  }
+
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>ticket</span>);
+});
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>router</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>readTicketRouter</span> };
+</code></pre></div><p>Can not parse ticket id from <code>/api/tickets/drggirdgggdr</code></p>
+<h2 id=better-error-logging>Better Error Logging</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// common/middlewares/error-handler.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>error</span>(<span style=color:#a6e22e>err</span>);
+</code></pre></div><p>publish package</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm run pub
+</code></pre></div><p>update package</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm update @ducnguyen96/ticketing-common
+</code></pre></div><p>update test</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// read.test.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns a 404 if the ticket is not found&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Mongoose</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Mongoose</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>).<span style=color:#a6e22e>send</span>().<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>404</span>);
+});
+</code></pre></div><h2 id=complete-read-route-implementation>Complete Read Route Implementation</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// read.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>request</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;supertest&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>app</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../app&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>createTicket</span> <span style=color:#f92672>=</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+};
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;can fetch a list of tickets&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>createTicket</span>();
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>createTicket</span>();
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>createTicket</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>).<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>).<span style=color:#a6e22e>send</span>().<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>200</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>length</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>3</span>);
+});
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/read.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>express</span>, { <span style=color:#a6e22e>Request</span>, <span style=color:#a6e22e>Response</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;express&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>router</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>.<span style=color:#a6e22e>Router</span>();
+
+<span style=color:#a6e22e>router</span>.<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>tickets</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>find</span>();
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>tickets</span>);
+});
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>router</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>indexTicketRouter</span> };
+</code></pre></div><h2 id=ticket-updating>Ticket Updating</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// update.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>request</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;supertest&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>app</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../app&#34;</span>;
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns a 404 if the provided id does not exist&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Mongoose</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>put</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>404</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns a 401 if the user is not authenticated&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Mongoose</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>put</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>404</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns a 401 if the user does not own the ticket&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>put</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>203</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>401</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns a 400 if the user provides an invalid title or price&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cookie</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>cookie</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>put</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>cookie</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>203</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>400</span>);
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>put</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>cookie</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span><span style=color:#f92672>:</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>203</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>400</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;updates the ticket provided valida inputs&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cookie</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>cookie</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>put</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>cookie</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium updated&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>203</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>200</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>updatedTicket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>`/api/tickets/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#a6e22e>send</span>();
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedTicket</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>title</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#e6db74>&#34;Bohemium updated&#34;</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedTicket</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>price</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>203</span>);
+});
+</code></pre></div><h2 id=handling-updates>Handling Updates</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/update.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>express</span>, { <span style=color:#a6e22e>Request</span>, <span style=color:#a6e22e>Response</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;express&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>router</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>.<span style=color:#a6e22e>Router</span>();
+
+<span style=color:#a6e22e>router</span>.<span style=color:#a6e22e>put</span>(
+  <span style=color:#e6db74>&#34;/api/tickets/:id&#34;</span>,
+  <span style=color:#a6e22e>requireAuth</span>,
+  [
+    <span style=color:#a6e22e>body</span>(<span style=color:#e6db74>&#34;title&#34;</span>).<span style=color:#a6e22e>not</span>().<span style=color:#a6e22e>isEmpty</span>().<span style=color:#a6e22e>withMessage</span>(<span style=color:#e6db74>&#34;Title is required&#34;</span>),
+    <span style=color:#a6e22e>body</span>(<span style=color:#e6db74>&#34;price&#34;</span>)
+      .<span style=color:#a6e22e>isFloat</span>({ <span style=color:#a6e22e>gt</span>: <span style=color:#66d9ef>0</span> })
+      .<span style=color:#a6e22e>withMessage</span>(<span style=color:#e6db74>&#34;Price must be greater than 0&#34;</span>),
+  ],
+  <span style=color:#a6e22e>validateRequest</span>,
+  <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>tickets</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>params</span>.<span style=color:#a6e22e>id</span>);
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>ticket</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotFoundError</span>();
+    }
+    <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>ticket</span>);
+  }
+);
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>router</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>updateTicketRouter</span> };
+</code></pre></div><h2 id=permission-checking>Permission Checking</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// update.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>return</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+  .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/tickets&#34;</span>)
+  .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+  .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Bohemium&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/update.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>userId</span> <span style=color:#f92672>!==</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>currentUser</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>id</span>) {
+  <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotAuthorizedError</span>();
+}
+
+<span style=color:#a6e22e>ticket</span>.<span style=color:#66d9ef>set</span>({
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>req.body.title</span>,
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>req.body.price</span>,
+});
+
+<span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+</code></pre></div><h2 id=update-ingress>Update Ingress</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#75715e># ingress-srv.yml</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>rules</span>:
+    - <span style=color:#f92672>host</span>: <span style=color:#ae81ff>ticketing.dev</span>
+      <span style=color:#f92672>http</span>:
+        <span style=color:#f92672>paths</span>:
+          - <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/api/users/?(.*)</span>
+            <span style=color:#f92672>pathType</span>: <span style=color:#ae81ff>Prefix</span>
+            <span style=color:#f92672>backend</span>:
+              <span style=color:#f92672>service</span>:
+                <span style=color:#f92672>name</span>: <span style=color:#ae81ff>auth-srv</span>
+                <span style=color:#f92672>port</span>:
+                  <span style=color:#f92672>number</span>: <span style=color:#ae81ff>3000</span>
+          - <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/api/tickets/?(.*)</span>
+            <span style=color:#f92672>pathType</span>: <span style=color:#ae81ff>Prefix</span>
+            <span style=color:#f92672>backend</span>:
+              <span style=color:#f92672>service</span>:
+                <span style=color:#f92672>name</span>: <span style=color:#ae81ff>tickets-srv</span>
+                <span style=color:#f92672>port</span>:
+                  <span style=color:#f92672>number</span>: <span style=color:#ae81ff>3000</span>
+          - <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/?(.*)</span>
+            <span style=color:#f92672>pathType</span>: <span style=color:#ae81ff>Prefix</span>
+            <span style=color:#f92672>backend</span>:
+              <span style=color:#f92672>service</span>:
+                <span style=color:#f92672>name</span>: <span style=color:#ae81ff>client-srv</span>
+                <span style=color:#f92672>port</span>:
+                  <span style=color:#f92672>number</span>: <span style=color:#ae81ff>3000</span>
+</code></pre></div>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#ticketing-service-project-setup>Ticketing Service Project Setup</a>
+<ul>
+<li><a href=#1-make-service-folder>1. make service folder</a></li>
+<li><a href=#2-copy-same-config>2. copy same config</a></li>
+<li><a href=#3-copy-same-code>3. copy same code</a></li>
+<li><a href=#4-update-package-name>4. update package name</a></li>
+<li><a href=#5-update-code>5. update code</a></li>
+<li><a href=#6-install-dependencies>6. install dependencies</a></li>
+<li><a href=#7-build-image>7. Build image</a></li>
+<li><a href=#8-write-k8s-config-file>8. Write k8s config file</a></li>
+<li><a href=#9-update-skaffoldyml>9. Update skaffold.yml</a></li>
+<li><a href=#10-write-tickets-mongo-deplyml>10. Write tickets-mongo-depl.yml</a></li>
+</ul>
+</li>
+<li><a href=#mongo-connection-uri>Mongo Connection URI</a></li>
+<li><a href=#test-first-approach>Test-First Approach</a></li>
+<li><a href=#creating-the-router>Creating the Router</a></li>
+<li><a href=#adding-auth-protection>Adding Auth Protection</a></li>
+<li><a href=#faking-authentication-during-tests>Faking Authentication During Tests</a></li>
+<li><a href=#validate-title-and-price>Validate Title and Price</a></li>
+<li><a href=#defining-the-ticket-model>Defining the Ticket Model</a></li>
+<li><a href=#creation-via-route-handler>Creation via Route Handler</a></li>
+<li><a href=#testing-show-routes>Testing Show Routes</a></li>
+<li><a href=#unexpected-failure>Unexpected Failure</a></li>
+<li><a href=#better-error-logging>Better Error Logging</a></li>
+<li><a href=#complete-read-route-implementation>Complete Read Route Implementation</a></li>
+<li><a href=#ticket-updating>Ticket Updating</a></li>
+<li><a href=#handling-updates>Handling Updates</a></li>
+<li><a href=#permission-checking>Permission Checking</a></li>
+<li><a href=#update-ingress>Update Ingress</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p12%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup&description=Ticketing%20Service%20Project%20Setup%20V%e1%bb%9bi%20tickets%20service%20th%c3%ac%20ta%20s%e1%ba%bd%20copy%20t%e1%bb%ab%20auth%20service%20%c4%91%e1%bb%83%20ti%e1%ba%bft%20ki%e1%bb%87m%20th%e1%bb%9di%20gian%0a1.%20make%20service%20folder%20mkdir%20tickets%202.%20copy%20same%20config%20Copy%20.dockerignore%2c%20Dockerfile%2c%20package-lock.json%2c%20package.json%2c%20tsconfig.json%20v%c3%a0o%20tickets%0a3.%20copy%20same%20code%20Copy%20src%2ftest%2f%2a%2c%20src%2fapp.ts%2c%20src%2findex.ts%0a4.%20update%20package%20name%20Updae%20package%20name%20in%20package.json%0a5.%20update%20code%20Update%20l%e1%ba%a1i%20code%20v%e1%bb%aba%20copy.%0a6.%20install%20dependencies%20npm%20install%207.%20Build%20image%20eval%20%24%28minikube%20docker-env%29%20docker%20build%20-t%20ducnguyen96%2fticketing-tickets%20." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p12%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2012%20-%20CRUD%20Server%20Setup" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
