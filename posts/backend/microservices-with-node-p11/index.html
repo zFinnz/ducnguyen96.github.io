@@ -1,0 +1,373 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices với NodeJS phần 11 - Code Sharing and Reuse Between Services | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-with-node-p11/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices với NodeJS phần 11 - Code Sharing and Reuse Between Services">
+<meta property="og:description" content="Chúng ta thấy những phần như Custom Error, Auth Middleware, Request Validation là những thành phần chung giữa các server nên ta sẽ tạo ra 1 package common và cài đặt package này cho những services cần thiết.
+Options for Code Sharing Có một số cách để share code giữa các services như sau:
+Copy Paste Cách này thì hẳn không ai muốn dùng rồi, vì khó có thể đồng bộ code mỗi khi cần thay đổi common.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-with-node-p11/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-16T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-16T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices với NodeJS phần 11 - Code Sharing and Reuse Between Services">
+<meta name=twitter:description content="Chúng ta thấy những phần như Custom Error, Auth Middleware, Request Validation là những thành phần chung giữa các server nên ta sẽ tạo ra 1 package common và cài đặt package này cho những services cần thiết.
+Options for Code Sharing Có một số cách để share code giữa các services như sau:
+Copy Paste Cách này thì hẳn không ai muốn dùng rồi, vì khó có thể đồng bộ code mỗi khi cần thay đổi common.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p10/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p11%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services&description=Ch%c3%bang%20ta%20th%e1%ba%a5y%20nh%e1%bb%afng%20ph%e1%ba%a7n%20nh%c6%b0%20Custom%20Error%2c%20Auth%20Middleware%2c%20Request%20Validation%20l%c3%a0%20nh%e1%bb%afng%20th%c3%a0nh%20ph%e1%ba%a7n%20chung%20gi%e1%bb%afa%20c%c3%a1c%20server%20n%c3%aan%20ta%20s%e1%ba%bd%20t%e1%ba%a1o%20ra%201%20package%20common%20v%c3%a0%20c%c3%a0i%20%c4%91%e1%ba%b7t%20package%20n%c3%a0y%20cho%20nh%e1%bb%afng%20services%20c%e1%ba%a7n%20thi%e1%ba%bft.%0aOptions%20for%20Code%20Sharing%20C%c3%b3%20m%e1%bb%99t%20s%e1%bb%91%20c%c3%a1ch%20%c4%91%e1%bb%83%20share%20code%20gi%e1%bb%afa%20c%c3%a1c%20services%20nh%c6%b0%20sau%3a%0aCopy%20Paste%20C%c3%a1ch%20n%c3%a0y%20th%c3%ac%20h%e1%ba%b3n%20kh%c3%b4ng%20ai%20mu%e1%bb%91n%20d%c3%b9ng%20r%e1%bb%93i%2c%20v%c3%ac%20kh%c3%b3%20c%c3%b3%20th%e1%bb%83%20%c4%91%e1%bb%93ng%20b%e1%bb%99%20code%20m%e1%bb%97i%20khi%20c%e1%ba%a7n%20thay%20%c4%91%e1%bb%95i%20common." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#options-for-code-sharing>Options for Code Sharing</a>
+<ul>
+<li><a href=#copy-paste>Copy Paste</a></li>
+<li><a href=#git-module>Git Module</a></li>
+<li><a href=#npm-package>Npm package</a></li>
+</ul>
+</li>
+<li><a href=#npm-organizations>NPM Organizations</a></li>
+<li><a href=#publising-npm-modules>Publising NPM Modules</a>
+<ul>
+<li><a href=#1-init-package>1. Init package</a></li>
+<li><a href=#2-install-dependencies>2. Install dependencies</a></li>
+<li><a href=#3-update-packagejson>3. Update package.json</a></li>
+<li><a href=#4-update-tsconfig>4. Update tsconfig</a></li>
+<li><a href=#5-write-some-code>5. Write some code</a></li>
+<li><a href=#6-build-and-publish>6. Build and Publish</a></li>
+</ul>
+</li>
+<li><a href=#install-và-update-common>Install và Update common</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices với NodeJS phần 11 - Code Sharing and Reuse Between Services
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-16 00:00:00 +0000 UTC" itemprop=datePublished>2021-09-16</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/nodejs rel=tag>nodejs</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p><img src=/images/microservices-dg-138.png alt=microservice-dg-138>
+Chúng ta thấy những phần như <code>Custom Error</code>, <code>Auth Middleware</code>, <code>Request Validation</code> là những thành phần chung giữa các server nên ta sẽ tạo ra 1 package <code>common</code> và cài đặt package này cho những services cần thiết.</p>
+<h2 id=options-for-code-sharing>Options for Code Sharing</h2>
+<p>Có một số cách để share code giữa các services như sau:</p>
+<h3 id=copy-paste>Copy Paste</h3>
+<p><img src=/images/microservices-dg-139.png alt=microservice-dg-139>
+Cách này thì hẳn không ai muốn dùng rồi, vì khó có thể đồng bộ code mỗi khi cần thay đổi common.</p>
+<h3 id=git-module>Git Module</h3>
+<p><img src=/images/microservices-dg-140.png alt=microservice-dg-140>
+Cách này thì giải quyết được vấn đề trên rồi nhưng hơi phức tạp và khó sử dụng.</p>
+<h3 id=npm-package>Npm package</h3>
+<p><img src=/images/microservices-dg-141.png alt=microservice-dg-141>
+Cách này đơn giản nhất, mỗi khi cần update common, ta chỉ cần đẩy lên npm repo với version mới và chạy <code>npm update @ducnguyen96/ticketing-common</code> chẳng hạn .</p>
+<h2 id=npm-organizations>NPM Organizations</h2>
+<p><img src=/images/microservices-dg-142.png alt=microservice-dg-142>
+Vì private registry mất phí và lại project này cũng open nên mình dùng public registry với organization. Bạn nào muốn sử dụng private registry hoặc tự host thì tự tìm hiểu nhé 😄</p>
+<h2 id=publising-npm-modules>Publising NPM Modules</h2>
+<p><img src=/images/microservices-dg-143.png alt=microservice-dg-143></p>
+<h3 id=1-init-package>1. Init package</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>mkdir common
+npm init -y
+</code></pre></div><h3 id=2-install-dependencies>2. Install dependencies</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>tsc --init
+npm i typescript del-cli --save-dev
+</code></pre></div><h3 id=3-update-packagejson>3. Update package.json</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>package.json</span>
+{
+  <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;@ducnguyen96/ticketing-common&#34;</span>,
+  <span style=color:#f92672>&#34;scripts&#34;</span>: {
+    <span style=color:#f92672>&#34;clean&#34;</span>: <span style=color:#e6db74>&#34;del ./build/*&#34;</span>,
+    <span style=color:#f92672>&#34;build&#34;</span>: <span style=color:#e6db74>&#34;npm run clean &amp;&amp; tsc&#34;</span>,
+    <span style=color:#f92672>&#34;pub&#34;</span>: <span style=color:#e6db74>&#34;git add . &amp;&amp; git commit -m \&#34;Updates\&#34; &amp;&amp; npm version patch &amp;&amp; npm run build &amp;&amp; npm publish&#34;</span>
+  },
+  <span style=color:#f92672>&#34;main&#34;</span>: <span style=color:#e6db74>&#34;build/index.js&#34;</span>,
+  <span style=color:#f92672>&#34;types&#34;</span>: <span style=color:#e6db74>&#34;build/index.d.ts&#34;</span>,
+  <span style=color:#f92672>&#34;files&#34;</span>: [<span style=color:#e6db74>&#34;build/**/*&#34;</span>]
+}
+</code></pre></div><h3 id=4-update-tsconfig>4. Update tsconfig</h3>
+<p>in <code>tsconfig.json</code> uncomment <code>declaration</code>; change <code>outDir</code> to <code>./build</code></p>
+<h3 id=5-write-some-code>5. Write some code</h3>
+<p>Copy thư mục <code>errors</code> và <code>middlewares</code> từ auth service</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// index.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./errors/bad-request-error&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./errors/custom-error&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./errors/database-connection-error&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./errors/not-authorized-error&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./errors/not-found-error&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./errors/request-validation-error&#34;</span>;
+
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./middlewares/current-user&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./middlewares/error-handler&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./middlewares/require-auth&#34;</span>;
+<span style=color:#66d9ef>export</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./middlewares/validate-request&#34;</span>;
+</code></pre></div><p>Install dependencies</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm i express express-validator cookie-session jsonwebtoken @types/cookie-session @types/express @types/jsonwebtoken
+</code></pre></div><h3 id=6-build-and-publish>6. Build and Publish</h3>
+<p>Build</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>tsc
+</code></pre></div><p>Publish</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm login
+npm publish --access public
+</code></pre></div><h2 id=install-và-update-common>Install và Update common</h2>
+<p>Install</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm i @ducnguyen96/ticketing-common
+</code></pre></div><p>Update</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm update @ducnguyen96/ticketing-common
+</code></pre></div>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#options-for-code-sharing>Options for Code Sharing</a>
+<ul>
+<li><a href=#copy-paste>Copy Paste</a></li>
+<li><a href=#git-module>Git Module</a></li>
+<li><a href=#npm-package>Npm package</a></li>
+</ul>
+</li>
+<li><a href=#npm-organizations>NPM Organizations</a></li>
+<li><a href=#publising-npm-modules>Publising NPM Modules</a>
+<ul>
+<li><a href=#1-init-package>1. Init package</a></li>
+<li><a href=#2-install-dependencies>2. Install dependencies</a></li>
+<li><a href=#3-update-packagejson>3. Update package.json</a></li>
+<li><a href=#4-update-tsconfig>4. Update tsconfig</a></li>
+<li><a href=#5-write-some-code>5. Write some code</a></li>
+<li><a href=#6-build-and-publish>6. Build and Publish</a></li>
+</ul>
+</li>
+<li><a href=#install-và-update-common>Install và Update common</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p11%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services&description=Ch%c3%bang%20ta%20th%e1%ba%a5y%20nh%e1%bb%afng%20ph%e1%ba%a7n%20nh%c6%b0%20Custom%20Error%2c%20Auth%20Middleware%2c%20Request%20Validation%20l%c3%a0%20nh%e1%bb%afng%20th%c3%a0nh%20ph%e1%ba%a7n%20chung%20gi%e1%bb%afa%20c%c3%a1c%20server%20n%c3%aan%20ta%20s%e1%ba%bd%20t%e1%ba%a1o%20ra%201%20package%20common%20v%c3%a0%20c%c3%a0i%20%c4%91%e1%ba%b7t%20package%20n%c3%a0y%20cho%20nh%e1%bb%afng%20services%20c%e1%ba%a7n%20thi%e1%ba%bft.%0aOptions%20for%20Code%20Sharing%20C%c3%b3%20m%e1%bb%99t%20s%e1%bb%91%20c%c3%a1ch%20%c4%91%e1%bb%83%20share%20code%20gi%e1%bb%afa%20c%c3%a1c%20services%20nh%c6%b0%20sau%3a%0aCopy%20Paste%20C%c3%a1ch%20n%c3%a0y%20th%c3%ac%20h%e1%ba%b3n%20kh%c3%b4ng%20ai%20mu%e1%bb%91n%20d%c3%b9ng%20r%e1%bb%93i%2c%20v%c3%ac%20kh%c3%b3%20c%c3%b3%20th%e1%bb%83%20%c4%91%e1%bb%93ng%20b%e1%bb%99%20code%20m%e1%bb%97i%20khi%20c%e1%ba%a7n%20thay%20%c4%91%e1%bb%95i%20common." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p11%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2011%20-%20Code%20Sharing%20and%20Reuse%20Between%20Services" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
