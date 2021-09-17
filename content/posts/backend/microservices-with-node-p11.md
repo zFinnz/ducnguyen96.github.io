@@ -1,6 +1,6 @@
 ---
 title: "Microservices với NodeJS phần 11 - Code Sharing and Reuse Between Services"
-date: 2021-09-16
+date: 2021-09-16 00:00:00
 draft: false
 categories: [backend, devops]
 categories_weight: 4

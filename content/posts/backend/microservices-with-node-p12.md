@@ -1,6 +1,6 @@
 ---
 title: "Microservices với NodeJS phần 12 - CRUD Server Setup"
-date: 2021-09-16
+date: 2021-09-16 01:00:00
 draft: false
 categories: [backend, devops]
 categories_weight: 4
