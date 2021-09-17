@@ -132,6 +132,8 @@
 <li><a href=#11-how-to-apply-a-git->11. How to apply a git ?</a></li>
 <li><a href=#12-how-to-get-a-substring-from-curl-output->12. How to get a substring from curl output ?</a></li>
 <li><a href=#13-lỗi-khi-test-code-typescript--express-với-mongodb-memory-server-trên-debian>13. Lỗi khi test code typescript + express với mongodb-memory-server trên debian</a></li>
+<li><a href=#14-docker-remove-none-repository-images>14. Docker remove repository images</a></li>
+<li><a href=#15-docker-remove-image-based-on-repository-name-or-tag>15. Docker remove image based on repository name or tag</a></li>
 </ul>
 </nav>
 </div>
@@ -275,6 +277,11 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>curl <span style=color:#e6db74>&#34;https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT&#34;</span> | grep -oG <span style=color:#e6db74>&#39;lastPrice\&#34;:\&#34;[0-9]*&#39;</span> | grep -oG <span style=color:#e6db74>&#39;[0-9]*&#39;</span>
 </code></pre></div><h2 id=13-lỗi-khi-test-code-typescript--express-với-mongodb-memory-server-trên-debian>13. Lỗi khi test code typescript + express với mongodb-memory-server trên debian</h2>
 <p>Xem chi tiết ở <a href=/posts/backend/microservices-with-node-p9/#fix-bug-mongodb-memory-server-tr%C3%AAn-debian-11>bài này</a></p>
+<h2 id=14-docker-remove-none-repository-images>14. Docker remove repository images</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker rmi -f <span style=color:#66d9ef>$(</span>d images -f <span style=color:#e6db74>&#34;dangling=true&#34;</span> -q<span style=color:#66d9ef>)</span>
+</code></pre></div><h2 id=15-docker-remove-image-based-on-repository-name-or-tag>15. Docker remove image based on repository name or tag</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker rmi -f <span style=color:#66d9ef>$(</span>docker images --format <span style=color:#e6db74>&#39;{{.Repository}} {{.ID}}&#39;</span> | grep <span style=color:#e6db74>&#39;ducnguyen96&#39;</span> | awk <span style=color:#e6db74>&#39;{print $2}&#39;</span><span style=color:#66d9ef>)</span>
+</code></pre></div>
 </div>
 </article>
 <div class=blog-post-comments>
@@ -310,6 +317,8 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <li><a href=#11-how-to-apply-a-git->11. How to apply a git ?</a></li>
 <li><a href=#12-how-to-get-a-substring-from-curl-output->12. How to get a substring from curl output ?</a></li>
 <li><a href=#13-lỗi-khi-test-code-typescript--express-với-mongodb-memory-server-trên-debian>13. Lỗi khi test code typescript + express với mongodb-memory-server trên debian</a></li>
+<li><a href=#14-docker-remove-none-repository-images>14. Docker remove repository images</a></li>
+<li><a href=#15-docker-remove-image-based-on-repository-name-or-tag>15. Docker remove image based on repository name or tag</a></li>
 </ul>
 </nav>
 </div>

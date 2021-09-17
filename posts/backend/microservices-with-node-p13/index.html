@@ -49,6 +49,11 @@
 </a>
 </li>
 <li>
+<a class=icon href=/posts/backend/microservices-with-node-p14/ aria-label=Next>
+<i class="fas fa-chevron-right" aria-hidden=true onmouseover="$('#i-next').toggle()" onmouseout="$('#i-next').toggle()"></i>
+</a>
+</li>
+<li>
 <a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
 <i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
 </a>
@@ -254,8 +259,8 @@ npm i node-nats-streaming ts-node-dev typescript @types/node
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>package.json</span>
 {
   <span style=color:#f92672>&#34;scripts&#34;</span>: {
-    <span style=color:#f92672>&#34;publish&#34;</span>: <span style=color:#e6db74>&#34;ts-node-dev -rs --notify false src/publisher.ts&#34;</span>,
-    <span style=color:#f92672>&#34;listen&#34;</span>: <span style=color:#e6db74>&#34;ts-node-dev -rs --notify false src/listen.ts&#34;</span>
+    <span style=color:#f92672>&#34;publish&#34;</span>: <span style=color:#e6db74>&#34;ts-node-dev --rs --notify false src/publisher.ts&#34;</span>,
+    <span style=color:#f92672>&#34;listen&#34;</span>: <span style=color:#e6db74>&#34;ts-node-dev --rs --notify false src/listen.ts&#34;</span>
   }
 }
 </code></pre></div><p>Create tsconfig</p>
