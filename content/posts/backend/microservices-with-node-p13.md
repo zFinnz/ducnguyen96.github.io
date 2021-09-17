@@ -106,8 +106,8 @@ Update package scripts
 // package.json
 {
   "scripts": {
-    "publish": "ts-node-dev -rs --notify false src/publisher.ts",
-    "listen": "ts-node-dev -rs --notify false src/listen.ts"
+    "publish": "ts-node-dev --rs --notify false src/publisher.ts",
+    "listen": "ts-node-dev --rs --notify false src/listen.ts"
   }
 }
 ```
