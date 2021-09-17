@@ -1,0 +1,577 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices với NodeJS phần 13 - NATS Streaming Server - An Event Bus Implementation | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-with-node-p13/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices với NodeJS phần 13 - NATS Streaming Server - An Event Bus Implementation">
+<meta property="og:description" content="Creating a NATS Streaming Deployment # nats-depl.yml apiVersion: apps/v1 kind: Deployment metadata: name: nats-depl namespace: ingress-nginx spec: replicas: 1 selector: matchLabels: app: nats template: metadata: labels: app: nats spec: containers: - name: nats image: nats-streaming:0.22.1 args: [ &#34;-p&#34;, &#34;4222&#34;, &#34;-m&#34;, &#34;8222&#34;, &#34;-hbi&#34;, &#34;5s&#34;, &#34;-hbt&#34;, &#34;5s&#34;, &#34;-hbf&#34;, &#34;2&#34;, &#34;-SD&#34;, &#34;-cid&#34;, &#34;ticketing&#34;, ] --- apiVersion: v1 kind: Service metadata: name: nats-srv namespace: ingress-nginx spec: selector: app: nats ports: - name: client protocol: TCP port: 4222 targetPort: 4222 - name: minitoring protocol: TCP port: 8222 targetPort: 8222 Big Notes on NATS Streaming EventBus service hiện tại của chúng ta sử dụng express + axios Để giao tiếp với NATS thì ta sẽ sử dụng node-nats-steaming Để nhận được event từ eventbus thì service cần phải subscribe tới NATS EventBus service hiện tại của chúng ta lưu vào bộ nhớ và sẽ mất khi reset service NATS Streaming lưu tất cả events vào memory (mặc định) hoặc vào files, MySQL/PostGres DB Building a NATS Test Project npm init -y npm i node-nats-streaming ts-node-dev typescript @types/node // src/publisher.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-with-node-p13/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-16T02:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-16T02:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices với NodeJS phần 13 - NATS Streaming Server - An Event Bus Implementation">
+<meta name=twitter:description content="Creating a NATS Streaming Deployment # nats-depl.yml apiVersion: apps/v1 kind: Deployment metadata: name: nats-depl namespace: ingress-nginx spec: replicas: 1 selector: matchLabels: app: nats template: metadata: labels: app: nats spec: containers: - name: nats image: nats-streaming:0.22.1 args: [ &#34;-p&#34;, &#34;4222&#34;, &#34;-m&#34;, &#34;8222&#34;, &#34;-hbi&#34;, &#34;5s&#34;, &#34;-hbt&#34;, &#34;5s&#34;, &#34;-hbf&#34;, &#34;2&#34;, &#34;-SD&#34;, &#34;-cid&#34;, &#34;ticketing&#34;, ] --- apiVersion: v1 kind: Service metadata: name: nats-srv namespace: ingress-nginx spec: selector: app: nats ports: - name: client protocol: TCP port: 4222 targetPort: 4222 - name: minitoring protocol: TCP port: 8222 targetPort: 8222 Big Notes on NATS Streaming EventBus service hiện tại của chúng ta sử dụng express + axios Để giao tiếp với NATS thì ta sẽ sử dụng node-nats-steaming Để nhận được event từ eventbus thì service cần phải subscribe tới NATS EventBus service hiện tại của chúng ta lưu vào bộ nhớ và sẽ mất khi reset service NATS Streaming lưu tất cả events vào memory (mặc định) hoặc vào files, MySQL/PostGres DB Building a NATS Test Project npm init -y npm i node-nats-streaming ts-node-dev typescript @types/node // src/publisher.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p12/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p13%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation&description=Creating%20a%20NATS%20Streaming%20Deployment%20%23%20nats-depl.yml%20apiVersion%3a%20apps%2fv1%20kind%3a%20Deployment%20metadata%3a%20name%3a%20nats-depl%20namespace%3a%20ingress-nginx%20spec%3a%20replicas%3a%201%20selector%3a%20matchLabels%3a%20app%3a%20nats%20template%3a%20metadata%3a%20labels%3a%20app%3a%20nats%20spec%3a%20containers%3a%20-%20name%3a%20nats%20image%3a%20nats-streaming%3a0.22.1%20args%3a%20%5b%20%26%2334%3b-p%26%2334%3b%2c%20%26%2334%3b4222%26%2334%3b%2c%20%26%2334%3b-m%26%2334%3b%2c%20%26%2334%3b8222%26%2334%3b%2c%20%26%2334%3b-hbi%26%2334%3b%2c%20%26%2334%3b5s%26%2334%3b%2c%20%26%2334%3b-hbt%26%2334%3b%2c%20%26%2334%3b5s%26%2334%3b%2c%20%26%2334%3b-hbf%26%2334%3b%2c%20%26%2334%3b2%26%2334%3b%2c%20%26%2334%3b-SD%26%2334%3b%2c%20%26%2334%3b-cid%26%2334%3b%2c%20%26%2334%3bticketing%26%2334%3b%2c%20%5d%20---%20apiVersion%3a%20v1%20kind%3a%20Service%20metadata%3a%20name%3a%20nats-srv%20namespace%3a%20ingress-nginx%20spec%3a%20selector%3a%20app%3a%20nats%20ports%3a%20-%20name%3a%20client%20protocol%3a%20TCP%20port%3a%204222%20targetPort%3a%204222%20-%20name%3a%20minitoring%20protocol%3a%20TCP%20port%3a%208222%20targetPort%3a%208222%20Big%20Notes%20on%20NATS%20Streaming%20EventBus%20service%20hi%e1%bb%87n%20t%e1%ba%a1i%20c%e1%bb%a7a%20ch%c3%bang%20ta%20s%e1%bb%ad%20d%e1%bb%a5ng%20express%20%2b%20axios%20%c4%90%e1%bb%83%20giao%20ti%e1%ba%bfp%20v%e1%bb%9bi%20NATS%20th%c3%ac%20ta%20s%e1%ba%bd%20s%e1%bb%ad%20d%e1%bb%a5ng%20node-nats-steaming%20%c4%90%e1%bb%83%20nh%e1%ba%adn%20%c4%91%c6%b0%e1%bb%a3c%20event%20t%e1%bb%ab%20eventbus%20th%c3%ac%20service%20c%e1%ba%a7n%20ph%e1%ba%a3i%20subscribe%20t%e1%bb%9bi%20NATS%20EventBus%20service%20hi%e1%bb%87n%20t%e1%ba%a1i%20c%e1%bb%a7a%20ch%c3%bang%20ta%20l%c6%b0u%20v%c3%a0o%20b%e1%bb%99%20nh%e1%bb%9b%20v%c3%a0%20s%e1%ba%bd%20m%e1%ba%a5t%20khi%20reset%20service%20NATS%20Streaming%20l%c6%b0u%20t%e1%ba%a5t%20c%e1%ba%a3%20events%20v%c3%a0o%20memory%20%28m%e1%ba%b7c%20%c4%91%e1%bb%8bnh%29%20ho%e1%ba%b7c%20v%c3%a0o%20files%2c%20MySQL%2fPostGres%20DB%20Building%20a%20NATS%20Test%20Project%20npm%20init%20-y%20npm%20i%20node-nats-streaming%20ts-node-dev%20typescript%20%40types%2fnode%20%2f%2f%20src%2fpublisher." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#creating-a-nats-streaming-deployment>Creating a NATS Streaming Deployment</a></li>
+<li><a href=#big-notes-on-nats-streaming>Big Notes on NATS Streaming</a></li>
+<li><a href=#building-a-nats-test-project>Building a NATS Test Project</a></li>
+<li><a href=#port-forwarding-with-kubectl>Port-Forwarding with Kubectl</a></li>
+<li><a href=#publishing-events>Publishing Events</a></li>
+<li><a href=#listening-for-data>Listening For Data</a></li>
+<li><a href=#client-id-generation>Client ID Generation</a></li>
+<li><a href=#queue-groups>Queue Groups</a></li>
+<li><a href=#manual-ack-mode>Manual Ack Mode</a></li>
+<li><a href=#client-health-checks>Client Health Checks</a></li>
+<li><a href=#graceful-client-shutdown>Graceful Client Shutdown</a></li>
+<li><a href=#core-concurrency-issues>Core Concurrency Issues</a></li>
+<li><a href=#common-questions>Common Questions</a>
+<ul>
+<li><a href=#solution-1---tìm-tất-cả-lỗi-concurrency-có-thể-xảy-ra-và-viết-code-để-xử-lý>Solution #1 - Tìm tất cả lỗi concurrency có thể xảy ra và viết code để xử lý.</a></li>
+<li><a href=#solution-2---chia-sẻ-state-giữa-các-services-của-event-cuối-được-xử-lý>Solution #2 - Chia sẻ state giữa các services của event cuối được xử lý.</a></li>
+<li><a href=#solution-3---chia-sẻ-state-giữa-các-services-của-event-cuối-được-xử-lý-cùng-userid>Solution #3 - Chia sẻ state giữa các services của event cuối được xử lý cùng userid</a></li>
+<li><a href=#solution-4---lưu-sequence-ở-publisher-và-database>Solution #4 - Lưu sequence ở publisher và database.</a></li>
+</ul>
+</li>
+<li><a href=#solving-concurrency-issues>Solving Concurrency Issues</a></li>
+<li><a href=#concurrency-control-with-the-tickets-app>Concurrency Control with the Tickets App</a></li>
+<li><a href=#event-redelivery>Event Redelivery</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices với NodeJS phần 13 - NATS Streaming Server - An Event Bus Implementation
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-16 02:00:00 +0000 UTC" itemprop=datePublished>2021-09-16</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/nodejs rel=tag>nodejs</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<p><img src=/images/microservices-dg-148.png alt=microservice-dg-148></p>
+<h2 id=creating-a-nats-streaming-deployment>Creating a NATS Streaming Deployment</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#75715e># nats-depl.yml</span>
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>nats-depl</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>matchLabels</span>:
+      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>nats</span>
+  <span style=color:#f92672>template</span>:
+    <span style=color:#f92672>metadata</span>:
+      <span style=color:#f92672>labels</span>:
+        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>nats</span>
+    <span style=color:#f92672>spec</span>:
+      <span style=color:#f92672>containers</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>nats</span>
+          <span style=color:#f92672>image</span>: <span style=color:#ae81ff>nats-streaming:0.22.1</span>
+          <span style=color:#f92672>args</span>:
+            [
+              <span style=color:#e6db74>&#34;-p&#34;</span>,
+              <span style=color:#e6db74>&#34;4222&#34;</span>,
+              <span style=color:#e6db74>&#34;-m&#34;</span>,
+              <span style=color:#e6db74>&#34;8222&#34;</span>,
+              <span style=color:#e6db74>&#34;-hbi&#34;</span>,
+              <span style=color:#e6db74>&#34;5s&#34;</span>,
+              <span style=color:#e6db74>&#34;-hbt&#34;</span>,
+              <span style=color:#e6db74>&#34;5s&#34;</span>,
+              <span style=color:#e6db74>&#34;-hbf&#34;</span>,
+              <span style=color:#e6db74>&#34;2&#34;</span>,
+              <span style=color:#e6db74>&#34;-SD&#34;</span>,
+              <span style=color:#e6db74>&#34;-cid&#34;</span>,
+              <span style=color:#e6db74>&#34;ticketing&#34;</span>,
+            ]
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>nats-srv</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>nats</span>
+  <span style=color:#f92672>ports</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>client</span>
+      <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+      <span style=color:#f92672>port</span>: <span style=color:#ae81ff>4222</span>
+      <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>4222</span>
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>minitoring</span>
+      <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+      <span style=color:#f92672>port</span>: <span style=color:#ae81ff>8222</span>
+      <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>8222</span>
+</code></pre></div><h2 id=big-notes-on-nats-streaming>Big Notes on NATS Streaming</h2>
+<p>EventBus service hiện tại của chúng ta sử dụng express + axios
+<img src=/images/microservices-dg-149.png alt=microservice-dg-149></p>
+<p>Để giao tiếp với NATS thì ta sẽ sử dụng node-nats-steaming
+<img src=/images/microservices-dg-150.png alt=microservice-dg-150></p>
+<p>Để nhận được event từ eventbus thì service cần phải subscribe tới NATS
+<img src=/images/microservices-dg-151.png alt=microservice-dg-151></p>
+<p>EventBus service hiện tại của chúng ta lưu vào bộ nhớ và sẽ mất khi reset service
+<img src=/images/microservices-dg-152.png alt=microservice-dg-152></p>
+<p>NATS Streaming lưu tất cả events vào memory (mặc định) hoặc vào files, MySQL/PostGres DB
+<img src=/images/microservices-dg-153.png alt=microservice-dg-153></p>
+<h2 id=building-a-nats-test-project>Building a NATS Test Project</h2>
+<p><img src=/images/microservices-dg-154.png alt=microservice-dg-154></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm init -y
+npm i node-nats-streaming ts-node-dev typescript @types/node
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/publisher.ts
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// src/listener.ts
+</span></code></pre></div><p>Update package scripts</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>package.json</span>
+{
+  <span style=color:#f92672>&#34;scripts&#34;</span>: {
+    <span style=color:#f92672>&#34;publish&#34;</span>: <span style=color:#e6db74>&#34;ts-node-dev -rs --notify false src/publisher.ts&#34;</span>,
+    <span style=color:#f92672>&#34;listen&#34;</span>: <span style=color:#e6db74>&#34;ts-node-dev -rs --notify false src/listen.ts&#34;</span>
+  }
+}
+</code></pre></div><p>Create tsconfig</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>tsc --init
+</code></pre></div><p>Update publisher code</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// publisher.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>nats</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;node-nats-streaming&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>stan</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>nats</span>.<span style=color:#a6e22e>connect</span>(<span style=color:#e6db74>&#34;ticketing&#34;</span>, <span style=color:#e6db74>&#34;abc&#34;</span>, {
+  <span style=color:#a6e22e>url</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;http://localhost:4222&#34;</span>,
+});
+
+<span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;connect&#34;</span>, () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Publisher connected to NATS&#34;</span>);
+});
+</code></pre></div><h2 id=port-forwarding-with-kubectl>Port-Forwarding with Kubectl</h2>
+<p>Có một số cách như sau:
+<img src=/images/microservices-dg-155.png alt=microservice-dg-155>
+Cách này chắc chắn hoạt động được nhưng hiện tại ta đang muốn thử cho publisher mất connect và connect tới nats liên tục nên cách này yêu cầu config files khá mất thời gian
+<img src=/images/microservices-dg-156.png alt=microservice-dg-156>
+Cách này tương tự cách trên
+<img src=/images/microservices-dg-157.png alt=microservice-dg-157></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl port-forward nats-depl-*** 4222:4222
+</code></pre></div><h2 id=publishing-events>Publishing Events</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// publisher.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;connect&#34;</span>, () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Publisher connected to NATS&#34;</span>);
+
+  <span style=color:#75715e>// NATS chỉ có thể transport string
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>data</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>stringify</span>({
+    <span style=color:#a6e22e>id</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;123&#34;</span>,
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span>,
+  });
+
+  <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>publish</span>(<span style=color:#e6db74>&#34;ticket:created&#34;</span>, <span style=color:#a6e22e>data</span>, () <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Event published&#34;</span>);
+  });
+});
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm run publish
+</code></pre></div><h2 id=listening-for-data>Listening For Data</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// listener.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>nats</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;node-nats-streaming&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>stan</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>nats</span>.<span style=color:#a6e22e>connect</span>(<span style=color:#e6db74>&#34;ticketing&#34;</span>, <span style=color:#e6db74>&#34;123&#34;</span>, {
+  <span style=color:#a6e22e>url</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;http://localhost:4222&#34;</span>,
+});
+
+<span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;connect&#34;</span>, () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Listener connected to NATS&#34;</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>subscription</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>subscribe</span>(<span style=color:#e6db74>&#34;ticket:created&#34;</span>);
+
+  <span style=color:#a6e22e>subscription</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;message&#34;</span>, (<span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span>) <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>data</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>getData</span>();
+
+    <span style=color:#66d9ef>if</span> (<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>data</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#34;string&#34;</span>) {
+      <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>`Received event #</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>getSequence</span>()<span style=color:#e6db74>}</span><span style=color:#e6db74>, with data: </span><span style=color:#e6db74>${</span><span style=color:#a6e22e>data</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>);
+    }
+  });
+});
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm run listen
+</code></pre></div><h2 id=client-id-generation>Client ID Generation</h2>
+<p><img src=/images/microservices-dg-158.png alt=microservice-dg-158></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>stan</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>nats</span>.<span style=color:#a6e22e>connect</span>(<span style=color:#e6db74>&#34;ticketing&#34;</span>, <span style=color:#a6e22e>randomBytes</span>(<span style=color:#ae81ff>4</span>).<span style=color:#a6e22e>toString</span>(<span style=color:#e6db74>&#34;hex&#34;</span>), {
+  <span style=color:#a6e22e>url</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;http://localhost:4222&#34;</span>,
+});
+</code></pre></div><h2 id=queue-groups>Queue Groups</h2>
+<p>Ta nhận thấy là nếu 2 client đều cùng subscribe tới 1 channel thì chúng đều nhận được chung 1 message, vậy sẽ như sao nếu service của chúng ta muốn tăng số instance vì có nhiều traffic đổ về ? ta sẽ giải quyết trường hợp này với queue group
+<img src=/images/microservices-dg-159.png alt=microservice-dg-159></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>subscription</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>subscribe</span>(
+  <span style=color:#e6db74>&#34;ticket:created&#34;</span>,
+  <span style=color:#e6db74>&#34;order-service-queue-group&#34;</span>
+);
+</code></pre></div><h2 id=manual-ack-mode>Manual Ack Mode</h2>
+<p><img src=/images/microservices-dg-160.png alt=microservice-dg-160>
+Trường hợp có 1 event rất quan trọng được truyền tới (chẳng hạn như tạo thanh toán), nếu service này cứ mặc định là event đã nhận được rồi và đang xử lý, hãy tiếp tục làm việc khác đi; trường hợp tác vụ liên quan đến event này lỗi thì chưa thanh toán thành công app đã ship hàng rồi.</p>
+<p>Để giải quyết vấn đề này thì ta phải xác minh cái event này một cách thủ công ==> manual acknowlegment.</p>
+<p>Nếu ta không ack cái event này thì 1 nó sẽ được chuyển tới 1 listener khác trong queue group, trường hợp chỉ có 1 listener trong queueGroup thì nó sẽ chờ mặc định 25s và gửi lại đến listener này.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;connect&#34;</span>, () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Listener connected to NATS&#34;</span>);
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>options</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>subscriptionOptions</span>().<span style=color:#a6e22e>setManualAckMode</span>(<span style=color:#66d9ef>true</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>subscription</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>subscribe</span>(
+    <span style=color:#e6db74>&#34;ticket:created&#34;</span>,
+    <span style=color:#e6db74>&#34;order-service-queue-group&#34;</span>,
+    <span style=color:#a6e22e>options</span>
+  );
+});
+</code></pre></div><p>Để ack một message</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>();
+</code></pre></div><h2 id=client-health-checks>Client Health Checks</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>kubectl port-forward nats-depl-**** 8222:8222
+localhost:8222/streaming/channelsz/?subs<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>
+</code></pre></div><p>Mặc định nếu 1 client shutdown thì nats sẽ nghĩ là client ấy chỉ shutdown tạm thời và sẽ chờ 1 khoảng thời gian, sau 1 khoảng thời gian ấy không thấy connect lại thì nats sẽ loại client ấy ra khỏi danh sách subscriptions</p>
+<h2 id=graceful-client-shutdown>Graceful Client Shutdown</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;connect&#34;</span>, () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;close&#34;</span>, () <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;NATS connection closed !&#34;</span>);
+    <span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>exit</span>();
+  });
+
+  <span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;SIGINT&#34;</span>, () <span style=color:#f92672>=&gt;</span> <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>close</span>());
+  <span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#34;SIGTERM&#34;</span>, () <span style=color:#f92672>=&gt;</span> <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>close</span>());
+});
+</code></pre></div><h2 id=core-concurrency-issues>Core Concurrency Issues</h2>
+<p><img src=/images/microservices-dg-161.png alt=microservice-dg-161></p>
+<ol>
+<li>Trường hợp lý tưởng: mỗi lần 1 event. Mọi thứ đều diễn ra như ý muốn.
+<img src=/images/microservices-dg-162.png alt=microservice-dg-162></li>
+<li>Trường hợp listener có thể fail khi xử lý 1 event:</li>
+</ol>
+<ul>
+<li>Nạp 40 thành công</li>
+<li>Nạp 70 đô thất bại ==> NATS chờ 30s để nạp lại.</li>
+<li>Rút 100 ==> lỗi</li>
+</ul>
+<ol start=3>
+<li>Trường hợp 1 listener có thể xử lý nhanh hơn listener khác.
+<img src=/images/microservices-dg-163.png alt=microservice-dg-163></li>
+</ol>
+<ul>
+<li>Nạp 40 thành công</li>
+<li>Nạp 70 đang chờ xử lý</li>
+<li>Rút 100 ==> lỗi</li>
+</ul>
+<ol start=4>
+<li>Trường hợp NATS nghĩ rằng 1 client có thể còn đang alive trong khi đã dead.</li>
+<li>Trường hợp nhận 1 event 2 lần</li>
+</ol>
+<ul>
+<li>Nạp 40 thành công</li>
+<li>Nạp 70 thành công</li>
+<li>Rút 100 ==> chờ xử lý</li>
+<li>30 giây sau không được ack ==> gửi lại event tới 1 listener khác</li>
+<li>event trước xử lý thành công ==> 10</li>
+<li>lỗi</li>
+</ul>
+<h2 id=common-questions>Common Questions</h2>
+<p><img src=/images/microservices-dg-164.png alt=microservice-dg-164>
+Concurrency Issues xảy ra với cả Sync Communication và Monolithic.</p>
+<h3 id=solution-1---tìm-tất-cả-lỗi-concurrency-có-thể-xảy-ra-và-viết-code-để-xử-lý>Solution #1 - Tìm tất cả lỗi concurrency có thể xảy ra và viết code để xử lý.</h3>
+<ul>
+<li>Có vô số lỗi có thể xảy ra</li>
+<li>Tốn thời gian ==> tiền</li>
+<li>Có một số trường hợp có thể bỏ qua.</li>
+</ul>
+<h3 id=solution-2---chia-sẻ-state-giữa-các-services-của-event-cuối-được-xử-lý>Solution #2 - Chia sẻ state giữa các services của event cuối được xử lý.</h3>
+<p><img src=/images/microservices-dg-165.png alt=microservice-dg-165>
+Chỉ xử lý mỗi lần 1 event ==> performance quá tồi.</p>
+<h3 id=solution-3---chia-sẻ-state-giữa-các-services-của-event-cuối-được-xử-lý-cùng-userid>Solution #3 - Chia sẻ state giữa các services của event cuối được xử lý cùng userid</h3>
+<p><img src=/images/microservices-dg-166.png alt=microservice-dg-166></p>
+<p>Xử lý được vấn đề của solution nhưng để nats có thể route được đúng listener thì phải thêm channels ==> không work với nats</p>
+<h3 id=solution-4---lưu-sequence-ở-publisher-và-database>Solution #4 - Lưu sequence ở publisher và database.</h3>
+<p><img src=/images/microservices-dg-167.png alt=microservice-dg-167>
+Xử lý được toàn bộ các vấn đề của các solutions trên. Tuy nhiên chưa có cơ chế nào để lưu lại sequence khi giao tiếp giữa publisher và NATS</p>
+<h2 id=solving-concurrency-issues>Solving Concurrency Issues</h2>
+<p><img src=/images/microservices-dg-168.png alt=microservice-dg-168>
+Chúng ta đang work với 1 hệ thống được designed rát kém và đang mong là dựa vào NATS để xử lý vấn concurrency. ==> ta nên xem lại design.</p>
+<p><img src=/images/microservices-dg-169.png alt=microservice-dg-169></p>
+<p><img src=/images/microservices-dg-170.png alt=microservice-dg-170>
+Để xử lý được vấn đề concurrency thì serivce phải kiểm soát và chịu trách nhiệm hoàn tòan cho database mà nó xử lý, các service cần thông tin thì có thể dựa vào event để cập nhật.</p>
+<p><img src=/images/microservices-dg-171.png alt=microservice-dg-171></p>
+<p><img src=/images/microservices-dg-172.png alt=microservice-dg-172>
+Áp dụng đối với trường hợp rút và nạp tiền. Ở đây ta sẽ có transaction service chịu hòan toàn trách nhiệm cho transaction database, mỗi khi có 1 transaction mới được tạo ra ta sẽ lưu lại cùng user id, id của transaction cùng số thứ tự. Sau khi lưu xong transation sẽ update 1 event để báo cho các service khác cùng biết.</p>
+<p>Account Service cần thông tin về transaction sẽ subsribe đến nats và nhận được các events, database của account sẽ lưu số thứ tự của transaction cuối mà nó xử lý thông tin để xử lý vấn đề concurrency.</p>
+<h2 id=concurrency-control-with-the-tickets-app>Concurrency Control with the Tickets App</h2>
+<p>Tương tự như đối với trường hợp rút và nạp tiền thì ta áp dụng được với tickets app như dưới đây.
+<img src=/images/microservices-dg-173.png alt=microservice-dg-173>
+Ta sẽ lưu version của ticket sau khi ticket được update.</p>
+<h2 id=event-redelivery>Event Redelivery</h2>
+<p><img src=/images/microservices-dg-174.png alt=microservice-dg-174></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// listener.ts
+</span><span style=color:#75715e></span><span style=color:#75715e>/**
+</span><span style=color:#75715e> *  get all history events
+</span><span style=color:#75715e> */</span>
+<span style=color:#a6e22e>options</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>setDeliverAllAvailabel</span>();
+<span style=color:#75715e>/**
+</span><span style=color:#75715e> *  trường hợp sau khi xử lý xong 1, và account serv down, 2 và 3 gửi đến được lưu ở đây,
+</span><span style=color:#75715e> *  khi service on lại thì nó sẽ chỉ query những event chưa được xử lý.
+</span><span style=color:#75715e> */</span>
+.<span style=color:#a6e22e>setDurableName</span>(<span style=color:#e6db74>&#39;accounting-service&#39;</span>
+
+<span style=color:#75715e>/**
+</span><span style=color:#75715e> * queue group ở đây sẽ giúp nats không xóa durable events khi service go down.
+</span><span style=color:#75715e> */</span>
+<span style=color:#a6e22e>stan</span>.<span style=color:#a6e22e>subscribe</span>(<span style=color:#e6db74>&#39;ticket:created&#39;</span>, <span style=color:#e6db74>&#39;queue-group-name&#39;</span>, <span style=color:#a6e22e>options</span>)
+</code></pre></div>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#creating-a-nats-streaming-deployment>Creating a NATS Streaming Deployment</a></li>
+<li><a href=#big-notes-on-nats-streaming>Big Notes on NATS Streaming</a></li>
+<li><a href=#building-a-nats-test-project>Building a NATS Test Project</a></li>
+<li><a href=#port-forwarding-with-kubectl>Port-Forwarding with Kubectl</a></li>
+<li><a href=#publishing-events>Publishing Events</a></li>
+<li><a href=#listening-for-data>Listening For Data</a></li>
+<li><a href=#client-id-generation>Client ID Generation</a></li>
+<li><a href=#queue-groups>Queue Groups</a></li>
+<li><a href=#manual-ack-mode>Manual Ack Mode</a></li>
+<li><a href=#client-health-checks>Client Health Checks</a></li>
+<li><a href=#graceful-client-shutdown>Graceful Client Shutdown</a></li>
+<li><a href=#core-concurrency-issues>Core Concurrency Issues</a></li>
+<li><a href=#common-questions>Common Questions</a>
+<ul>
+<li><a href=#solution-1---tìm-tất-cả-lỗi-concurrency-có-thể-xảy-ra-và-viết-code-để-xử-lý>Solution #1 - Tìm tất cả lỗi concurrency có thể xảy ra và viết code để xử lý.</a></li>
+<li><a href=#solution-2---chia-sẻ-state-giữa-các-services-của-event-cuối-được-xử-lý>Solution #2 - Chia sẻ state giữa các services của event cuối được xử lý.</a></li>
+<li><a href=#solution-3---chia-sẻ-state-giữa-các-services-của-event-cuối-được-xử-lý-cùng-userid>Solution #3 - Chia sẻ state giữa các services của event cuối được xử lý cùng userid</a></li>
+<li><a href=#solution-4---lưu-sequence-ở-publisher-và-database>Solution #4 - Lưu sequence ở publisher và database.</a></li>
+</ul>
+</li>
+<li><a href=#solving-concurrency-issues>Solving Concurrency Issues</a></li>
+<li><a href=#concurrency-control-with-the-tickets-app>Concurrency Control with the Tickets App</a></li>
+<li><a href=#event-redelivery>Event Redelivery</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p13%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation&description=Creating%20a%20NATS%20Streaming%20Deployment%20%23%20nats-depl.yml%20apiVersion%3a%20apps%2fv1%20kind%3a%20Deployment%20metadata%3a%20name%3a%20nats-depl%20namespace%3a%20ingress-nginx%20spec%3a%20replicas%3a%201%20selector%3a%20matchLabels%3a%20app%3a%20nats%20template%3a%20metadata%3a%20labels%3a%20app%3a%20nats%20spec%3a%20containers%3a%20-%20name%3a%20nats%20image%3a%20nats-streaming%3a0.22.1%20args%3a%20%5b%20%26%2334%3b-p%26%2334%3b%2c%20%26%2334%3b4222%26%2334%3b%2c%20%26%2334%3b-m%26%2334%3b%2c%20%26%2334%3b8222%26%2334%3b%2c%20%26%2334%3b-hbi%26%2334%3b%2c%20%26%2334%3b5s%26%2334%3b%2c%20%26%2334%3b-hbt%26%2334%3b%2c%20%26%2334%3b5s%26%2334%3b%2c%20%26%2334%3b-hbf%26%2334%3b%2c%20%26%2334%3b2%26%2334%3b%2c%20%26%2334%3b-SD%26%2334%3b%2c%20%26%2334%3b-cid%26%2334%3b%2c%20%26%2334%3bticketing%26%2334%3b%2c%20%5d%20---%20apiVersion%3a%20v1%20kind%3a%20Service%20metadata%3a%20name%3a%20nats-srv%20namespace%3a%20ingress-nginx%20spec%3a%20selector%3a%20app%3a%20nats%20ports%3a%20-%20name%3a%20client%20protocol%3a%20TCP%20port%3a%204222%20targetPort%3a%204222%20-%20name%3a%20minitoring%20protocol%3a%20TCP%20port%3a%208222%20targetPort%3a%208222%20Big%20Notes%20on%20NATS%20Streaming%20EventBus%20service%20hi%e1%bb%87n%20t%e1%ba%a1i%20c%e1%bb%a7a%20ch%c3%bang%20ta%20s%e1%bb%ad%20d%e1%bb%a5ng%20express%20%2b%20axios%20%c4%90%e1%bb%83%20giao%20ti%e1%ba%bfp%20v%e1%bb%9bi%20NATS%20th%c3%ac%20ta%20s%e1%ba%bd%20s%e1%bb%ad%20d%e1%bb%a5ng%20node-nats-steaming%20%c4%90%e1%bb%83%20nh%e1%ba%adn%20%c4%91%c6%b0%e1%bb%a3c%20event%20t%e1%bb%ab%20eventbus%20th%c3%ac%20service%20c%e1%ba%a7n%20ph%e1%ba%a3i%20subscribe%20t%e1%bb%9bi%20NATS%20EventBus%20service%20hi%e1%bb%87n%20t%e1%ba%a1i%20c%e1%bb%a7a%20ch%c3%bang%20ta%20l%c6%b0u%20v%c3%a0o%20b%e1%bb%99%20nh%e1%bb%9b%20v%c3%a0%20s%e1%ba%bd%20m%e1%ba%a5t%20khi%20reset%20service%20NATS%20Streaming%20l%c6%b0u%20t%e1%ba%a5t%20c%e1%ba%a3%20events%20v%c3%a0o%20memory%20%28m%e1%ba%b7c%20%c4%91%e1%bb%8bnh%29%20ho%e1%ba%b7c%20v%c3%a0o%20files%2c%20MySQL%2fPostGres%20DB%20Building%20a%20NATS%20Test%20Project%20npm%20init%20-y%20npm%20i%20node-nats-streaming%20ts-node-dev%20typescript%20%40types%2fnode%20%2f%2f%20src%2fpublisher." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p13%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2013%20-%20NATS%20Streaming%20Server%20-%20An%20Event%20Bus%20Implementation" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
