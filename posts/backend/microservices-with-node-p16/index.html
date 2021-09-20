@@ -1,0 +1,839 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices với NodeJS phần 16 - Cross-Service Data Replication In Action | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-with-node-p16/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices với NodeJS phần 16 - Cross-Service Data Replication In Action">
+<meta property="og:description" content="The Orders Service Skaffolding the Orders Service  Create Order Service Copy .dockerignore, Dockerfile, tsconfig.json, package.json, package-lock.json from tickets service Update package name Copy app.ts, index.ts, nats-wrapper.ts  npm install Create orders-depl.yml
+apiVersion: apps/v1 kind: Deployment metadata: name: orders-depl namespace: ingress-nginx spec: replicas: 1 selector: matchLabels: app: orders template: metadata: labels: app: orders spec: containers: - name: orders image: ducnguyen96/ticketing-orders env: - name: JWT_KEY valueFrom: secretKeyRef: name: jwt-secret key: JWT_KEY - name: MONGO_URI value: &#34;mongodb://orders-mongo-srv:27017/orders&#34; - name: NATS_CLIENT_ID valueFrom: fieldRef: fieldPath: metadata.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-with-node-p16/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-17T02:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-17T02:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices với NodeJS phần 16 - Cross-Service Data Replication In Action">
+<meta name=twitter:description content="The Orders Service Skaffolding the Orders Service  Create Order Service Copy .dockerignore, Dockerfile, tsconfig.json, package.json, package-lock.json from tickets service Update package name Copy app.ts, index.ts, nats-wrapper.ts  npm install Create orders-depl.yml
+apiVersion: apps/v1 kind: Deployment metadata: name: orders-depl namespace: ingress-nginx spec: replicas: 1 selector: matchLabels: app: orders template: metadata: labels: app: orders spec: containers: - name: orders image: ducnguyen96/ticketing-orders env: - name: JWT_KEY valueFrom: secretKeyRef: name: jwt-secret key: JWT_KEY - name: MONGO_URI value: &#34;mongodb://orders-mongo-srv:27017/orders&#34; - name: NATS_CLIENT_ID valueFrom: fieldRef: fieldPath: metadata.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p15/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p17/ aria-label=Next>
+<i class="fas fa-chevron-right" aria-hidden=true onmouseover="$('#i-next').toggle()" onmouseout="$('#i-next').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p16%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action&description=The%20Orders%20Service%20Skaffolding%20the%20Orders%20Service%20%20Create%20Order%20Service%20Copy%20.dockerignore%2c%20Dockerfile%2c%20tsconfig.json%2c%20package.json%2c%20package-lock.json%20from%20tickets%20service%20Update%20package%20name%20Copy%20app.ts%2c%20index.ts%2c%20nats-wrapper.ts%20%20npm%20install%20Create%20orders-depl.yml%0aapiVersion%3a%20apps%2fv1%20kind%3a%20Deployment%20metadata%3a%20name%3a%20orders-depl%20namespace%3a%20ingress-nginx%20spec%3a%20replicas%3a%201%20selector%3a%20matchLabels%3a%20app%3a%20orders%20template%3a%20metadata%3a%20labels%3a%20app%3a%20orders%20spec%3a%20containers%3a%20-%20name%3a%20orders%20image%3a%20ducnguyen96%2fticketing-orders%20env%3a%20-%20name%3a%20JWT_KEY%20valueFrom%3a%20secretKeyRef%3a%20name%3a%20jwt-secret%20key%3a%20JWT_KEY%20-%20name%3a%20MONGO_URI%20value%3a%20%26%2334%3bmongodb%3a%2f%2forders-mongo-srv%3a27017%2forders%26%2334%3b%20-%20name%3a%20NATS_CLIENT_ID%20valueFrom%3a%20fieldRef%3a%20fieldPath%3a%20metadata." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#the-orders-service>The Orders Service</a></li>
+<li><a href=#skaffolding-the-orders-service>Skaffolding the Orders Service</a></li>
+<li><a href=#ingress-routing-rules>Ingress Routing Rules</a></li>
+<li><a href=#skaffolding-a-few-route-handlers>Skaffolding a Few Route Handlers</a></li>
+<li><a href=#associating-orders-and-tickets>Associating Orders and Tickets</a></li>
+<li><a href=#order-model-setup>Order Model Setup</a></li>
+<li><a href=#order-creation-logic>Order Creation Logic</a></li>
+<li><a href=#convenience-document-methods>Convenience Document Methods</a></li>
+<li><a href=#test-setup>Test Setup</a></li>
+<li><a href=#fetching-a-users-orders>Fetching a User&rsquo;s Orders</a></li>
+<li><a href=#a-slightly-complicated-test>A slightly Complicated Test</a></li>
+<li><a href=#fetching-individual-order>Fetching Individual Order</a></li>
+<li><a href=#cancelling-an-order>Cancelling An Order</a></li>
+<li><a href=#test-cancel>Test Cancel</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices với NodeJS phần 16 - Cross-Service Data Replication In Action
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-17 02:00:00 +0000 UTC" itemprop=datePublished>2021-09-17</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/nodejs rel=tag>nodejs</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<h2 id=the-orders-service>The Orders Service</h2>
+<p><img src=/images/microservices-dg-198.png alt=microservice-dg-198></p>
+<h2 id=skaffolding-the-orders-service>Skaffolding the Orders Service</h2>
+<ul>
+<li>Create Order Service</li>
+<li>Copy <code>.dockerignore</code>, <code>Dockerfile</code>, <code>tsconfig.json</code>, <code>package.json</code>, <code>package-lock.json</code> from tickets service</li>
+<li>Update package name</li>
+<li>Copy <code>app.ts</code>, <code>index.ts</code>, <code>nats-wrapper.ts</code></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm install
+</code></pre></div><p>Create orders-depl.yml</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders-depl</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>matchLabels</span>:
+      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>orders</span>
+  <span style=color:#f92672>template</span>:
+    <span style=color:#f92672>metadata</span>:
+      <span style=color:#f92672>labels</span>:
+        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>orders</span>
+    <span style=color:#f92672>spec</span>:
+      <span style=color:#f92672>containers</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders</span>
+          <span style=color:#f92672>image</span>: <span style=color:#ae81ff>ducnguyen96/ticketing-orders</span>
+          <span style=color:#f92672>env</span>:
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>JWT_KEY</span>
+              <span style=color:#f92672>valueFrom</span>:
+                <span style=color:#f92672>secretKeyRef</span>:
+                  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>jwt-secret</span>
+                  <span style=color:#f92672>key</span>: <span style=color:#ae81ff>JWT_KEY</span>
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>MONGO_URI</span>
+              <span style=color:#f92672>value</span>: <span style=color:#e6db74>&#34;mongodb://orders-mongo-srv:27017/orders&#34;</span>
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>NATS_CLIENT_ID</span>
+              <span style=color:#f92672>valueFrom</span>:
+                <span style=color:#f92672>fieldRef</span>:
+                  <span style=color:#f92672>fieldPath</span>: <span style=color:#ae81ff>metadata.name</span>
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>NATS_URL</span>
+              <span style=color:#f92672>value</span>: <span style=color:#e6db74>&#34;http://nats-srv:4222&#34;</span>
+            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>NATS_CLUSTER_ID</span>
+              <span style=color:#f92672>value</span>: <span style=color:#ae81ff>ticketing</span>
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders-srv</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>orders</span>
+  <span style=color:#f92672>ports</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders</span>
+      <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+      <span style=color:#f92672>port</span>: <span style=color:#ae81ff>3000</span>
+      <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>3000</span>
+</code></pre></div><p>Create orders-mongo-depl.yml</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders-mongo-depl</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>matchLabels</span>:
+      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>orders-mongo</span>
+  <span style=color:#f92672>template</span>:
+    <span style=color:#f92672>metadata</span>:
+      <span style=color:#f92672>labels</span>:
+        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>orders-mongo</span>
+    <span style=color:#f92672>spec</span>:
+      <span style=color:#f92672>containers</span>:
+        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders-mongo</span>
+          <span style=color:#f92672>image</span>: <span style=color:#ae81ff>mongo</span>
+---
+<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
+<span style=color:#f92672>metadata</span>:
+  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders-mongo-srv</span>
+  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>ingress-nginx</span>
+<span style=color:#f92672>spec</span>:
+  <span style=color:#f92672>selector</span>:
+    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>orders-mongo</span>
+  <span style=color:#f92672>ports</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>db</span>
+      <span style=color:#f92672>protocol</span>: <span style=color:#ae81ff>TCP</span>
+      <span style=color:#f92672>port</span>: <span style=color:#ae81ff>27017</span>
+      <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>27017</span>
+</code></pre></div><p>Update skaffold.yml</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml>- <span style=color:#f92672>image</span>: <span style=color:#ae81ff>ducnguyen96/ticketing-orders</span>
+  <span style=color:#f92672>context</span>: <span style=color:#ae81ff>orders</span>
+  <span style=color:#f92672>docker</span>:
+    <span style=color:#f92672>dockerfile</span>: <span style=color:#ae81ff>Dockerfile</span>
+  <span style=color:#f92672>sync</span>:
+    <span style=color:#f92672>manual</span>:
+      - <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;src/**/*.ts&#34;</span>
+        <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>.</span>
+</code></pre></div><h2 id=ingress-routing-rules>Ingress Routing Rules</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml>- <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/api/orders/?(.*)</span>
+  <span style=color:#f92672>pathType</span>: <span style=color:#ae81ff>Prefix</span>
+  <span style=color:#f92672>backend</span>:
+    <span style=color:#f92672>service</span>:
+      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>orders-srv</span>
+      <span style=color:#f92672>port</span>:
+        <span style=color:#f92672>number</span>: <span style=color:#ae81ff>3000</span>
+</code></pre></div><h2 id=skaffolding-a-few-route-handlers>Skaffolding a Few Route Handlers</h2>
+<p><img src=/images/microservices-dg-199.png alt=microservice-dg-199></p>
+<p>Tương tự như tickets service thì ta cũng viết code cho 4 routes trên.</p>
+<h2 id=associating-orders-and-tickets>Associating Orders and Tickets</h2>
+<p>Option 1:
+<img src=/images/microservices-dg-200.png alt=microservice-dg-200>
+Nhược điểm khổng lồ
+<img src=/images/microservices-dg-201.png alt=microservice-dg-201>
+<img src=/images/microservices-dg-202.png alt=microservice-dg-202>
+Option 2:
+<img src=/images/microservices-dg-203.png alt=microservice-dg-203></p>
+<h2 id=order-model-setup>Order Model Setup</h2>
+<p>Ta cần 1 enum để đại diện cho status của Order, và status này sẽ được dùng ở nhiều service nên ta sẽ define nó ở common module</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// common/src/events/types/order-status.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>enum</span> <span style=color:#a6e22e>OrderStatus</span> {
+  <span style=color:#75715e>// When the order has been created
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// but the ticket it is trying to order has not been reserved
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>Created</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;created&#34;</span>,
+
+  <span style=color:#75715e>// The ticket the order is trying to reserve has already
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// been reserved, or when the user has cancelled the order
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// The order expires before payment
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>Cancelled</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;cancelled&#34;</span>,
+
+  <span style=color:#75715e>// The order has successfully reserved the ticket
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>AwaitingPayment</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;awaiting:payment&#34;</span>,
+
+  <span style=color:#75715e>// The order has reserved the ticket and the user has
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// provided payment successfully
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>Complete</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;complete&#34;</span>,
+}
+</code></pre></div><p>Định nghĩa cho order model.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/models/order.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;mongoose&#34;</span>;
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderAttrs</span> {
+  <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>status</span>: <span style=color:#66d9ef>OrderStatus</span>;
+  <span style=color:#a6e22e>expiresAt</span>: <span style=color:#66d9ef>Date</span>;
+  <span style=color:#a6e22e>ticket</span>: <span style=color:#66d9ef>TicketDoc</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderDoc</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Document</span> {
+  <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>status</span>: <span style=color:#66d9ef>OrderStatus</span>;
+  <span style=color:#a6e22e>expiresAt</span>: <span style=color:#66d9ef>Date</span>;
+  <span style=color:#a6e22e>ticket</span>: <span style=color:#66d9ef>TicketDoc</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderModel</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Model</span>&lt;<span style=color:#f92672>OrderDoc</span>&gt; {
+  <span style=color:#a6e22e>build</span>(<span style=color:#a6e22e>attrs</span>: <span style=color:#66d9ef>OrderAttrs</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>OrderDoc</span>;
+}
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>orderSchema</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Schema</span>(
+  {
+    <span style=color:#a6e22e>userId</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> String,
+      <span style=color:#66d9ef>require</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span>,
+    },
+    <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> String,
+      <span style=color:#66d9ef>require</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span>,
+      <span style=color:#66d9ef>enum</span><span style=color:#f92672>:</span> Object.<span style=color:#a6e22e>values</span>(<span style=color:#a6e22e>OrderStatus</span>),
+      <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>OrderStatus</span>.<span style=color:#a6e22e>Created</span>,
+    },
+    <span style=color:#a6e22e>expiresAt</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Schema</span>.<span style=color:#a6e22e>Types</span>.Date,
+    },
+
+    <span style=color:#a6e22e>ticket</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Schema</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>,
+      <span style=color:#a6e22e>ref</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Ticket&#34;</span>,
+      <span style=color:#a6e22e>required</span>: <span style=color:#66d9ef>true</span>,
+    },
+  },
+  {
+    <span style=color:#a6e22e>toJSON</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>transform</span>(<span style=color:#a6e22e>doc</span>, <span style=color:#a6e22e>ret</span>) {
+        <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>_id</span>;
+        <span style=color:#66d9ef>delete</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>_id</span>;
+        <span style=color:#66d9ef>delete</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>__v</span>;
+      },
+    },
+  }
+);
+
+<span style=color:#a6e22e>orderSchema</span>.<span style=color:#a6e22e>statics</span>.<span style=color:#a6e22e>build</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>attrs</span>: <span style=color:#66d9ef>OrderAttrs</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Order</span>(<span style=color:#a6e22e>attrs</span>);
+};
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Order</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>model</span>&lt;<span style=color:#f92672>OrderDoc</span><span style=color:#960050;background-color:#1e0010>,</span> <span style=color:#a6e22e>OrderModel</span>&gt;(<span style=color:#e6db74>&#34;Order&#34;</span>, <span style=color:#a6e22e>orderSchema</span>);
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>Order</span> };
+</code></pre></div><p>Định nghĩa cho ticket model</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/models/ticket
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;mongoose&#34;</span>;
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketAttrs</span> {
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>number</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketDoc</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Document</span> {
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>number</span>;
+}
+
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketModel</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Model</span>&lt;<span style=color:#f92672>TicketDoc</span>&gt; {
+  <span style=color:#a6e22e>build</span>(<span style=color:#a6e22e>attrs</span>: <span style=color:#66d9ef>TicketAttrs</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>TicketDoc</span>;
+}
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketSchema</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Schema</span>(
+  {
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> String,
+      <span style=color:#a6e22e>required</span>: <span style=color:#66d9ef>true</span>,
+    },
+    <span style=color:#a6e22e>price</span><span style=color:#f92672>:</span> {
+      <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> Number,
+      <span style=color:#a6e22e>required</span>: <span style=color:#66d9ef>true</span>,
+    },
+  },
+  {
+    <span style=color:#a6e22e>toJSON</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>transform</span>(<span style=color:#a6e22e>doc</span>, <span style=color:#a6e22e>ret</span>) {
+        <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>id</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>_id</span>;
+        <span style=color:#66d9ef>delete</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>_id</span>;
+        <span style=color:#66d9ef>delete</span> <span style=color:#a6e22e>ret</span>.<span style=color:#a6e22e>__v</span>;
+      },
+    },
+  }
+);
+
+<span style=color:#a6e22e>ticketSchema</span>.<span style=color:#a6e22e>statics</span>.<span style=color:#a6e22e>build</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>attrs</span>: <span style=color:#66d9ef>TicketAttrs</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Ticket</span>(<span style=color:#a6e22e>attrs</span>);
+};
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>model</span>&lt;<span style=color:#f92672>TicketDoc</span><span style=color:#960050;background-color:#1e0010>,</span> <span style=color:#a6e22e>TicketModel</span>&gt;(<span style=color:#e6db74>&#34;Ticket&#34;</span>, <span style=color:#a6e22e>ticketSchema</span>);
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>Ticket</span> };
+</code></pre></div><h2 id=order-creation-logic>Order Creation Logic</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/create.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>router</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>express</span>.<span style=color:#a6e22e>Router</span>();
+<span style=color:#a6e22e>router</span>.<span style=color:#a6e22e>post</span>(
+  <span style=color:#e6db74>&#34;/api/orders&#34;</span>,
+  <span style=color:#a6e22e>requireAuth</span>,
+  [
+    <span style=color:#a6e22e>body</span>(<span style=color:#e6db74>&#34;ticketID&#34;</span>)
+      .<span style=color:#a6e22e>not</span>()
+      .<span style=color:#a6e22e>isEmpty</span>()
+      .<span style=color:#a6e22e>custom</span>((<span style=color:#a6e22e>input</span>: <span style=color:#66d9ef>string</span>) <span style=color:#f92672>=&gt;</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>.<span style=color:#a6e22e>isValid</span>(<span style=color:#a6e22e>input</span>))
+      .<span style=color:#a6e22e>withMessage</span>(<span style=color:#e6db74>&#34;TicketID must be provided&#34;</span>),
+  ],
+  <span style=color:#a6e22e>validateRequest</span>,
+  <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>ticketID</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>body</span>;
+
+    <span style=color:#75715e>// Find the ticket the user is trying to order in the database
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>ticketID</span>);
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>ticket</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotFoundError</span>();
+    }
+
+    <span style=color:#75715e>// Make sure that this ticket is not already reserved
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Run the query to look at all orders. Find an order where the ticket
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// is the ticket we just found and the orders status is not cancelled
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// If we find and order from that means the ticket is reserved
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>isReserved</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>isReserved</span>();
+    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>isReserved</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>BadRequestError</span>(<span style=color:#e6db74>&#34;Ticket is already reserved.&#34;</span>);
+    }
+
+    <span style=color:#75715e>// Calculate an expiration date for this order
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>expiration</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Date();
+    <span style=color:#a6e22e>expiration</span>.<span style=color:#a6e22e>setSeconds</span>(<span style=color:#a6e22e>expiration</span>.<span style=color:#a6e22e>getSeconds</span>() <span style=color:#f92672>+</span> <span style=color:#a6e22e>EXPIRATION_WINDOW_SECOND</span>);
+
+    <span style=color:#75715e>// Build the order and save it to the database
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>order</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Order</span>.<span style=color:#a6e22e>build</span>({
+      <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>req.currentUser</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>id</span>,
+      <span style=color:#a6e22e>status</span>: <span style=color:#66d9ef>OrderStatus.Created</span>,
+      <span style=color:#a6e22e>expiresAt</span>: <span style=color:#66d9ef>expiration</span>,
+      <span style=color:#a6e22e>ticket</span>,
+    });
+
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>save</span>();
+
+    <span style=color:#75715e>// Publish and event saying that an order was created
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>status</span>(<span style=color:#ae81ff>201</span>).<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>order</span>);
+  }
+);
+
+<span style=color:#66d9ef>export</span> { <span style=color:#a6e22e>router</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>createOrderRouter</span> };
+</code></pre></div><h2 id=convenience-document-methods>Convenience Document Methods</h2>
+<p>Add new methods to ticket model</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/models/ticket.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketDoc</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Document</span> {
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>number</span>;
+  <span style=color:#a6e22e>isReserved</span>()<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>boolean</span>&gt;;
+}
+
+<span style=color:#a6e22e>ticketSchema</span>.<span style=color:#a6e22e>methods</span>.<span style=color:#a6e22e>isReserved</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> () {
+  <span style=color:#75715e>// this === the ticket document
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>existingOrder</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Order</span>.<span style=color:#a6e22e>findOne</span>({
+    <span style=color:#a6e22e>ticket</span>: <span style=color:#66d9ef>this.id</span>,
+    <span style=color:#a6e22e>status</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>$in</span><span style=color:#f92672>:</span> [
+        <span style=color:#a6e22e>OrderStatus</span>.<span style=color:#a6e22e>Created</span>,
+        <span style=color:#a6e22e>OrderStatus</span>.<span style=color:#a6e22e>AwaitingPayment</span>,
+        <span style=color:#a6e22e>OrderStatus</span>.<span style=color:#a6e22e>Complete</span>,
+      ],
+    },
+  });
+  <span style=color:#66d9ef>return</span> <span style=color:#f92672>!!</span><span style=color:#a6e22e>existingOrder</span>;
+};
+</code></pre></div><h2 id=test-setup>Test Setup</h2>
+<p>Copy <code>test</code> folder và <code>__mocks__</code> folder</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// create.test.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns an error if the ticket does not exist&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketID</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>404</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns an error if the ticket is already reserved&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>order</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Order</span>.<span style=color:#a6e22e>build</span>({
+    <span style=color:#a6e22e>ticket</span>,
+    <span style=color:#a6e22e>userId</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;dvbgrtf&#34;</span>,
+    <span style=color:#a6e22e>status</span>: <span style=color:#66d9ef>OrderStatus.Created</span>,
+    <span style=color:#a6e22e>expiresAt</span>: <span style=color:#66d9ef>new</span> Date(),
+  });
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span>: <span style=color:#66d9ef>ticket.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>400</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;reserved a ticket&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span>: <span style=color:#66d9ef>ticket.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+});
+
+<span style=color:#a6e22e>it</span>.<span style=color:#a6e22e>todo</span>(<span style=color:#e6db74>&#34;emits an order created event&#34;</span>);
+</code></pre></div><h2 id=fetching-a-users-orders>Fetching a User&rsquo;s Orders</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/read.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>router</span>.<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>, <span style=color:#a6e22e>requireAuth</span>, <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>orders</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Order</span>.<span style=color:#a6e22e>find</span>({ <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>req.currentUser</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>id</span> }).<span style=color:#a6e22e>populate</span>(
+    <span style=color:#e6db74>&#34;ticket&#34;</span>
+  );
+
+  <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>orders</span>);
+});
+</code></pre></div><h2 id=a-slightly-complicated-test>A slightly Complicated Test</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// read.test.ts
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>buildTicket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({ <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>, <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>ticket</span>;
+};
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;fetches orders for an particular user&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// Create three tickets
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketOne</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>buildTicket</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketTwo</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>buildTicket</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketThree</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>buildTicket</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>userOne</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>userTwo</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>();
+  <span style=color:#75715e>// Ở đây hàm signin sẽ được update 1 tí để random userId. Bạn có thể sử dụng lại logic của ticketID
+</span><span style=color:#75715e></span>
+  <span style=color:#75715e>// Create one order as User #1
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>userOne</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span>: <span style=color:#66d9ef>ticketOne.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+
+  <span style=color:#75715e>// Create two orders as User #2
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>orderOne</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>userTwo</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span>: <span style=color:#66d9ef>ticketTwo.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>orderTwo</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>userOne</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span>: <span style=color:#66d9ef>ticketThree.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+
+  <span style=color:#75715e>// Make request to get orders for User #2
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>userTwo</span>)
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>200</span>);
+
+  <span style=color:#75715e>// Make sure we only got the orders for User #2
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>.<span style=color:#a6e22e>length</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>2</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>[<span style=color:#ae81ff>0</span>].<span style=color:#a6e22e>id</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>orderOne</span>.<span style=color:#a6e22e>id</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>body</span>[<span style=color:#ae81ff>1</span>].<span style=color:#a6e22e>id</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>orderTwo</span>.<span style=color:#a6e22e>id</span>);
+});
+</code></pre></div><h2 id=fetching-individual-order>Fetching Individual Order</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>router</span>.<span style=color:#66d9ef>get</span>(
+  <span style=color:#e6db74>&#34;/api/orders/:id&#34;</span>,
+  <span style=color:#a6e22e>requireAuth</span>,
+  <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>order</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Order</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>params</span>.<span style=color:#a6e22e>id</span>).<span style=color:#a6e22e>populate</span>(<span style=color:#e6db74>&#34;ticket&#34;</span>);
+
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>order</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotFoundError</span>();
+    }
+
+    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>userId</span> <span style=color:#f92672>!==</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>currentUser</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>id</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotAuthorizedError</span>();
+    }
+
+    <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>order</span>);
+  }
+);
+</code></pre></div><p>Test</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;fetches the order&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// Create a ticket
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>buildTicket</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>();
+  <span style=color:#75715e>// make a request to build an order with this ticket
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>order</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>user</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span>: <span style=color:#66d9ef>ticket.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+
+  <span style=color:#75715e>// make request to fetch the order
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>fetchedOrder</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>`/api/orders/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>user</span>)
+    .<span style=color:#a6e22e>send</span>()
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>200</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>fetchedOrder</span>.<span style=color:#a6e22e>id</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>id</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;returns an error if one user tries to fetch anothers order&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// Create a ticket
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>buildTicket</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>();
+  <span style=color:#75715e>// make a request to build an order with this ticket
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>order</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>user</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketId</span>: <span style=color:#66d9ef>ticket.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+
+  <span style=color:#75715e>// make request to fetch the order
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>fetchedOrder</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>`/api/orders/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>())
+    .<span style=color:#a6e22e>send</span>()
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>401</span>);
+});
+</code></pre></div><h2 id=cancelling-an-order>Cancelling An Order</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/routes/delete.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>router</span>.<span style=color:#66d9ef>delete</span>(
+  <span style=color:#e6db74>&#34;/api/orders/:orderID&#34;</span>,
+  <span style=color:#a6e22e>requireAuth</span>,
+  <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>req</span>: <span style=color:#66d9ef>Request</span>, <span style=color:#a6e22e>res</span>: <span style=color:#66d9ef>Response</span>) <span style=color:#f92672>=&gt;</span> {
+    <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>orderID</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>params</span>;
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>order</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Order</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>orderID</span>);
+
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>order</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotFoundError</span>();
+    }
+    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>userId</span> <span style=color:#f92672>!==</span> <span style=color:#a6e22e>req</span>.<span style=color:#a6e22e>currentUser</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>id</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NotAuthorizedError</span>();
+    }
+    <span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>OrderStatus</span>.<span style=color:#a6e22e>Cancelled</span>;
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>save</span>();
+
+    <span style=color:#75715e>// publishing an event saying this was cancelled
+</span><span style=color:#75715e></span>
+    <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>status</span>(<span style=color:#ae81ff>204</span>).<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>order</span>);
+  }
+);
+</code></pre></div><h2 id=test-cancel>Test Cancel</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// delete.test.ts
+</span><span style=color:#75715e></span><span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;makrs an order as cancelled&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// create a ticket with Ticket Model
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>buildTicket</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>user</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>global</span>.<span style=color:#a6e22e>signin</span>();
+  <span style=color:#75715e>// make a request to create an order
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>order</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#a6e22e>post</span>(<span style=color:#e6db74>&#34;/api/orders&#34;</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>user</span>)
+    .<span style=color:#a6e22e>send</span>({ <span style=color:#a6e22e>ticketID</span>: <span style=color:#66d9ef>ticket.id</span> })
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>201</span>);
+
+  <span style=color:#75715e>// make a request to cancel the order
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>request</span>(<span style=color:#a6e22e>app</span>)
+    .<span style=color:#66d9ef>delete</span>(<span style=color:#e6db74>`/api/orders/</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>id</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>)
+    .<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;Cookie&#34;</span>, <span style=color:#a6e22e>user</span>)
+    .<span style=color:#a6e22e>send</span>()
+    .<span style=color:#a6e22e>expect</span>(<span style=color:#ae81ff>204</span>);
+
+  <span style=color:#75715e>// expectation to make sure the thing is cancelled
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>updatedOrder</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Order</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>order</span>.<span style=color:#a6e22e>id</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedOrder</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>status</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>OrderStatus</span>.<span style=color:#a6e22e>Cancelled</span>);
+});
+
+<span style=color:#a6e22e>it</span>.<span style=color:#a6e22e>todo</span>(<span style=color:#e6db74>&#34;emits an event saying this order was cancelled&#34;</span>);
+</code></pre></div>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#the-orders-service>The Orders Service</a></li>
+<li><a href=#skaffolding-the-orders-service>Skaffolding the Orders Service</a></li>
+<li><a href=#ingress-routing-rules>Ingress Routing Rules</a></li>
+<li><a href=#skaffolding-a-few-route-handlers>Skaffolding a Few Route Handlers</a></li>
+<li><a href=#associating-orders-and-tickets>Associating Orders and Tickets</a></li>
+<li><a href=#order-model-setup>Order Model Setup</a></li>
+<li><a href=#order-creation-logic>Order Creation Logic</a></li>
+<li><a href=#convenience-document-methods>Convenience Document Methods</a></li>
+<li><a href=#test-setup>Test Setup</a></li>
+<li><a href=#fetching-a-users-orders>Fetching a User&rsquo;s Orders</a></li>
+<li><a href=#a-slightly-complicated-test>A slightly Complicated Test</a></li>
+<li><a href=#fetching-individual-order>Fetching Individual Order</a></li>
+<li><a href=#cancelling-an-order>Cancelling An Order</a></li>
+<li><a href=#test-cancel>Test Cancel</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p16%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action&description=The%20Orders%20Service%20Skaffolding%20the%20Orders%20Service%20%20Create%20Order%20Service%20Copy%20.dockerignore%2c%20Dockerfile%2c%20tsconfig.json%2c%20package.json%2c%20package-lock.json%20from%20tickets%20service%20Update%20package%20name%20Copy%20app.ts%2c%20index.ts%2c%20nats-wrapper.ts%20%20npm%20install%20Create%20orders-depl.yml%0aapiVersion%3a%20apps%2fv1%20kind%3a%20Deployment%20metadata%3a%20name%3a%20orders-depl%20namespace%3a%20ingress-nginx%20spec%3a%20replicas%3a%201%20selector%3a%20matchLabels%3a%20app%3a%20orders%20template%3a%20metadata%3a%20labels%3a%20app%3a%20orders%20spec%3a%20containers%3a%20-%20name%3a%20orders%20image%3a%20ducnguyen96%2fticketing-orders%20env%3a%20-%20name%3a%20JWT_KEY%20valueFrom%3a%20secretKeyRef%3a%20name%3a%20jwt-secret%20key%3a%20JWT_KEY%20-%20name%3a%20MONGO_URI%20value%3a%20%26%2334%3bmongodb%3a%2f%2forders-mongo-srv%3a27017%2forders%26%2334%3b%20-%20name%3a%20NATS_CLIENT_ID%20valueFrom%3a%20fieldRef%3a%20fieldPath%3a%20metadata." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p16%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2016%20-%20Cross-Service%20Data%20Replication%20In%20Action" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
