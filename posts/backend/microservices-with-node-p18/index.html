@@ -1,0 +1,821 @@
+<!doctype html><html lang=vi-vn>
+<head>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/font-awesome/webfonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<link rel=preload href=/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2 as=font type=font/woff2 crossorigin=anonymous>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title> Microservices với NodeJS phần 18 - Listening For Events and Handling Concurrency Issues | Thỉnh thoảng đôi lời</title>
+<link rel=canonical href=/posts/backend/microservices-with-node-p18/>
+<meta name=description content="Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta property="og:title" content="Microservices với NodeJS phần 18 - Listening For Events and Handling Concurrency Issues">
+<meta property="og:description" content="Blueprint for Listeners // src/events/listeners/queue-group-name.ts export const queueGroupName = &#34;orders-service&#34;; // ticket-created-listener.ts export class TicketCreatedListener extends Listener<TicketCreatedEvent> { subject: Subjects.TicketCreated = Subjects.TicketCreated; queueGroupName = queueGroupName; onMessage(data: TicketCreatedEvent[&#34;data&#34;], msg: Message) {} } Simple onMessage Implementation export class TicketCreatedListener extends Listener<TicketCreatedEvent> { subject: Subjects.TicketCreated = Subjects.TicketCreated; queueGroupName = queueGroupName; async onMessage(data: TicketCreatedEvent[&#34;data&#34;], msg: Message) { const { title, price } = data; const ticket = Ticket.build({ title, price, }); await ticket.save(); msg.ack(); } Với cách tiếp cận này thì ticket được tạo mới trong order service sẽ có id khác với id của ticket được tạo trong ticket service, vậy ta sẽ phải update lại code của hàm build.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/posts/backend/microservices-with-node-p18/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-09-22T01:00:00+00:00">
+<meta property="article:modified_time" content="2021-09-22T01:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Microservices với NodeJS phần 18 - Listening For Events and Handling Concurrency Issues">
+<meta name=twitter:description content="Blueprint for Listeners // src/events/listeners/queue-group-name.ts export const queueGroupName = &#34;orders-service&#34;; // ticket-created-listener.ts export class TicketCreatedListener extends Listener<TicketCreatedEvent> { subject: Subjects.TicketCreated = Subjects.TicketCreated; queueGroupName = queueGroupName; onMessage(data: TicketCreatedEvent[&#34;data&#34;], msg: Message) {} } Simple onMessage Implementation export class TicketCreatedListener extends Listener<TicketCreatedEvent> { subject: Subjects.TicketCreated = Subjects.TicketCreated; queueGroupName = queueGroupName; async onMessage(data: TicketCreatedEvent[&#34;data&#34;], msg: Message) { const { title, price } = data; const ticket = Ticket.build({ title, price, }); await ticket.save(); msg.ack(); } Với cách tiếp cận này thì ticket được tạo mới trong order service sẽ có id khác với id của ticket được tạo trong ticket service, vậy ta sẽ phải update lại code của hàm build.">
+<link rel=stylesheet href=/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N+XoIuZg=="><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel=icon type=image/png href=/images/favicon.ico>
+</head>
+<body class="max-width mx-auto px3 ltr">
+<div class="content index py4">
+<div id=header-post>
+<a id=menu-icon href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=menu-icon-tablet href=#><i class="fas fa-bars fa-lg"></i></a>
+<a id=top-icon-tablet href=# onclick="$('html, body').animate({scrollTop:0},'fast')" style=display:none aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+<span id=menu>
+<span id=nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</span>
+<br>
+<span id=actions>
+<ul>
+<li>
+<a class=icon href=/posts/backend/microservices-with-node-p17/ aria-label=Previous>
+<i class="fas fa-chevron-left" aria-hidden=true onmouseover="$('#i-prev').toggle()" onmouseout="$('#i-prev').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up" aria-hidden=true onmouseover="$('#i-top').toggle()" onmouseout="$('#i-top').toggle()"></i>
+</a>
+</li>
+<li>
+<a class=icon href=# aria-label=Share>
+<i class="fas fa-share-alt" aria-hidden=true onmouseover="$('#i-share').toggle()" onmouseout="$('#i-share').toggle()" onclick="return $('#share').toggle(),!1"></i>
+</a>
+</li>
+</ul>
+<span id=i-prev class=info style=display:none>Previous post</span>
+<span id=i-next class=info style=display:none>Next post</span>
+<span id=i-top class=info style=display:none>Back to top</span>
+<span id=i-share class=info style=display:none>Share post</span>
+</span>
+<br>
+<div id=share style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f" aria-label=Facebook>
+<i class="fab fa-facebook" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Twitter>
+<i class="fab fa-twitter" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Linkedin>
+<i class="fab fa-linkedin" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Pinterest>
+<i class="fab fa-pinterest" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p18%2f" aria-label=Email>
+<i class="fas fa-envelope" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Pocket>
+<i class="fab fa-get-pocket" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=reddit>
+<i class="fab fa-reddit" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues&description=Blueprint%20for%20Listeners%20%2f%2f%20src%2fevents%2flisteners%2fqueue-group-name.ts%20export%20const%20queueGroupName%20%3d%20%26%2334%3borders-service%26%2334%3b%3b%20%2f%2f%20ticket-created-listener.ts%20export%20class%20TicketCreatedListener%20extends%20Listener%26lt%3bTicketCreatedEvent%26gt%3b%20%7b%20subject%3a%20Subjects.TicketCreated%20%3d%20Subjects.TicketCreated%3b%20queueGroupName%20%3d%20queueGroupName%3b%20onMessage%28data%3a%20TicketCreatedEvent%5b%26%2334%3bdata%26%2334%3b%5d%2c%20msg%3a%20Message%29%20%7b%7d%20%7d%20Simple%20onMessage%20Implementation%20export%20class%20TicketCreatedListener%20extends%20Listener%26lt%3bTicketCreatedEvent%26gt%3b%20%7b%20subject%3a%20Subjects.TicketCreated%20%3d%20Subjects.TicketCreated%3b%20queueGroupName%20%3d%20queueGroupName%3b%20async%20onMessage%28data%3a%20TicketCreatedEvent%5b%26%2334%3bdata%26%2334%3b%5d%2c%20msg%3a%20Message%29%20%7b%20const%20%7b%20title%2c%20price%20%7d%20%3d%20data%3b%20const%20ticket%20%3d%20Ticket.build%28%7b%20title%2c%20price%2c%20%7d%29%3b%20await%20ticket.save%28%29%3b%20msg.ack%28%29%3b%20%7d%20V%e1%bb%9bi%20c%c3%a1ch%20ti%e1%ba%bfp%20c%e1%ba%adn%20n%c3%a0y%20th%c3%ac%20ticket%20%c4%91%c6%b0%e1%bb%a3c%20t%e1%ba%a1o%20m%e1%bb%9bi%20trong%20order%20service%20s%e1%ba%bd%20c%c3%b3%20id%20kh%c3%a1c%20v%e1%bb%9bi%20id%20c%e1%bb%a7a%20ticket%20%c4%91%c6%b0%e1%bb%a3c%20t%e1%ba%a1o%20trong%20ticket%20service%2c%20v%e1%ba%ady%20ta%20s%e1%ba%bd%20ph%e1%ba%a3i%20update%20l%e1%ba%a1i%20code%20c%e1%bb%a7a%20h%c3%a0m%20build." aria-label=Tumblr>
+<i class="fab fa-tumblr" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label="Hacker News">
+<i class="fab fa-hacker-news" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#blueprint-for-listeners>Blueprint for Listeners</a></li>
+<li><a href=#simple-onmessage-implementation>Simple onMessage Implementation</a></li>
+<li><a href=#ticket-updated-listener>Ticket Updated Listener</a></li>
+<li><a href=#initializing-updated-listener-implementation>Initializing Updated Listener Implementation</a></li>
+<li><a href=#clear-concurrency-issues>Clear Concurrency Issues</a></li>
+<li><a href=#reminder-on-versioning-records>Reminder On Versioning Records</a></li>
+<li><a href=#optimistic-concurrency-control>Optimistic Concurrency Control</a></li>
+<li><a href=#mongoose-update-if-current>Mongoose Update-If-Current</a></li>
+<li><a href=#testing-occ-optimistic-concurrency-control>Testing OCC (Optimistic Concurrency Control)</a></li>
+<li><a href=#including-versions-in-events>Including Versions In Events</a></li>
+<li><a href=#updateing-tickets-event-definitions>Updateing Tickets Event Definitions</a></li>
+<li><a href=#applying-a-version-query>Applying a Version Query</a></li>
+<li><a href=#abstracted-query-method>Abstracted Query Method</a></li>
+<li><a href=#versioning-without-update-if-current>Versioning Without Update-If-Current</a></li>
+<li><a href=#testing-listeners>Testing Listeners</a></li>
+<li><a href=#testing-the-ticket-updated-listener>Testing the Ticket Updated Listener</a></li>
+<li><a href=#locking-a-ticket>Locking a Ticket</a></li>
+<li><a href=#listeners-in-the-tickets-service>Listeners In The Tickets Service</a></li>
+<li><a href=#testing-reservation>Testing Reservation</a></li>
+<li><a href=#missing-update-event>Missing Update Event</a></li>
+<li><a href=#private-vs-protected-properties>Private vs Protected Properties</a></li>
+<li><a href=#mock-function-arguments>Mock Function Arguments</a></li>
+<li><a href=#order-cancelled-listener>Order Cancelled Listener</a></li>
+<li><a href=#rejecting-edits-of-reserved-tickets>Rejecting Edits of Reserved Tickets</a></li>
+</ul>
+</nav>
+</div>
+</span>
+</div>
+<article class=post itemscope itemtype=http://schema.org/BlogPosting>
+<header>
+<h1 class=posttitle itemprop="name headline">
+Microservices với NodeJS phần 18 - Listening For Events and Handling Concurrency Issues
+</h1>
+<div class=meta>
+<div class=postdate>
+<time datetime="2021-09-22 01:00:00 +0000 UTC" itemprop=datePublished>2021-09-22</time>
+</div>
+<div class=article-category>
+<i class="fas fa-archive"></i>
+<a class=category-link href=/categories/backend>backend</a>
+,
+<a class=category-link href=/categories/devops>devops</a>
+</div>
+<div class=article-tag>
+<i class="fas fa-tag"></i>
+<a class=tag-link href=/tags/microservices rel=tag>microservices</a>
+,
+<a class=tag-link href=/tags/nodejs rel=tag>nodejs</a>
+,
+<a class=tag-link href=/tags/monoliths rel=tag>monoliths</a>
+,
+<a class=tag-link href=/tags/architecture rel=tag>architecture</a>
+,
+<a class=tag-link href=/tags/backend rel=tag>backend</a>
+,
+<a class=tag-link href=/tags/devops rel=tag>devops</a>
+</div>
+</div>
+</header>
+<div class=content itemprop=articleBody>
+<h2 id=blueprint-for-listeners>Blueprint for Listeners</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// src/events/listeners/queue-group-name.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>queueGroupName</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orders-service&#34;</span>;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// ticket-created-listener.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TicketCreatedListener</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Listener</span>&lt;<span style=color:#f92672>TicketCreatedEvent</span>&gt; {
+  <span style=color:#a6e22e>subject</span>: <span style=color:#66d9ef>Subjects.TicketCreated</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Subjects</span>.<span style=color:#a6e22e>TicketCreated</span>;
+  <span style=color:#a6e22e>queueGroupName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>queueGroupName</span>;
+
+  <span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>TicketCreatedEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>], <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span>) {}
+}
+</code></pre></div><h2 id=simple-onmessage-implementation>Simple onMessage Implementation</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TicketCreatedListener</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Listener</span>&lt;<span style=color:#f92672>TicketCreatedEvent</span>&gt; {
+  <span style=color:#a6e22e>subject</span>: <span style=color:#66d9ef>Subjects.TicketCreated</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Subjects</span>.<span style=color:#a6e22e>TicketCreated</span>;
+  <span style=color:#a6e22e>queueGroupName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>queueGroupName</span>;
+
+  <span style=color:#66d9ef>async</span> <span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>TicketCreatedEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>], <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span>) {
+    <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>title</span>, <span style=color:#a6e22e>price</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>data</span>;
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+      <span style=color:#a6e22e>title</span>,
+      <span style=color:#a6e22e>price</span>,
+    });
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+    <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>();
+  }
+
+</code></pre></div><p>Với cách tiếp cận này thì ticket được tạo mới trong order service sẽ có id khác với id của ticket được tạo trong ticket service, vậy ta sẽ phải update lại code của hàm build.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>ticketSchema</span>.<span style=color:#a6e22e>statics</span>.<span style=color:#a6e22e>build</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>attrs</span>: <span style=color:#66d9ef>TicketAttrs</span>) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Ticket</span>({
+    <span style=color:#a6e22e>_id</span>: <span style=color:#66d9ef>attrs.id</span>,
+    <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>attrs.title</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>attrs.price</span>,
+  });
+};
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+  <span style=color:#a6e22e>id</span>,
+  <span style=color:#a6e22e>title</span>,
+  <span style=color:#a6e22e>price</span>,
+});
+</code></pre></div><h2 id=ticket-updated-listener>Ticket Updated Listener</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TicketUpdatedListener</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Listener</span>&lt;<span style=color:#f92672>TicketUpdatedEvent</span>&gt; {
+  <span style=color:#a6e22e>subject</span>: <span style=color:#66d9ef>Subjects.TicketUpdated</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Subjects</span>.<span style=color:#a6e22e>TicketUpdated</span>;
+  <span style=color:#a6e22e>queueGroupName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>queueGroupName</span>;
+
+  <span style=color:#66d9ef>async</span> <span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>TicketUpdatedEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>], <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span>) {
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>);
+
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>ticket</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> Error(<span style=color:#e6db74>&#34;Ticket not found&#34;</span>);
+    }
+
+    <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>title</span>, <span style=color:#a6e22e>price</span> } <span style=color:#f92672>=</span> <span style=color:#a6e22e>data</span>;
+    <span style=color:#a6e22e>ticket</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>title</span>, <span style=color:#a6e22e>price</span> });
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+    <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>();
+  }
+}
+</code></pre></div><h2 id=initializing-updated-listener-implementation>Initializing Updated Listener Implementation</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// index.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TicketCreatedListener</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>).<span style=color:#a6e22e>listen</span>();
+<span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TicketUpdatedListener</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>).<span style=color:#a6e22e>listen</span>();
+</code></pre></div><h2 id=clear-concurrency-issues>Clear Concurrency Issues</h2>
+<p><img src=/images/microservices-dg-208.png alt=microservice-dg-208>
+Ở đây ta sẽ tạo 1 script để chạy hàng trăm request liên tục liên tiếp nhau. Như ảnh minh họa thì ta sẽ expect sau hàng trăm request như vậy thì tất cả các ticket trong ticket service cũng như order service đều sẽ có price là 15. Tuy nhiên thực tế thì sẽ không như vậy (sẽ có video minh họa sau). Tất cả các ticket trong ticket service xử lý trực tiếp trên ticket service nên sẽ không gặp vấn đề gì, tuy nhiên với order service thì nó update ticket khi nhận được event <code>TicketUpdatedEvent</code>. các event này khi được thực hiện hàng trăm lần liên tục như vậy sẽ có thể dẫn tới hiện tượng order của các event không đúng nữa ==> sẽ có event update price 15 đến trước event update ticket price 10. Và đây chính là vấn đề mà ta sẽ phải giải quyết.</p>
+<h2 id=reminder-on-versioning-records>Reminder On Versioning Records</h2>
+<p><img src=/images/microservices-dg-209.png alt=microservice-dg-209></p>
+<h2 id=optimistic-concurrency-control>Optimistic Concurrency Control</h2>
+<p><img src=/images/microservices-dg-210.png alt=microservice-dg-210>
+<img src=/images/microservices-dg-211.png alt=microservice-dg-211></p>
+<h2 id=mongoose-update-if-current>Mongoose Update-If-Current</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>npm install mongoose-update-if-current
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketDoc</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Document</span> {
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>number</span>;
+  <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span>;
+}
+
+<span style=color:#a6e22e>ticketSchema</span>.<span style=color:#66d9ef>set</span>(<span style=color:#e6db74>&#34;versionKey&#34;</span>, <span style=color:#e6db74>&#34;version&#34;</span>);
+<span style=color:#a6e22e>ticketSchema</span>.<span style=color:#a6e22e>plugin</span>(<span style=color:#a6e22e>updateIfCurrentPlugin</span>);
+</code></pre></div><h2 id=testing-occ-optimistic-concurrency-control>Testing OCC (Optimistic Concurrency Control)</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Ticket</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../ticket&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;mongoose&#34;</span>;
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;implements optimistic concurrency control&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// Create an instancee of a ticket
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>10</span>,
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>(),
+  });
+
+  <span style=color:#75715e>// Save the ticket to the database
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#75715e>// Fetch the ticket twice
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>first</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>id</span>);
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>second</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>id</span>);
+
+  <span style=color:#75715e>// Make two separate changes to the tickets we fetched
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>first</span><span style=color:#f92672>!</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>10</span> });
+  <span style=color:#a6e22e>second</span><span style=color:#f92672>!</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span> });
+
+  <span style=color:#75715e>// Save the first fetched ticket;
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>first</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#75715e>// Save the second fetched ticket and expect an error;
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>try</span> {
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>second</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>save</span>();
+  } <span style=color:#66d9ef>catch</span> (<span style=color:#a6e22e>error</span>) {
+    <span style=color:#66d9ef>return</span>;
+  }
+
+  <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> Error(<span style=color:#e6db74>&#34;Should not reach this point&#34;</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;increments the version number on multiple saves&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// Create an instancee of a ticket
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>10</span>,
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>(),
+  });
+
+  <span style=color:#75715e>// Save the ticket to the database
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>version</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>0</span>);
+
+  <span style=color:#a6e22e>ticket</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>ticket.version</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> });
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>version</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>1</span>);
+
+  <span style=color:#a6e22e>ticket</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>ticket.version</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> });
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>version</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#ae81ff>2</span>);
+});
+</code></pre></div><h2 id=including-versions-in-events>Including Versions In Events</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// common
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderCreatedEvent</span> {
+  <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> {
+    <span style=color:#a6e22e>ticket</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span>;
+    };
+  };
+}
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderCancelledEvent</span> {
+  <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> {
+    <span style=color:#a6e22e>ticket</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span>;
+    };
+  };
+}
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketCreatedEvent</span> {
+  <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> {
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span>;
+  };
+}
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketUpdatedEvent</span> {
+  <span style=color:#a6e22e>data</span><span style=color:#f92672>:</span> {
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span>;
+  };
+}
+</code></pre></div><h2 id=updateing-tickets-event-definitions>Updateing Tickets Event Definitions</h2>
+<p>Add version to all publisher</p>
+<h2 id=applying-a-version-query>Applying a Version Query</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findOne</span>({ <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>data.id</span>, <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>data.version</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span> });
+</code></pre></div><p>Vậy là sau khi update dòng code trên, khi update tickets, sẽ có các event bị sai order nhưng version không khớp nên ticket sẽ không được tìm thấy do đó service sẽ throw NotFoundError, sau 1 khoảng thời gian thì NATS sẽ emit lại event này, lúc đấy version đã được cập nhật mới nhất và update mọi thứ thành công.</p>
+<h2 id=abstracted-query-method>Abstracted Query Method</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketModel</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Model</span>&lt;<span style=color:#f92672>TicketDoc</span>&gt; {
+  <span style=color:#a6e22e>build</span>(<span style=color:#a6e22e>attrs</span>: <span style=color:#66d9ef>TicketAttrs</span>)<span style=color:#f92672>:</span> <span style=color:#a6e22e>TicketDoc</span>;
+  <span style=color:#a6e22e>findByEvent</span>(<span style=color:#a6e22e>event</span><span style=color:#f92672>:</span> {
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>;
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span>;
+  })<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>TicketDoc</span> <span style=color:#960050;background-color:#1e0010>|</span> <span style=color:#a6e22e>null</span>&gt;;
+}
+
+<span style=color:#a6e22e>ticketSchema</span>.<span style=color:#a6e22e>statics</span>.<span style=color:#a6e22e>findByEvent</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>event</span><span style=color:#f92672>:</span> { <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>; <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span> }) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findOne</span>({
+    <span style=color:#a6e22e>_id</span>: <span style=color:#66d9ef>event.id</span>,
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>event.version</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>,
+  });
+};
+</code></pre></div><h2 id=versioning-without-update-if-current>Versioning Without Update-If-Current</h2>
+<p><img src=/images/microservices-dg-212.png alt=microservice-dg-212></p>
+<p>Ở trên ta đã thực hiện OCC với <code>mongoose-update-if-current</code> tuy nhiên thì với lib này ta không thể chỉnh sửa được cơ chế quản lý version của 1 Model, lib này mặc định sử dụng keyword là <code>__v</code> và tăng mỗi lần là 1.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>ticketSchema</span>.<span style=color:#a6e22e>pre</span>(<span style=color:#e6db74>&#34;save&#34;</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>done</span>) {
+  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>$where</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>this.get</span>(<span style=color:#e6db74>&#34;version&#34;</span>) <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>,
+  };
+  <span style=color:#a6e22e>done</span>();
+});
+</code></pre></div><h2 id=testing-listeners>Testing Listeners</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// ticket-created-listener.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>setup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// create an instance of listener
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>listener</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TicketCreatedListener</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>);
+
+  <span style=color:#75715e>// create a fake data event
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>TicketCreatedEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>] <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>0</span>,
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>(),
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>10</span>,
+    <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>(),
+  };
+
+  <span style=color:#75715e>// create a fake message object
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// @ts-ignore
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>ack</span>: <span style=color:#66d9ef>jest.fn</span>(),
+  };
+
+  <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>listener</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span> };
+};
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;creates and saves a ticket&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>listener</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>();
+
+  <span style=color:#75715e>// call the onMessage function with the data object + message object
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+
+  <span style=color:#75715e>// write assertions to make sure a ticket was created
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticket</span>).<span style=color:#a6e22e>toBeDefined</span>();
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticket</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>title</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>title</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>ticket</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>price</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>price</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;acks the message&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>listener</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>();
+
+  <span style=color:#75715e>// call the onMessage function with the data object + message object
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+
+  <span style=color:#75715e>// write assertions to make sure ack function was called
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>).<span style=color:#a6e22e>toHaveBeenCalled</span>();
+});
+</code></pre></div><h2 id=testing-the-ticket-updated-listener>Testing the Ticket Updated Listener</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// ticket-updated-listener.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>setup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// create an instance of listener
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>listener</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TicketUpdatedListener</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>);
+
+  <span style=color:#75715e>// create and save a tikcet
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>(),
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;conert&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span>,
+  });
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#75715e>// create a fake data object
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>TicketCreatedEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>] <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>ticket.version</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>,
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>ticket.id</span>,
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert updated&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>999</span>,
+    <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>(),
+  };
+
+  <span style=color:#75715e>// create a fake msg object
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// @ts-ignore
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>ack</span>: <span style=color:#66d9ef>jest.fn</span>(),
+  };
+
+  <span style=color:#75715e>// return all of this stuff
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>msg</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>listener</span> };
+};
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;finds, updates, and saves a ticket&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>msg</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>listener</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>updatedTicket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>id</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedTicket</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>title</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>title</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedTicket</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>price</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>price</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedTicket</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>version</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>version</span>);
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;acks the message&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>msg</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>listener</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>).<span style=color:#a6e22e>toHaveBeenCalled</span>();
+});
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;does not call ack if the event has a skipped version number&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>msg</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>listener</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>();
+
+  <span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>version</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>;
+  <span style=color:#66d9ef>try</span> {
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+  } <span style=color:#66d9ef>catch</span> (<span style=color:#a6e22e>error</span>) {}
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>).<span style=color:#a6e22e>not</span>.<span style=color:#a6e22e>toHaveBeenCalled</span>();
+});
+</code></pre></div><h2 id=locking-a-ticket>Locking a Ticket</h2>
+<p><img src=/images/microservices-dg-213.png alt=microservice-dg-213>
+<img src=/images/microservices-dg-214.png alt=microservice-dg-214></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TicketDoc</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Document</span> {
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>number</span>;
+  <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>number</span>;
+  <span style=color:#a6e22e>orderId?</span>: <span style=color:#66d9ef>string</span>;
+}
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticketSchema</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Schema</span> {
+  <span style=color:#a6e22e>orderId</span><span style=color:#f92672>:</span> {
+    <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> String
+  }
+}
+</code></pre></div><h2 id=listeners-in-the-tickets-service>Listeners In The Tickets Service</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// order-created-listener.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> {
+  <span style=color:#a6e22e>Listener</span>,
+  <span style=color:#a6e22e>OrderCreatedEvent</span>,
+  <span style=color:#a6e22e>Subjects</span>,
+} <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;@ducnguyen96/ticketing-common&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Ticket</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../models/ticket&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>queueGroupName</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;./queue-group-name&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Message</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;node-nats-streaming&#34;</span>;
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderCreatedListener</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Listener</span>&lt;<span style=color:#f92672>OrderCreatedEvent</span>&gt; {
+  <span style=color:#a6e22e>subject</span>: <span style=color:#66d9ef>Subjects.OrderCreated</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Subjects</span>.<span style=color:#a6e22e>OrderCreated</span>;
+  <span style=color:#a6e22e>queueGroupName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>queueGroupName</span>;
+
+  <span style=color:#66d9ef>async</span> <span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>OrderCreatedEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>], <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span>) {
+    <span style=color:#75715e>// Find the ticket that the order is reserving
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>id</span>);
+
+    <span style=color:#75715e>// If no ticket, throw error
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>ticket</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> Error(<span style=color:#e6db74>&#34;Ticket not found&#34;</span>);
+    }
+
+    <span style=color:#75715e>// Mark the ticket as beingg reserved by setting its orderId property
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>ticket</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>orderId</span>: <span style=color:#66d9ef>data.id</span> });
+
+    <span style=color:#75715e>// Save the ticket
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+    <span style=color:#75715e>// Ack the message
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>();
+  }
+}
+</code></pre></div><h2 id=testing-reservation>Testing Reservation</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// tickets/src/events/listeners/__test__/order-created-listener.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>setup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#75715e>// Create an instance of the listener
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>listener</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>OrderCreatedListener</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>);
+
+  <span style=color:#75715e>// Create and save a ticket
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;concert&#39;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span>,
+    <span style=color:#a6e22e>userId</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;frgrdg&#39;</span>
+  })
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>()
+
+  <span style=color:#75715e>// Create the fake data event
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>OrderCreatedEvent</span>[<span style=color:#e6db74>&#39;data&#39;</span>] <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>();
+    <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>0</span>,
+    <span style=color:#a6e22e>status</span>: <span style=color:#66d9ef>OrderStatus.OrderCreated</span>,
+    <span style=color:#a6e22e>userId</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;frgrdg&#39;</span>,
+    <span style=color:#a6e22e>expiresAt</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;gdrgdyhf&#39;</span>,
+    <span style=color:#a6e22e>ticket</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>ticket.id</span>,
+      <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>ticket.price</span>
+    }
+  }
+
+  <span style=color:#75715e>// @ts-ignore
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>ack</span>: <span style=color:#66d9ef>jest.fn</span>()
+  }
+  <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>listener</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span> };
+}
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#39;sets the userId of the ticket&#39;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>listener</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>()
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>updatedTicket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>id</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedTicket</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>orderId</span>).<span style=color:#a6e22e>toEqual</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>id</span>);
+})
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#39;acks the message&#39;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>listener</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>()
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>).<span style=color:#a6e22e>toHaveBeenCalled</span>()
+})
+</code></pre></div><h2 id=missing-update-event>Missing Update Event</h2>
+<p><img src=/images/microservices-dg-215.png alt=microservice-dg-215></p>
+<h2 id=private-vs-protected-properties>Private vs Protected Properties</h2>
+<p><img src=/images/microservices-dg-216.png alt=microservice-dg-216></p>
+<p>Hiện tại đây là cách xử lý của chúng ta để có thể truyền client đến publisher.</p>
+<p>Ta thấy Listener vốn dĩ là thừa kế client từ Base Class, tuy nhiên do mark thuộc tính client là private nên ta không thể truy cập được thuộc tính này dẫn tới việc phải tạo ra 1 NatsWrapper và truyền cho Listener.</p>
+<p>Để giải quyết việc này thì ta chỉ cần thay đổi private thành protected để custom Listener có thể truy cập được thuộc tính này của Base Class.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// order-created-listener.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>await</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TicketUpdatedPublisher</span>(<span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>client</span>).<span style=color:#a6e22e>publish</span>({
+  <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>ticket.id</span>,
+  <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>ticket.title</span>,
+  <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>ticket.price</span>,
+  <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>ticket.userId</span>,
+  <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>ticket.version</span>,
+  <span style=color:#a6e22e>orderId</span>: <span style=color:#66d9ef>ticket.orderId</span>,
+});
+</code></pre></div><h2 id=mock-function-arguments>Mock Function Arguments</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#39;publishes a ticket updated event&#39;</span>, <span style=color:#66d9ef>async</span> ( <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>listener</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>)
+
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>.<span style=color:#a6e22e>publish</span>).<span style=color:#a6e22e>toHaveBeenCalled</span>()
+
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>.<span style=color:#a6e22e>publish</span>.<span style=color:#a6e22e>mock</span>.<span style=color:#a6e22e>calls</span>[<span style=color:#ae81ff>0</span>][<span style=color:#ae81ff>1</span>])
+})
+</code></pre></div><h2 id=order-cancelled-listener>Order Cancelled Listener</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// tickets/src/events/listeners/order-cancelled-listener.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderCancelledListener</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Listener</span>&lt;<span style=color:#f92672>OrderCancelledEvent</span>&gt; {
+  <span style=color:#a6e22e>subject</span>: <span style=color:#66d9ef>Subjects.OrderCancelled</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Subjects</span>.<span style=color:#a6e22e>OrderCancelled</span>;
+  <span style=color:#a6e22e>queueGroupName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>queueGroupName</span>;
+
+  <span style=color:#66d9ef>async</span> <span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>OrderCancelledEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>], <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span>) {
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>data</span>.<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>id</span>);
+
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>ticket</span>) {
+      <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> Error(<span style=color:#e6db74>&#34;Ticket Not Found&#34;</span>);
+    }
+
+    <span style=color:#a6e22e>ticket</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>orderId</span>: <span style=color:#66d9ef>undefined</span> });
+    <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+    <span style=color:#66d9ef>await</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TicketUpdatedPublisher</span>(<span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>client</span>).<span style=color:#a6e22e>publish</span>({
+      <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>ticket.id</span>,
+      <span style=color:#a6e22e>orderId</span>: <span style=color:#66d9ef>ticket.orderId</span>,
+      <span style=color:#a6e22e>userId</span>: <span style=color:#66d9ef>ticket.userId</span>,
+      <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>ticket.price</span>,
+      <span style=color:#a6e22e>title</span>: <span style=color:#66d9ef>ticket.title</span>,
+      <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>ticket.version</span>,
+    });
+
+    <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>();
+  }
+}
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// tickets/src/events/listeners/__test__/order-cancelled-listener.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Ticket</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../../models/ticket&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>natsWrapper</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../../nats-wrapper&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>OrderCancelledListener</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../order-cancelled-listener&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#a6e22e>mongoose</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;mongoose&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>OrderCancelledEvent</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;@ducnguyen96/ticketing-common&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>setup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>listener</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>OrderCancelledListener</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>orderId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>mongoose</span>.<span style=color:#a6e22e>Types</span>.<span style=color:#a6e22e>ObjectId</span>().<span style=color:#a6e22e>toHexString</span>();
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ticket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>build</span>({
+    <span style=color:#a6e22e>title</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;concert&#34;</span>,
+    <span style=color:#a6e22e>price</span>: <span style=color:#66d9ef>20</span>,
+    <span style=color:#a6e22e>userId</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;fgdjrg&#34;</span>,
+  });
+
+  <span style=color:#a6e22e>ticket</span>.<span style=color:#66d9ef>set</span>({ <span style=color:#a6e22e>orderId</span> });
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>save</span>();
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>data</span>: <span style=color:#66d9ef>OrderCancelledEvent</span>[<span style=color:#e6db74>&#34;data&#34;</span>] <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>orderId</span>,
+    <span style=color:#a6e22e>ticket</span><span style=color:#f92672>:</span> {
+      <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>ticket.id</span>,
+      <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>ticket.version</span>,
+    },
+  };
+
+  <span style=color:#75715e>// @ts-ignore
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>msg</span>: <span style=color:#66d9ef>Message</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>ack</span>: <span style=color:#66d9ef>jest.fn</span>(),
+  };
+
+  <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>msg</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>orderId</span>, <span style=color:#a6e22e>listener</span> };
+};
+
+<span style=color:#a6e22e>it</span>(<span style=color:#e6db74>&#34;updates the ticket, publishes an event, and acks the message&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>msg</span>, <span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>ticket</span>, <span style=color:#a6e22e>orderId</span>, <span style=color:#a6e22e>listener</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>setup</span>();
+
+  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>listener</span>.<span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>data</span>, <span style=color:#a6e22e>msg</span>);
+
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>updatedTicket</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>Ticket</span>.<span style=color:#a6e22e>findById</span>(<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>id</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>updatedTicket</span><span style=color:#f92672>!</span>.<span style=color:#a6e22e>orderId</span>).<span style=color:#a6e22e>not</span>.<span style=color:#a6e22e>toBeDefined</span>();
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ack</span>).<span style=color:#a6e22e>toHaveBeenCalled</span>();
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>natsWrapper</span>.<span style=color:#a6e22e>client</span>.<span style=color:#a6e22e>publish</span>).<span style=color:#a6e22e>toHaveBeenCalled</span>();
+});
+</code></pre></div><h2 id=rejecting-edits-of-reserved-tickets>Rejecting Edits of Reserved Tickets</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>ticket</span>.<span style=color:#a6e22e>orderId</span>) {
+  <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>BadRequestError</span>(<span style=color:#e6db74>&#34;Cannot edit a reserved ticket&#34;</span>);
+}
+</code></pre></div>
+</div>
+</article>
+<div class=blog-post-comments>
+<div id=disqus_thread>
+<script type=text/javascript>(function(){var a=document.createElement('script'),b;a.type='text/javascript',a.async=!0,b='ducnguyen96',a.src='//'+b+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com/ class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div id=footer-post-container>
+<div id=footer-post>
+<div id=nav-footer style=display:none>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</div>
+<div id=toc-footer style=display:none>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#blueprint-for-listeners>Blueprint for Listeners</a></li>
+<li><a href=#simple-onmessage-implementation>Simple onMessage Implementation</a></li>
+<li><a href=#ticket-updated-listener>Ticket Updated Listener</a></li>
+<li><a href=#initializing-updated-listener-implementation>Initializing Updated Listener Implementation</a></li>
+<li><a href=#clear-concurrency-issues>Clear Concurrency Issues</a></li>
+<li><a href=#reminder-on-versioning-records>Reminder On Versioning Records</a></li>
+<li><a href=#optimistic-concurrency-control>Optimistic Concurrency Control</a></li>
+<li><a href=#mongoose-update-if-current>Mongoose Update-If-Current</a></li>
+<li><a href=#testing-occ-optimistic-concurrency-control>Testing OCC (Optimistic Concurrency Control)</a></li>
+<li><a href=#including-versions-in-events>Including Versions In Events</a></li>
+<li><a href=#updateing-tickets-event-definitions>Updateing Tickets Event Definitions</a></li>
+<li><a href=#applying-a-version-query>Applying a Version Query</a></li>
+<li><a href=#abstracted-query-method>Abstracted Query Method</a></li>
+<li><a href=#versioning-without-update-if-current>Versioning Without Update-If-Current</a></li>
+<li><a href=#testing-listeners>Testing Listeners</a></li>
+<li><a href=#testing-the-ticket-updated-listener>Testing the Ticket Updated Listener</a></li>
+<li><a href=#locking-a-ticket>Locking a Ticket</a></li>
+<li><a href=#listeners-in-the-tickets-service>Listeners In The Tickets Service</a></li>
+<li><a href=#testing-reservation>Testing Reservation</a></li>
+<li><a href=#missing-update-event>Missing Update Event</a></li>
+<li><a href=#private-vs-protected-properties>Private vs Protected Properties</a></li>
+<li><a href=#mock-function-arguments>Mock Function Arguments</a></li>
+<li><a href=#order-cancelled-listener>Order Cancelled Listener</a></li>
+<li><a href=#rejecting-edits-of-reserved-tickets>Rejecting Edits of Reserved Tickets</a></li>
+</ul>
+</nav>
+</div>
+<div id=share-footer style=display:none>
+<ul>
+<li>
+<a class=icon href="http://www.facebook.com/sharer.php?u=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f" aria-label=Facebook>
+<i class="fab fa-facebook fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://twitter.com/share?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&text=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Twitter>
+<i class="fab fa-twitter fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.linkedin.com/shareArticle?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Linkedin>
+<i class="fab fa-linkedin fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://pinterest.com/pin/create/bookmarklet/?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&is_video=false&description=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Pinterest>
+<i class="fab fa-pinterest fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="mailto:?subject=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues&body=Check out this article: %2fposts%2fbackend%2fmicroservices-with-node-p18%2f" aria-label=Email>
+<i class="fas fa-envelope fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://getpocket.com/save?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=Pocket>
+<i class="fab fa-get-pocket fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://reddit.com/submit?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&title=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label=reddit>
+<i class="fab fa-reddit fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="http://www.tumblr.com/share/link?url=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&name=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues&description=Blueprint%20for%20Listeners%20%2f%2f%20src%2fevents%2flisteners%2fqueue-group-name.ts%20export%20const%20queueGroupName%20%3d%20%26%2334%3borders-service%26%2334%3b%3b%20%2f%2f%20ticket-created-listener.ts%20export%20class%20TicketCreatedListener%20extends%20Listener%26lt%3bTicketCreatedEvent%26gt%3b%20%7b%20subject%3a%20Subjects.TicketCreated%20%3d%20Subjects.TicketCreated%3b%20queueGroupName%20%3d%20queueGroupName%3b%20onMessage%28data%3a%20TicketCreatedEvent%5b%26%2334%3bdata%26%2334%3b%5d%2c%20msg%3a%20Message%29%20%7b%7d%20%7d%20Simple%20onMessage%20Implementation%20export%20class%20TicketCreatedListener%20extends%20Listener%26lt%3bTicketCreatedEvent%26gt%3b%20%7b%20subject%3a%20Subjects.TicketCreated%20%3d%20Subjects.TicketCreated%3b%20queueGroupName%20%3d%20queueGroupName%3b%20async%20onMessage%28data%3a%20TicketCreatedEvent%5b%26%2334%3bdata%26%2334%3b%5d%2c%20msg%3a%20Message%29%20%7b%20const%20%7b%20title%2c%20price%20%7d%20%3d%20data%3b%20const%20ticket%20%3d%20Ticket.build%28%7b%20title%2c%20price%2c%20%7d%29%3b%20await%20ticket.save%28%29%3b%20msg.ack%28%29%3b%20%7d%20V%e1%bb%9bi%20c%c3%a1ch%20ti%e1%ba%bfp%20c%e1%ba%adn%20n%c3%a0y%20th%c3%ac%20ticket%20%c4%91%c6%b0%e1%bb%a3c%20t%e1%ba%a1o%20m%e1%bb%9bi%20trong%20order%20service%20s%e1%ba%bd%20c%c3%b3%20id%20kh%c3%a1c%20v%e1%bb%9bi%20id%20c%e1%bb%a7a%20ticket%20%c4%91%c6%b0%e1%bb%a3c%20t%e1%ba%a1o%20trong%20ticket%20service%2c%20v%e1%ba%ady%20ta%20s%e1%ba%bd%20ph%e1%ba%a3i%20update%20l%e1%ba%a1i%20code%20c%e1%bb%a7a%20h%c3%a0m%20build." aria-label=Tumblr>
+<i class="fab fa-tumblr fa-lg" aria-hidden=true></i>
+</a>
+</li>
+<li>
+<a class=icon href="https://news.ycombinator.com/submitlink?u=%2fposts%2fbackend%2fmicroservices-with-node-p18%2f&t=Microservices%20v%e1%bb%9bi%20NodeJS%20ph%e1%ba%a7n%2018%20-%20Listening%20For%20Events%20and%20Handling%20Concurrency%20Issues" aria-label="Hacker News">
+<i class="fab fa-hacker-news fa-lg" aria-hidden=true></i>
+</a>
+</li>
+</ul>
+</div>
+<div id=actions-footer>
+<a id=menu-toggle class=icon href=# onclick="return $('#nav-footer').toggle(),!1" aria-label=Menu>
+<i class="fas fa-bars fa-lg" aria-hidden=true></i> Menu</a>
+<a id=toc-toggle class=icon href=# onclick="return $('#toc-footer').toggle(),!1" aria-label=TOC>
+<i class="fas fa-list fa-lg" aria-hidden=true></i> TOC</a>
+<a id=share-toggle class=icon href=# onclick="return $('#share-footer').toggle(),!1" aria-label=Share>
+<i class="fas fa-share-alt fa-lg" aria-hidden=true></i> share</a>
+<a id=top style=display:none class=icon href=# onclick="$('html, body').animate({scrollTop:0},'fast')" aria-label="Top of Page">
+<i class="fas fa-chevron-up fa-lg" aria-hidden=true></i> Top</a>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=footer-left>
+Copyright &copy; 2021 ducnguyen96
+</div>
+<div class=footer-right>
+<nav>
+<ul>
+<li><a href=/>Home</a></li>
+<li><a href=/posts>Writings</a></li>
+<li><a href=/categories>Categories</a></li>
+<li><a href=/tags>Tags</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</div>
+</body>
+<link rel=stylesheet href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+<script src=/js/code-copy.js></script>
+</html>
