@@ -4,7 +4,7 @@ theme = "cactus"
 title = 'Thỉnh thoảng đôi lời'
 copyright = 'ducnguyen96'
 disqusShortname = 'ducnguyen96'
-paginate = 10
+paginate = 15
 staticDir = ['static']
 enableemoji = true
 
@@ -35,24 +35,24 @@ weight = 4
 
 [params]
 logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
-colortheme = "dark" # dark, light, white, or classic
+colortheme = "dark"                                                                                                                                                                 # dark, light, white, or classic
 rss = true
 showAllPostsArchive = false
 showAllPostsOnHomePage = true
 description = "Là nơi chia sẻ lại những kiến thức, kinh nghiệm mình tiếp thu được trong quá trình học tập và làm việc. Và thỉnh thoảng cũng đăng một vài demo ngớ ngẩn nữa :smile:"
-showProjectsList = true
+showProjectsList = false
 
 [params.comments]
-  enabled = true
+enabled = true
 
 [[params.social]]
-  name = "github"
-  link = "https://github.com/ducnguyen96"
+name = "github"
+link = "https://github.com/ducnguyen96"
 
 [[params.social]]
-  name = "email"
-  link = "levinguyen.dl@gmail.com"
+name = "email"
+link = "levinguyen.dl@gmail.com"
 
 [[params.social]]
-  name = "youtube"
-  link = "https://www.youtube.com/channel/UCCrvmlNIXLgZOMAMn9VKBeA"
+name = "youtube"
+link = "https://www.youtube.com/channel/UCCrvmlNIXLgZOMAMn9VKBeA"
