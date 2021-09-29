@@ -33,6 +33,11 @@ name = "Categories"
 url = "/categories"
 weight = 4
 
+[[menu.main]]
+name = "CV"
+url = "/projects/cv"
+weight = 6
+
 [params]
 logo = "https://avatars.githubusercontent.com/u/47471616?v=4"
 colortheme = "dark"                                                                                                                                                                 # dark, light, white, or classic
