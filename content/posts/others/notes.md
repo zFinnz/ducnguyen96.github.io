@@ -224,3 +224,10 @@ docker rmi -f $(d images -f "dangling=true" -q)
 ```sh
 docker rmi -f $(docker images --format '{{.Repository}} {{.ID}}' | grep 'ducnguyen96' | awk '{print $2}')
 ```
+
+## 16. Remove env file from all git histories
+
+```sh
+git filter-branch --index-filter "git rm -rf --cached --ignore-unmatch .env" HEAD
+git push origin master --force
+```
