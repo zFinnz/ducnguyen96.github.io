@@ -135,6 +135,7 @@
 <li><a href=#13-lỗi-khi-test-code-typescript--express-với-mongodb-memory-server-trên-debian>13. Lỗi khi test code typescript + express với mongodb-memory-server trên debian</a></li>
 <li><a href=#14-docker-remove-none-repository-images>14. Docker remove repository images</a></li>
 <li><a href=#15-docker-remove-image-based-on-repository-name-or-tag>15. Docker remove image based on repository name or tag</a></li>
+<li><a href=#16-remove-env-file-from-all-git-histories>16. Remove env file from all git histories</a></li>
 </ul>
 </nav>
 </div>
@@ -282,6 +283,9 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker rmi -f <span style=color:#66d9ef>$(</span>d images -f <span style=color:#e6db74>&#34;dangling=true&#34;</span> -q<span style=color:#66d9ef>)</span>
 </code></pre></div><h2 id=15-docker-remove-image-based-on-repository-name-or-tag>15. Docker remove image based on repository name or tag</h2>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker rmi -f <span style=color:#66d9ef>$(</span>docker images --format <span style=color:#e6db74>&#39;{{.Repository}} {{.ID}}&#39;</span> | grep <span style=color:#e6db74>&#39;ducnguyen96&#39;</span> | awk <span style=color:#e6db74>&#39;{print $2}&#39;</span><span style=color:#66d9ef>)</span>
+</code></pre></div><h2 id=16-remove-env-file-from-all-git-histories>16. Remove env file from all git histories</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>git filter-branch --index-filter <span style=color:#e6db74>&#34;git rm -rf --cached --ignore-unmatch .env&#34;</span> HEAD
+git push origin master --force
 </code></pre></div>
 </div>
 </article>
@@ -321,6 +325,7 @@ disqusShortname <span style=color:#f92672>=</span> <span style=color:#e6db74>&#3
 <li><a href=#13-lỗi-khi-test-code-typescript--express-với-mongodb-memory-server-trên-debian>13. Lỗi khi test code typescript + express với mongodb-memory-server trên debian</a></li>
 <li><a href=#14-docker-remove-none-repository-images>14. Docker remove repository images</a></li>
 <li><a href=#15-docker-remove-image-based-on-repository-name-or-tag>15. Docker remove image based on repository name or tag</a></li>
+<li><a href=#16-remove-env-file-from-all-git-histories>16. Remove env file from all git histories</a></li>
 </ul>
 </nav>
 </div>
