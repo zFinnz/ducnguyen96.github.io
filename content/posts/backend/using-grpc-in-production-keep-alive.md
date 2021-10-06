@@ -1,7 +1,7 @@
 ---
 title: "Sử dụng gRPC trong Production - Connection keepalive"
 date: 2021-10-06 00:00:00
-draft: true
+draft: false
 categories: [backend]
 categories_weight: 5
 tags: [microservices, backend, grpc, keepalive]
