@@ -8,6 +8,10 @@ tags: [backend, microservices, rabbitmq]
 tags_weight: 7
 ---
 
+Nguồn:
+
+{{< youtube 7rkeORD4jSw >}}
+
 ## Message Broker - Message Queue
 
 Trở lại với kiến trúc Monolithic, các components của app bó buộc chặt chẽ với nhau. Ví dụ với một ứng dụng bán lẻ, ta có một checkout service cần kết nối với inventory service thì thường sẽ được giải quyết bằng TCP connection, ngay khi checkout gửi message đến inventory thì nó cần ngay reply trước khi đến với tác vụ tiếp theo, hoặc tệ hơn nếu inventory crash thì nó sẽ cố gắng gửi request cho tới khi thiết lập connection, hoặc nếu có rất nhiều checkouts xảy ra cùng lúc thì inventory service không thể theo kịp.
@@ -25,6 +29,8 @@ Và đó là lúc message queue được tạo ra, nó sẽ đứng giữa 2 ser
 MQ có thể được đặt ở 1 máy riêng, nó có thể giảm tải cho các tác vụ mà hoàn thành bởi web app giúp app đạt performence tốt hơn.
 
 ## RabbitMQ
+
+![rabbitmq](/images/rabbitmq.png)
 
 Là một triển khai của AMQP(Advanced Message Queueing Protocol) message model - 091.
 
@@ -46,5 +52,3 @@ Cách gửi và nhận message trong RabbitMQ được defined bằng metadata l
 - Acks: Comsumer ack message giúp broker biết rằng consumer đã nhận được message, và loại bỏ nó ra khỏi queue. Điều này tránh tình trạng miss message hoặc loss message vì nếu consumer không ack thì message vẫn được giữ trong queue.
 - Greate management: Có management UI, CLI.
 - Plug-in: Có rất nhiều plug-ins được phát triển bởi cộng đồng opensource.
-
-_Nguồn_: https://www.youtube.com/watch?v=7rkeORD4jSw
